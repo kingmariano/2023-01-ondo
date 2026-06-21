@@ -39,10 +39,6 @@ abstract contract CashKYCSenderReceiverTargets is
         cashKYCSenderReceiver.decreaseAllowance(spender, subtractedValue);
     }
 
-    function cashKYCSenderReceiver_grantRole(bytes32 role, address account) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_GRANT_ROLE) asActor {
-        cashKYCSenderReceiver.grantRole(role, account);
-    }
-
     function cashKYCSenderReceiver_increaseAllowance(address spender, uint256 addedValue) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_INCREASE_ALLOWANCE) asActor {
         cashKYCSenderReceiver.increaseAllowance(spender, addedValue);
     }
@@ -55,28 +51,8 @@ abstract contract CashKYCSenderReceiverTargets is
         cashKYCSenderReceiver.initialize(name, symbol, kycRegistry, kycRequirementGroup);
     }
 
-    function cashKYCSenderReceiver_mint(address to, uint256 amount) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_MINT) asActor {
-        cashKYCSenderReceiver.mint(to, amount);
-    }
-
-    function cashKYCSenderReceiver_pause() public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_PAUSE) asActor {
-        cashKYCSenderReceiver.pause();
-    }
-
     function cashKYCSenderReceiver_renounceRole(bytes32 role, address account) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_RENOUNCE_ROLE) asActor {
         cashKYCSenderReceiver.renounceRole(role, account);
-    }
-
-    function cashKYCSenderReceiver_revokeRole(bytes32 role, address account) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_REVOKE_ROLE) asActor {
-        cashKYCSenderReceiver.revokeRole(role, account);
-    }
-
-    function cashKYCSenderReceiver_setKYCRegistry(address registry) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_SET_KYC_REGISTRY) asActor {
-        cashKYCSenderReceiver.setKYCRegistry(registry);
-    }
-
-    function cashKYCSenderReceiver_setKYCRequirementGroup(uint256 group) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_SET_KYC_REQUIREMENT_GROUP) asActor {
-        cashKYCSenderReceiver.setKYCRequirementGroup(group);
     }
 
     function cashKYCSenderReceiver_transfer(address to, uint256 amount) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_TRANSFER) asActor {
@@ -85,9 +61,5 @@ abstract contract CashKYCSenderReceiverTargets is
 
     function cashKYCSenderReceiver_transferFrom(address from, address to, uint256 amount) public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_TRANSFER_FROM) asActor {
         cashKYCSenderReceiver.transferFrom(from, to, amount);
-    }
-
-    function cashKYCSenderReceiver_unpause() public trackOp(SelectorStorage.CASH_KYC_SENDER_RECEIVER_UNPAUSE) asActor {
-        cashKYCSenderReceiver.unpause();
     }
 }

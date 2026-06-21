@@ -23,32 +23,8 @@ abstract contract CTokenDelegateTargets is
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 
-    function cTokenDelegate__acceptAdmin() public trackOp(SelectorStorage.CTOKEN_DELEGATE__ACCEPTADMIN) asActor {
-        cTokenDelegate._acceptAdmin();
-    }
-
     function cTokenDelegate__addReserves(uint256 addAmount) public trackOp(SelectorStorage.CTOKEN_DELEGATE__ADDRESERVES) asActor {
         cTokenDelegate._addReserves(addAmount);
-    }
-
-    function cTokenDelegate__becomeImplementation(bytes memory data) public trackOp(SelectorStorage.CTOKEN_DELEGATE__BECOMEIMPLEMENTATION) asActor {
-        cTokenDelegate._becomeImplementation(data);
-    }
-
-    function cTokenDelegate__delegateCompLikeTo(address compLikeDelegatee) public trackOp(SelectorStorage.CTOKEN_DELEGATE__DELEGATECOMPLIKETO) asActor {
-        cTokenDelegate._delegateCompLikeTo(compLikeDelegatee);
-    }
-
-    function cTokenDelegate__reduceReserves(uint256 reduceAmount) public trackOp(SelectorStorage.CTOKEN_DELEGATE__REDUCERESERVES) asActor {
-        cTokenDelegate._reduceReserves(reduceAmount);
-    }
-
-    function cTokenDelegate__resignImplementation() public trackOp(SelectorStorage.CTOKEN_DELEGATE__RESIGNIMPLEMENTATION) asActor {
-        cTokenDelegate._resignImplementation();
-    }
-
-    function cTokenDelegate__setReserveFactor(uint256 newReserveFactorMantissa) public trackOp(SelectorStorage.CTOKEN_DELEGATE__SETRESERVEFACTOR) asActor {
-        cTokenDelegate._setReserveFactor(newReserveFactorMantissa);
     }
 
     function cTokenDelegate_accrueInterest() public trackOp(SelectorStorage.CTOKEN_DELEGATE_ACCRUE_INTEREST) asActor {
@@ -97,14 +73,6 @@ abstract contract CTokenDelegateTargets is
 
     function cTokenDelegate_seize(address liquidator, address borrower, uint256 seizeTokens) public trackOp(SelectorStorage.CTOKEN_DELEGATE_SEIZE) asActor {
         cTokenDelegate.seize(liquidator, borrower, seizeTokens);
-    }
-
-    function cTokenDelegate_setKYCRegistry(address _kycRegistry) public trackOp(SelectorStorage.CTOKEN_DELEGATE_SET_KYC_REGISTRY) asActor {
-        cTokenDelegate.setKYCRegistry(_kycRegistry);
-    }
-
-    function cTokenDelegate_setKYCRequirementGroup(uint256 _kycRequirementGroup) public trackOp(SelectorStorage.CTOKEN_DELEGATE_SET_KYC_REQUIREMENT_GROUP) asActor {
-        cTokenDelegate.setKYCRequirementGroup(_kycRequirementGroup);
     }
 
     function cTokenDelegate_totalBorrowsCurrent() public trackOp(SelectorStorage.CTOKEN_DELEGATE_TOTAL_BORROWS_CURRENT) asActor {
