@@ -137,6 +137,13 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
             address(cashManager)
         );
 
+        /// @custom:audit SETTER_ADMIN: setMintExchangeRate is gated by SETTER_ADMIN,
+        ///        which the constructor does NOT grant to managerAdmin (only
+        ///        DEFAULT_ADMIN_ROLE + MANAGER_ADMIN). MANAGER_ADMIN is the role
+        ///        admin of SETTER_ADMIN, so address(this) can self-grant it; do so
+        ///        here so the setMintExchangeRate / claimMint flow is reachable.
+        cashManager.grantRole(cashManager.SETTER_ADMIN(), address(this));
+
         // --- 7. Lending delegate implementations (bare; see audit gap) ---
         /// @custom:audit ADMIN PROBLEM (cTokens): CTokenDelegate/CCashDelegate
         ///        initialize require msg.sender==admin but the bare delegate's
