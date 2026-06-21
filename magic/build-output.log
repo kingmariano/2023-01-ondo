@@ -1,0 +1,47 @@
+Warning: Found unknown `lib` config for profile `default` defined in foundry.toml.
+Compiling 26 files with Solc 0.5.17
+Compiling 7 files with Solc 0.6.12
+Compiling 207 files with Solc 0.8.16
+Solc 0.8.16 finished in 776.93ms
+Solc 0.6.12 finished in 824.28ms
+Solc 0.5.17 finished in 1.68s
+Error: Compiler run failed:
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/CompoundLens.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/Comp.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernorBravoInterfaces.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernanceBravoDelegator.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernorBravoDelegate.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+forge-tests/lending/helpers/test/GovernorBravoHarness.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Function state mutability can be restricted to pure
+contracts/lending/compound/Comptroller.sol:1794:3: Warning: Function state mutability can be restricted to pure
+  function getCompAddress() public view returns (address) {
+  ^ (Relevant source part starts here and spans across multiple lines).
+Error (6160): Wrong argument count for function call: 0 arguments given but expected 12.
+  --> forge-tests/recon/Setup.sol:37:23:
+   |
+37 |         cashManager = new CashManager(); // TODO: Add parameters here
+   |                       ^^^^^^^^^^^^^^^^^
+
+Error (6160): Wrong argument count for function call: 0 arguments given but expected 2.
+  --> forge-tests/recon/Setup.sol:38:23:
+   |
+38 |         kYCRegistry = new KYCRegistry(); // TODO: Add parameters here
+   |                       ^^^^^^^^^^^^^^^^^

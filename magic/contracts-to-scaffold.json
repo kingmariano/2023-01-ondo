@@ -1,0 +1,14 @@
+{
+  "source_contracts": [
+    "CashManager",
+    "KYCRegistry",
+    "OndoPriceOracleV2",
+    "CashKYCSenderReceiver",
+    "CCashDelegate",
+    "CTokenDelegate"
+  ],
+  "mocked_contracts": [
+    "ERC20Mock",
+    "AggregatorV3Mock"
+  ]
+}
