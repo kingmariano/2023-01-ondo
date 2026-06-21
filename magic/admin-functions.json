@@ -1,0 +1,92 @@
+{
+  "admin_functions": [
+    {
+      "contract_name": "CashManagerTargets",
+      "functions": [
+        "cashManager_completeRedemptions",
+        "cashManager_grantRole",
+        "cashManager_multiexcall",
+        "cashManager_overrideExchangeRate",
+        "cashManager_pause",
+        "cashManager_revokeRole",
+        "cashManager_setAssetRecipient",
+        "cashManager_setAssetSender",
+        "cashManager_setEpochDuration",
+        "cashManager_setFeeRecipient",
+        "cashManager_setKYCRegistry",
+        "cashManager_setKYCRequirementGroup",
+        "cashManager_setMinimumDepositAmount",
+        "cashManager_setMintExchangeRate",
+        "cashManager_setMintExchangeRateDeltaLimit",
+        "cashManager_setMintFee",
+        "cashManager_setMintLimit",
+        "cashManager_setPendingMintBalance",
+        "cashManager_setPendingRedemptionBalance",
+        "cashManager_setRedeemLimit",
+        "cashManager_setRedeemMinimum",
+        "cashManager_unpause"
+      ]
+    },
+    {
+      "contract_name": "KYCRegistryTargets",
+      "functions": [
+        "kYCRegistry_addKYCAddresses",
+        "kYCRegistry_assignRoletoKYCGroup",
+        "kYCRegistry_grantRole",
+        "kYCRegistry_removeKYCAddresses",
+        "kYCRegistry_revokeRole"
+      ]
+    },
+    {
+      "contract_name": "OndoPriceOracleV2Targets",
+      "functions": [
+        "ondoPriceOracleV2_renounceOwnership",
+        "ondoPriceOracleV2_setFTokenToCToken",
+        "ondoPriceOracleV2_setFTokenToChainlinkOracle",
+        "ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay",
+        "ondoPriceOracleV2_setOracle",
+        "ondoPriceOracleV2_setPrice",
+        "ondoPriceOracleV2_setPriceCap",
+        "ondoPriceOracleV2_transferOwnership"
+      ]
+    },
+    {
+      "contract_name": "CCashDelegateTargets",
+      "functions": [
+        "cCashDelegate__acceptAdmin",
+        "cCashDelegate__becomeImplementation",
+        "cCashDelegate__delegateCompLikeTo",
+        "cCashDelegate__reduceReserves",
+        "cCashDelegate__resignImplementation",
+        "cCashDelegate__setReserveFactor",
+        "cCashDelegate_setKYCRegistry",
+        "cCashDelegate_setKYCRequirementGroup"
+      ]
+    },
+    {
+      "contract_name": "CTokenDelegateTargets",
+      "functions": [
+        "cTokenDelegate__acceptAdmin",
+        "cTokenDelegate__becomeImplementation",
+        "cTokenDelegate__delegateCompLikeTo",
+        "cTokenDelegate__reduceReserves",
+        "cTokenDelegate__resignImplementation",
+        "cTokenDelegate__setReserveFactor",
+        "cTokenDelegate_setKYCRegistry",
+        "cTokenDelegate_setKYCRequirementGroup"
+      ]
+    },
+    {
+      "contract_name": "CashKYCSenderReceiverTargets",
+      "functions": [
+        "cashKYCSenderReceiver_grantRole",
+        "cashKYCSenderReceiver_mint",
+        "cashKYCSenderReceiver_pause",
+        "cashKYCSenderReceiver_revokeRole",
+        "cashKYCSenderReceiver_setKYCRegistry",
+        "cashKYCSenderReceiver_setKYCRequirementGroup",
+        "cashKYCSenderReceiver_unpause"
+      ]
+    }
+  ]
+}
