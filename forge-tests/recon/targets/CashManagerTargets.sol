@@ -20,6 +20,84 @@ abstract contract CashManagerTargets is
 {
     /// CUSTOM TARGET FUNCTIONS - Add your own target functions here ///
 
+    /// @notice Shortcut: advances epoch by warping time forward by epochDuration
+    ///         Requires: epochDuration > 0 (guaranteed by Setup)
+    ///         Enables: setMintExchangeRate, overrideExchangeRate, claimMint, completeRedemptions
+    function shortcut_warpAndTransitionEpoch() public updateGhosts {
+        vm.warp(block.timestamp + cashManager.epochDuration());
+        cashManager.transitionEpoch();
+    }
+
+    /// @notice Shortcut: full mint cycle — requestMint -> warp -> setMintExchangeRate -> claimMint
+    ///         Requires: actor is KYC'd (done in Setup), collateralAmountIn above minimum
+    ///         Enables: claimMint success path; generates CASH tokens for actor
+    function shortcut_fullMintCycle(uint256 collateralAmountIn) public updateGhosts {
+        // Clamp to valid range: must be >= minimumDepositAmount and <= mintLimit
+        uint256 minDeposit = cashManager.minimumDepositAmount();
+        uint256 mintLimitVal = cashManager.mintLimit();
+        if (mintLimitVal == 0) return;
+        collateralAmountIn = minDeposit + (collateralAmountIn % (mintLimitVal - minDeposit + 1));
+
+        // Step 1: record which epoch we are in
+        cashManager.transitionEpoch();
+        uint256 epochBefore = cashManager.currentEpoch();
+
+        // Step 2: requestMint as actor
+        address actor = _getActor();
+        vm.startPrank(actor);
+        // Use try/catch so a revert (e.g. approval/balance too low) doesn't break the shortcut
+        try cashManager.requestMint(collateralAmountIn) {} catch { vm.stopPrank(); return; }
+        vm.stopPrank();
+
+        // Step 3: advance epoch so epochBefore is now a past epoch
+        vm.warp(block.timestamp + cashManager.epochDuration());
+        cashManager.transitionEpoch();
+
+        // Step 4: setMintExchangeRate for epochBefore (as admin = address(this))
+        // Use lastSetMintExchangeRate to stay within delta limit
+        uint256 rate = cashManager.lastSetMintExchangeRate();
+        if (rate == 0) return;
+        try cashManager.setMintExchangeRate(rate, epochBefore) {} catch { return; }
+
+        // Step 5: claimMint as actor
+        vm.startPrank(actor);
+        try cashManager.claimMint(actor, epochBefore) {} catch {}
+        vm.stopPrank();
+    }
+
+    /// @notice Shortcut: exercises requestRedemption when actor has no CASH —
+    ///         first mints CASH to actor via admin mint, then calls requestRedemption
+    ///         Requires: minimumRedeemAmount is set (may be 0 in Setup)
+    function shortcut_mintCashThenRequestRedemption(uint256 amountCashToRedeem) public updateGhosts {
+        address actor = _getActor();
+        uint256 minRedeem = cashManager.minimumRedeemAmount();
+        uint256 redeemLimit = cashManager.redeemLimit();
+        if (redeemLimit == 0) return;
+        if (amountCashToRedeem < minRedeem) amountCashToRedeem = minRedeem;
+        amountCashToRedeem = minRedeem + (amountCashToRedeem % (redeemLimit - minRedeem + 1));
+        if (amountCashToRedeem == 0) return;
+
+        // Mint CASH to actor directly (admin has MINTER_ROLE via Setup)
+        try cashKYCSenderReceiver.mint(actor, amountCashToRedeem) {} catch { return; }
+
+        // Approve CashManager to burn from actor
+        vm.startPrank(actor);
+        cashKYCSenderReceiver.approve(address(cashManager), amountCashToRedeem);
+        try cashManager.requestRedemption(amountCashToRedeem) {} catch {}
+        vm.stopPrank();
+    }
+
+    /// @notice Shortcut: pause + multiexcall with empty data + unpause
+    ///         Enables: multiexcall code path (requires whenPaused + MANAGER_ADMIN)
+    function shortcut_pauseAndMultiexcall() public updateGhosts {
+        // Pause
+        cashManager.pause();
+        // Call multiexcall with empty array (no-op but exercises the function)
+        IMulticall.ExCallData[] memory calls = new IMulticall.ExCallData[](0);
+        try cashManager.multiexcall{value: 0}(calls) {} catch {}
+        // Unpause
+        cashManager.unpause();
+    }
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 
