@@ -1,0 +1,280 @@
+{
+  "version": "2.0.0",
+  "architecture_reasoning": {
+    "pattern_identified": "Two loosely-coupled subsystems sharing one KYCRegistry. (1) Ondo CASH issuance: CashManager (collateral-in / CASH-out via epoch-based mint/redeem requests) wired to a Cash/CashKYCSenderReceiver token that gates transfers on KYC, all reading from a single KYCRegistry (EIP-712 + role-gated, backed by a Chainalysis SanctionsList). (2) Flux/Compound lending: CTokenDelegate (cToken / generic ERC20 underlying like DAI) and CCashDelegate (cCASH / CASH underlying) implementation contracts that follow Compound's delegator+delegate proxy pattern and initialize() pattern, plus OndoPriceOracleV2 (manual/Compound/Chainlink price source for fTokens). The 6 scaffolded contracts are deployed bare with no constructor args in the stub, so the core work is supplying constructor args, wiring KYC/roles/prices, and providing the ERC20 underlyings/collateral.",
+    "complexity_choice": "moderate",
+    "instance_counts": {
+      "description": "Deploy one instance of each of the 6 core singletons in setup(), plus the minimum supporting infra (mock SanctionsList, MockERC20 collateral/underlyings, a CashKYCSenderReceiver-style CASH token behind a proxy). cToken delegates are deployed once each as implementations; initializing them requires controlling their admin field, so they must be deployed either behind the Compound delegator proxy or initialized from address(this) acting as admin. No multiple config variants are needed for invariant fuzzing of these singletons.",
+      "choices": [
+        {
+          "contract": "KYCRegistry",
+          "deploy_in_setup": true,
+          "has_helper_deploy": false,
+          "config_variations": "none",
+          "audit_reason": "Single shared registry is the gate for every KYC-aware contract (CashManager, CASH token, both cTokens). Constructor(admin, sanctionsList). Pass admin = address(this) so the harness holds REGISTRY_ADMIN/DEFAULT_ADMIN and can assignRoletoKYCGroup + addKYCAddresses for actors. sanctionsList must be a non-reverting mock returning isSanctioned()=false."
+        },
+        {
+          "contract": "OndoPriceOracleV2",
+          "deploy_in_setup": true,
+          "has_helper_deploy": false,
+          "config_variations": "none",
+          "audit_reason": "Ownable, no constructor args; owner becomes address(this) (deployer). cTokenOracle defaults to a hardcoded mainnet address (0x65c8...) used only in COMPOUND oracle path; MANUAL/CHAINLINK paths avoid it. setPrice/setFTokenToOracleType called post-deploy from address(this)."
+        },
+        {
+          "contract": "CashKYCSenderReceiver",
+          "deploy_in_setup": true,
+          "has_helper_deploy": false,
+          "config_variations": "none",
+          "audit_reason": "This is the CASH token CashManager mints/burns. It is upgradeable (constructor calls _disableInitializers()), so the implementation must be deployed then driven through a proxy (ERC1967Proxy / TransparentUpgradeableProxy available under contracts/cash/external/openzeppelin) and initialize(name, symbol, kycRegistry, kycRequirementGroup) called. CashManager constructor reads IERC20Metadata(_cash).decimals() (18) so the token must be initialized BEFORE CashManager is constructed. address(this) gets DEFAULT_ADMIN/MINTER from ERC20PresetMinterPauser init and must grant MINTER_ROLE to the CashManager so claimMint/refund cash.mint and burnFrom work."
+        },
+        {
+          "contract": "CashManager",
+          "deploy_in_setup": true,
+          "has_helper_deploy": false,
+          "config_variations": "none",
+          "audit_reason": "Core target. Constructor takes 12 args: (_collateral, _cash, managerAdmin, pauser, _assetRecipient, _assetSender, _feeRecipient, _mintLimit, _redeemLimit, _epochDuration, _kycRegistry, _kycRequirementGroup). All address args must be non-zero or it reverts. _epochDuration MUST be > 0 (constructor computes block.timestamp % epochDuration and decimalsMultiplier). managerAdmin/pauser = address(this) so harness holds MANAGER_ADMIN/SETTER_ADMIN/PAUSER_ADMIN. Constructor requires cash.decimals() >= collateral.decimals()."
+        },
+        {
+          "contract": "CTokenDelegate",
+          "deploy_in_setup": true,
+          "has_helper_deploy": true,
+          "config_variations": "underlying differs (generic ERC20 / DAI-like 18dec) vs cCASH variant",
+          "audit_reason": "Compound delegate implementation. Empty constructor, but initialize() requires msg.sender == admin and admin is only set via the cErc20ModifiedDelegator proxy (admin = msg.sender at deploy). To exercise mint/redeem/borrow the delegate needs a Comptroller, InterestRateModel, an ERC20 underlying, KYCRegistry, and admin set. Easiest robust path: deploy behind cErc20ModifiedDelegator OR set admin via storage and initialize from address(this). A helper_deploy that wires (underlying, comptroller, IRM, oracle) lets COVERAGE phase add fully-functional cToken markets; minimal setup can leave the bare delegate but most state-changing handlers will revert until admin+initialize is solved. Note sanctionsList is a hardcoded constant 0x40C5... that must be vm.etch'd to a non-reverting mock."
+        },
+        {
+          "contract": "CCashDelegate",
+          "deploy_in_setup": true,
+          "has_helper_deploy": true,
+          "config_variations": "underlying = CASH (CashKYCSenderReceiver) instead of generic ERC20",
+          "audit_reason": "Same Compound delegate pattern as CTokenDelegate but the underlying is the CASH token. Same admin/initialize and sanctionsList-constant constraints. Shares the hardcoded sanctionsList 0x40C5... constant that needs vm.etch."
+        }
+      ]
+    },
+    "scenarios_covered": [
+      "CashManager epoch lifecycle: requestMint -> setMintExchangeRate -> claimMint; requestRedemption -> completeRedemptions; transitionEpoch across time warps.",
+      "KYC gating: actors KYC'd in the registry can mint/transfer CASH; KYCRegistry role/admin and addKYCAddresses paths.",
+      "OndoPriceOracleV2 MANUAL price set/get and price-cap behavior; CHAINLINK path via a mock AggregatorV3.",
+      "Access control / role grant/revoke on CashManager and KYCRegistry from the admin actor.",
+      "ERC20 collateral movement (transferFrom to assetRecipient/feeRecipient/assetSender) given funded + approved actors."
+    ],
+    "scenarios_NOT_covered": [
+      "Full Compound lending flows (cToken mint/borrow/repay/liquidate) unless a Comptroller + InterestRateModel are deployed and the delegate admin/initialize problem is solved; these are gated behind the delegator proxy pattern and a configured Comptroller, which is heavier infra.",
+      "OndoPriceOracleV2 COMPOUND oracle path (depends on hardcoded mainnet cTokenOracle 0x65c8... unless vm.etch'd).",
+      "Real signed addKYCAddressViaSignature flows unless a private-key actor + EIP-712 signing helper is added; without it this handler mostly reverts.",
+      "Real Chainalysis sanctions behavior (mocked to always return false).",
+      "Cross-subsystem invariant where cCASH lending market uses live CASH minted by CashManager (requires both subsystems fully wired)."
+    ],
+    "trade_off_summary": "Deploy all 6 singletons in setup() with correct constructor args and KYC/role/price wiring so the CASH-issuance subsystem (CashManager + CASH token + KYCRegistry + oracle) is fully fuzzable from turn one. The Compound lending delegates are deployed but their state-changing surface depends on solving admin/initialize (delegator proxy) + Comptroller/IRM; expose helper_deploy functions so the COVERAGE phase can stand up real markets without bloating the base setup. SanctionsList and Chainlink are mocked; signature-based KYC needs a keyed actor to be meaningful."
+  },
+  "decisions": {
+    "dynamic_deployments": [
+      {
+        "name": "deploy_cToken_market",
+        "returns": "address (initialized CTokenDelegate behind delegator or admin-set delegate)",
+        "params": ["uint8 underlyingDecimals"],
+        "purpose": "Stand up a fully-initialized generic cToken market: create MockERC20 underlying, deploy/point at a Comptroller + InterestRateModel, set admin, call initialize(underlying, comptroller, irm, 1e18, name, symbol, decimals, kycRegistry, kycGroup). Lets COVERAGE phase exercise mint/redeem/borrow.",
+        "audit_reason": "@custom:audit cToken initialize requires msg.sender==admin and admin is set only via the delegator proxy; a helper centralizes that wiring instead of polluting setup()."
+      },
+      {
+        "name": "deploy_cCash_market",
+        "returns": "address (initialized CCashDelegate)",
+        "params": [],
+        "purpose": "Same as deploy_cToken_market but underlying = the CASH token (CashKYCSenderReceiver). Requires the cCASH delegate to be KYC'd/whitelisted to hold CASH.",
+        "audit_reason": "@custom:audit CASH underlying transfers are KYC-gated; the cCASH market contract itself must be KYC-approved in the registry to custody CASH."
+      }
+    ],
+    "custom_mocks_needed": [
+      {
+        "name": "MockSanctionsList",
+        "interface": "ISanctionsList (contracts/cash/external/chainalysis/ISanctionsList.sol)",
+        "behavior": "isSanctioned(address) returns false for all.",
+        "used_by": ["KYCRegistry constructor arg", "cToken/cCash hardcoded constant sanctionsList 0x40C57923924B5c5c5455c48D93317139ADDaC8fb"],
+        "deploy": "Deploy once; pass to KYCRegistry constructor AND vm.etch its runtime code onto 0x40C5... so the cToken sanctions checks don't revert.",
+        "audit_reason": "@custom:audit getKYCStatus() ANDs kycState with !sanctionsList.isSanctioned; a reverting/empty sanctions list would make every KYC check revert. The cToken/cCash interfaces hardcode the sanctions address as a constant, so it must be etched rather than injected."
+      },
+      {
+        "name": "MockAggregatorV3",
+        "interface": "AggregatorV3Interface (contracts/lending/chainlink/AggregatorV3Interface.sol)",
+        "behavior": "latestRoundData() returns fresh, non-negative answer with updatedAt = block.timestamp, answeredInRound >= roundId; decimals() returns 8.",
+        "used_by": ["OndoPriceOracleV2 CHAINLINK oracle path"],
+        "deploy": "Optional; only if exercising the Chainlink price path.",
+        "audit_reason": "@custom:audit getChainlinkOraclePrice enforces freshness (updatedAt >= block.timestamp - maxChainlinkOracleTimeDelay) and answeredInRound>=roundId; a static mock must keep updatedAt current after time warps or the staleness check reverts."
+      },
+      {
+        "name": "Comptroller (optional, real or minimal)",
+        "interface": "ComptrollerInterface (isComptroller()=true and policy hooks returning NO_ERROR)",
+        "behavior": "Allow mint/redeem/borrow; return 0 (NO_ERROR) from hooks.",
+        "used_by": ["cToken/cCash initialize (_setComptroller) and all market operations"],
+        "deploy": "Only inside deploy_cToken_market / deploy_cCash_market helpers.",
+        "audit_reason": "@custom:audit cToken initialize calls _setComptroller which requires comptroller.isComptroller()==true; without it the delegate cannot be initialized."
+      }
+    ],
+    "tokens": [
+      {
+        "role": "collateral (CashManager _collateral, e.g. USDC)",
+        "type": "MockERC20 via AssetManager._newAsset(6)",
+        "decimals": 6,
+        "notes": "Constructor enforces cash.decimals() (18) >= collateral.decimals(); USDC=6 gives decimalsMultiplier=1e12. Fund + approve actors to CashManager so requestMint transferFrom succeeds.",
+        "audit_reason": "@custom:audit requestMint does collateral.safeTransferFrom(msg.sender, ...); actors must hold balance and have approved CashManager. minimumDepositAmount default 10_000 (6dec)."
+      },
+      {
+        "role": "CASH (CashManager _cash / cCASH underlying)",
+        "type": "CashKYCSenderReceiver (proxy-initialized), 18 decimals",
+        "decimals": 18,
+        "notes": "Must be initialized before CashManager construction (decimals read in constructor). CashManager must hold MINTER_ROLE; transfers are KYC-gated.",
+        "audit_reason": "@custom:audit cash.mint/burnFrom require CashManager to have MINTER_ROLE; CASH _beforeTokenTransfer requires msg.sender, from, and to all KYC'd."
+      },
+      {
+        "role": "generic cToken underlying (DAI-like)",
+        "type": "MockERC20 via _newAsset(18)",
+        "decimals": 18,
+        "notes": "Used as CTokenDelegate underlying; initialize sanity-checks EIP20Interface(underlying).totalSupply().",
+        "audit_reason": "@custom:audit underlying must be a real ERC20 (totalSupply callable) or initialize reverts."
+      }
+    ],
+    "time_sensitive": {
+      "needs_warp": true,
+      "needs_roll": true,
+      "reason": "CashManager epochs are timestamp-based: transitionEpoch uses block.timestamp vs currentEpochStartTimestamp / epochDuration, and setMintExchangeRate/claimMint require epoch elapse (epochToSet < currentEpoch). Compound cTokens accrue interest by BLOCK NUMBER (accrualBlockNumber = getBlockNumber()), so vm.roll is needed to drive accrual. OndoPriceOracleV2 Chainlink staleness check also depends on block.timestamp.",
+      "warp_helper": "Expose a handler/helper that does vm.warp(block.timestamp + delta) and vm.roll(block.number + n); ensure block.timestamp starts > 0 and epochDuration > 0 in setup so the constructor modulo is safe.",
+      "audit_reason": "@custom:audit Without warping, currentEpoch never advances so claimMint/completeRedemptions/setMintExchangeRate (which require a past epoch) are unreachable. Without rolling, cToken interest never accrues."
+    },
+    "multi_user": {
+      "needs_multiple_actors": true,
+      "additional_actor_count": 1,
+      "reason": "KYC transfer logic and mint/redeem distribution (completeRedemptions redeemers/refundees arrays) are only meaningful with at least 2 distinct KYC'd actors plus address(this) as admin. Default ActorManager already includes address(this); add 1 extra actor (and KYC them).",
+      "needs_private_key": true,
+      "private_key_reason": "KYCRegistry.addKYCAddressViaSignature is EIP-712 signature-authed (ECDSA.recover -> _checkRole(kycGroupRoles[group], signer)). To exercise it for real, an actor must be created from a known private key (vm.addr(pk)) granted the group role, and a signing helper must produce v(27/28)/r/s over the KYCApproval typed data with the registry DOMAIN_SEPARATOR. Without a keyed signer this handler almost always reverts.",
+      "audit_reason": "@custom:audit Multiple KYC'd actors enable real transfer/redemption-distribution coverage; a keyed actor enables the signature-based KYC path. Both actors and the CASH token / cCASH market must be KYC-approved in the registry post-deploy."
+    },
+    "proxy_deployment": {
+      "needed": true,
+      "contracts": [
+        {
+          "contract": "CashKYCSenderReceiver",
+          "pattern": "ERC1967Proxy / TransparentUpgradeableProxy (available under contracts/cash/external/openzeppelin/contracts/proxy)",
+          "init_call": "initialize(string name, string symbol, address kycRegistry, uint256 kycRequirementGroup)",
+          "reason": "constructor calls _disableInitializers(); the implementation cannot be used directly. The scaffold currently `new`s the implementation, so Setup must instead deploy the impl, wrap it in a proxy, and call initialize through the proxy (then treat the proxy address as cashKYCSenderReceiver / the CASH token)."
+        },
+        {
+          "contract": "CTokenDelegate / CCashDelegate",
+          "pattern": "cErc20ModifiedDelegator (Compound delegator) sets admin=msg.sender and delegatecalls into the delegate; OR set admin via vm.store and call initialize from address(this).",
+          "init_call": "initialize(underlying, comptroller, interestRateModel, 1e18, name, symbol, decimals, kycRegistry, kycGroup)",
+          "reason": "Delegate initialize requires msg.sender==admin and admin starts as address(0); must be set through the delegator proxy or storage manipulation."
+        }
+      ],
+      "audit_reason": "@custom:audit Treating the bare delegate/impl as the live contract leaves all state-changing handlers reverting (uninitialized / admin==0); proxies are required for the CASH token and recommended for the cTokens."
+    },
+    "struct_params": [
+      {
+        "struct": "IMulticall.ExCallData { address target; bytes data; uint256 value; }",
+        "used_by": "CashManager.multiexcall (only callable when paused, MANAGER_ADMIN)",
+        "notes": "Fuzzer passes arbitrary arrays; arbitrary targets/data give the admin actor near-arbitrary call power. Setup must ensure MANAGER_ADMIN held by harness; expect mostly reverts unless paused.",
+        "audit_reason": "@custom:audit multiexcall is an arbitrary-call surface (privileged); clamp targets in a helper if it creates noise, but it is an important privileged-escalation invariant target."
+      },
+      {
+        "struct": "address[] redeemers / refundees (completeRedemptions), address[] addresses (addKYCAddresses/removeKYCAddresses)",
+        "used_by": "CashManager.completeRedemptions, KYCRegistry.addKYCAddresses/removeKYCAddresses",
+        "notes": "Best clamped to the known actor set for meaningful coverage; raw fuzzed arrays mostly hit KYC checks / division-by-zero guards.",
+        "audit_reason": "@custom:audit completeRedemptions divides by quantityBurned and checks KYC of every address; clamping to actors avoids trivial reverts."
+      }
+    ],
+    "post_deploy_actions": [
+      {
+        "action": "KYCRegistry.assignRoletoKYCGroup(group, REGISTRY_ADMIN-or-chosen role) then addKYCAddresses(group, [address(this), extraActor, CASH token?, cCASH market?])",
+        "actor": "address(this) (REGISTRY_ADMIN)",
+        "reason": "Every CASH transfer and CashManager mint/redeem checks getKYCStatus for msg.sender/from/to; actors must be KYC'd. kycRequirementGroup chosen here must match the group passed to CashManager / CASH token / cTokens.",
+        "audit_reason": "@custom:audit Mismatched kycRequirementGroup between registry approvals and consumer contracts silently disables all KYC'd operations."
+      },
+      {
+        "action": "CashKYCSenderReceiver(proxy).grantRole(MINTER_ROLE, address(cashManager))",
+        "actor": "address(this) (token DEFAULT_ADMIN from init)",
+        "reason": "CashManager.claimMint and _processRefund call cash.mint; requestRedemption calls cash.burnFrom.",
+        "audit_reason": "@custom:audit Without MINTER_ROLE the entire mint/redeem lifecycle reverts."
+      },
+      {
+        "action": "OndoPriceOracleV2.setFTokenToOracleType(fToken, MANUAL) then setPrice(fToken, price); optionally setPriceCap.",
+        "actor": "address(this) (owner)",
+        "reason": "getUnderlyingPrice reverts for unset oracle types; MANUAL path is the simplest to make price reads succeed.",
+        "audit_reason": "@custom:audit setPrice requires oracleType==MANUAL first; ordering matters."
+      },
+      {
+        "action": "Fund actors with collateral (MockERC20.mint) and approve CashManager; for redemptions, fund assetSender and approve CashManager to pull on its behalf.",
+        "actor": "address(this) / each actor",
+        "reason": "requestMint pulls collateral from msg.sender; completeRedemptions pulls collateral from assetSender to redeemers/feeRecipient.",
+        "audit_reason": "@custom:audit assetSender must hold + approve collateral or completeRedemptions reverts on safeTransferFrom. AssetManager._finalizeAssetDeployment handles actor mint+approve."
+      },
+      {
+        "action": "vm.etch MockSanctionsList runtime code onto 0x40C57923924B5c5c5455c48D93317139ADDaC8fb (cToken/cCash sanctions constant).",
+        "actor": "setup",
+        "reason": "cToken transfer/initialize paths call the hardcoded sanctionsList; an empty address reverts.",
+        "audit_reason": "@custom:audit Hardcoded constant cannot be injected via constructor; etch is the only option for cToken sanction checks."
+      },
+      {
+        "action": "Set epoch/limits sanity: ensure mintLimit/redeemLimit > 0 (constructor args) and a reasonable epochDuration (e.g. 1 days). Optionally setMintExchangeRate seed via overrideExchangeRate after warping.",
+        "actor": "address(this) (MANAGER_ADMIN/SETTER_ADMIN)",
+        "reason": "mintLimit/redeemLimit of 0 make _checkAndUpdateMintLimit/_checkAndUpdateRedeemLimit always revert; epochDuration 0 breaks the constructor modulo.",
+        "audit_reason": "@custom:audit Zero limits silently disable mint/redeem; document the chosen non-zero values as assumptions."
+      }
+    ],
+    "hardcoded_addresses": [
+      {
+        "address": "0x40C57923924B5c5c5455c48D93317139ADDaC8fb",
+        "name": "sanctionsList (Chainalysis)",
+        "where": "contracts/lending/tokens/cToken/CTokenInterfacesModified.sol (constant), contracts/lending/tokens/cCash/CTokenInterfacesModifiedCash.sol (constant), contracts/lending/tokens/cErc20ModifiedDelegator.sol:351",
+        "handling": "vm.etch MockSanctionsList code; isSanctioned must return false.",
+        "audit_reason": "@custom:audit Declared `constant`, so it cannot be set per-deployment; required by every cToken transfer/seize/init path."
+      },
+      {
+        "address": "0x65c816077C29b557BEE980ae3cC2dCE80204A0C5",
+        "name": "cTokenOracle (UniswapAnchoredView) default in OndoPriceOracleV2",
+        "where": "contracts/lending/OndoPriceOracleV2.sol:52",
+        "handling": "Only used in the COMPOUND oracle path. Either avoid that path (use MANUAL/CHAINLINK) or call setOracle() to point at a deployed mock, or vm.etch a CTokenOracle mock.",
+        "audit_reason": "@custom:audit Default value is a live mainnet address; getUnderlyingPrice COMPOUND branch will call into empty code and revert unless replaced."
+      }
+    ]
+  },
+  "helper_functions_needed": [
+    {
+      "name": "_deployCashTokenBehindProxy",
+      "purpose": "Deploy CashKYCSenderReceiver impl, wrap in ERC1967/Transparent proxy, call initialize(name, symbol, kycRegistry, group); return proxy as the CASH token. Must run before CashManager construction."
+    },
+    {
+      "name": "_etchSanctionsList",
+      "purpose": "Deploy MockSanctionsList and vm.etch its runtime onto 0x40C5... so cToken sanction checks pass."
+    },
+    {
+      "name": "_kycActor",
+      "purpose": "Given an address, addKYCAddresses it into the active kycRequirementGroup (admin-pranked); call for address(this), each extra actor, and the cCASH market / CASH token where they must custody CASH."
+    },
+    {
+      "name": "_signKYCApproval",
+      "purpose": "EIP-712 helper: build KYCApproval struct hash with registry DOMAIN_SEPARATOR and vm.sign with a known actor private key to produce v(27/28)/r/s for addKYCAddressViaSignature."
+    },
+    {
+      "name": "_initCTokenMarket / _initCCashMarket",
+      "purpose": "Set delegate admin (via delegator proxy or vm.store), deploy/point Comptroller + InterestRateModel, fund/approve, and call initialize so lending handlers are reachable."
+    },
+    {
+      "name": "_warpEpochs",
+      "purpose": "vm.warp + vm.roll forward by N epochDurations / blocks so transitionEpoch advances and cToken interest accrues, enabling claimMint/completeRedemptions/setMintExchangeRate."
+    }
+  ],
+  "audit_notes": [
+    "@custom:audit ORDERING: CASH token must be initialized (decimals=18) BEFORE CashManager is constructed, because the constructor reads IERC20Metadata(_cash).decimals() and IERC20Metadata(_collateral).decimals() to compute decimalsMultiplier (reverts if cash<collateral decimals).",
+    "@custom:audit CONSTRUCTOR ZERO-CHECKS: CashManager reverts if any of _collateral/_cash/_assetRecipient/_assetSender/_feeRecipient is address(0); use distinct non-zero addresses (address(this) acceptable for recipients/sender, but assetSender must later hold+approve collateral for redemptions).",
+    "@custom:audit EPOCH MATH: epochDuration must be > 0 or the constructor's block.timestamp % epochDuration divides by zero; also ensure block.timestamp is non-zero at setup. lastSetMintExchangeRate defaults to 1e6 and minimumDepositAmount to 10_000.",
+    "@custom:audit ADMIN PROBLEM (cTokens): CTokenDelegate/CCashDelegate.initialize require msg.sender==admin, but the bare delegate's admin is address(0). The scaffold `new`s them with no proxy, so without the delegator proxy or a vm.store on the admin slot, NO cToken state-changing handler is reachable. This is the single biggest gap to flag for the implementation phase.",
+    "@custom:audit PROXY (CASH token): CashKYCSenderReceiver constructor calls _disableInitializers(); the scaffold's `new CashKYCSenderReceiver()` yields an unusable impl. Setup MUST deploy behind a proxy and treat the proxy as the token.",
+    "@custom:audit HARDCODED SANCTIONS CONSTANT 0x40C5...: declared `constant` in cToken interfaces, so it cannot be injected; requires vm.etch of a non-reverting mock or every cToken transfer/initialize reverts.",
+    "@custom:audit KYC GROUP CONSISTENCY: the kycRequirementGroup passed to CashManager, the CASH token, and any cToken must equal the group the registry grants addresses in; otherwise getKYCStatus returns false and all gated ops revert. Treat the chosen group (e.g. 1) as a documented constant.",
+    "@custom:audit MINTER_ROLE: CashManager must be granted MINTER_ROLE on the CASH token post-deploy or claimMint / refunds / redemptions revert.",
+    "@custom:audit SANCTIONS MOCK SEMANTICS: getKYCStatus = kycState && !isSanctioned; the mock must return isSanctioned=false. A reverting/empty sanctions contract makes every KYC check revert (false negative on all invariants).",
+    "@custom:audit SIGNATURE KYC NOT TESTED by default: addKYCAddressViaSignature needs a keyed signer with the group role and an EIP-712 signing helper; without _signKYCApproval + a vm.addr(pk) actor, this handler is effectively dead (always reverts on v-check or role-check).",
+    "@custom:audit ORACLE PATHS: MANUAL is the only path usable with zero external infra (setFTokenToOracleType(MANUAL) then setPrice). COMPOUND path depends on hardcoded 0x65c8... and CHAINLINK path needs a fresh-timestamp mock aggregator; both are optional/NOT covered unless explicitly wired.",
+    "@custom:audit TIME/BLOCK COUPLING: CashManager uses timestamps (epochs) and Chainlink uses timestamps (staleness) while Compound cTokens use block.number (accrual). The harness needs BOTH vm.warp and vm.roll; warping without rolling, or vice versa, leaves half the system static.",
+    "@custom:audit REDEMPTION FUNDING: completeRedemptions pulls collateral from assetSender (collateral.safeTransferFrom(assetSender, ...)); assetSender must be funded and have approved CashManager, distinct from requestMint funding which pulls from the minting actor.",
+    "@custom:audit ASSUMPTION: address(this) is used as the global admin/owner (KYCRegistry admin, CashManager managerAdmin/pauser, CASH token DEFAULT_ADMIN, oracle owner). This concentrates privilege in the harness, which is standard for Recon but means privileged-only invariants (e.g. only-admin-can-pause) are tested from the admin actor, not from unprivileged actors unless a non-admin actor is explicitly used.",
+    "@custom:audit MULTIEXCALL: CashManager.multiexcall is a privileged arbitrary-call surface gated by MANAGER_ADMIN + whenPaused; since the harness holds MANAGER_ADMIN it can reach it after pausing, making it a meaningful (and dangerous) invariant target — consider whether to clamp targets to avoid self-destruct / state corruption noise."
+  ]
+}
