@@ -7,9 +7,7 @@
     "callSequenceLength": 100,
     "corpusDirectory": "medusa",
     "coverageEnabled": true,
-    "deploymentOrder": [
-
-    ],
+    "deploymentOrder": [],
     "targetContracts": [
       "CryticTester"
     ],
@@ -72,12 +70,12 @@
         "enableFFI": false
       },
       "skipAccountChecks": true,
-			"forkConfig": {
-				"forkModeEnabled": false,
-				"rpcUrl": "",
-				"rpcBlock": 1,
-				"poolSize": 20
-			}
+      "forkConfig": {
+        "forkModeEnabled": false,
+        "rpcUrl": "",
+        "rpcBlock": 1,
+        "poolSize": 20
+      }
     }
   },
   "compilation": {
@@ -92,10 +90,10 @@
     }
   },
   "slither": {
-		"useSlither": true,
-		"cachePath": "slither_results.json",
-		"args": []
-	},
+    "useSlither": true,
+    "cachePath": "slither_results.json",
+    "args": []
+  },
   "logging": {
     "level": "info",
     "logDirectory": ""

@@ -2,7 +2,7 @@
 src = 'contracts'
 test = 'forge-tests'
 out = 'artifactsforge'
-cache = false
+cache = true
 optimizer = true
 optimizer_runs = 200
 gas_reports = ["CashManager", "CashFactory", "Cash", "CashKYCSenderFactory",

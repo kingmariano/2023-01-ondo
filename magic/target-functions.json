@@ -1,0 +1,129 @@
+{
+  "data": [
+    {
+      "contract": "CCashDelegate",
+      "target_functions": [
+        "accrueInterest",
+        "approve",
+        "balanceOfUnderlying",
+        "borrow",
+        "borrowBalanceCurrent",
+        "exchangeRateCurrent",
+        "mint",
+        "redeem",
+        "redeemUnderlying",
+        "repayBorrow",
+        "repayBorrowBehalf",
+        "seize",
+        "setKYCRegistry",
+        "setKYCRequirementGroup",
+        "totalBorrowsCurrent",
+        "transfer",
+        "transferFrom"
+      ]
+    },
+    {
+      "contract": "CTokenDelegate",
+      "target_functions": [
+        "accrueInterest",
+        "approve",
+        "balanceOfUnderlying",
+        "borrow",
+        "borrowBalanceCurrent",
+        "exchangeRateCurrent",
+        "mint",
+        "redeem",
+        "redeemUnderlying",
+        "repayBorrow",
+        "repayBorrowBehalf",
+        "seize",
+        "setKYCRegistry",
+        "setKYCRequirementGroup",
+        "totalBorrowsCurrent",
+        "transfer",
+        "transferFrom"
+      ]
+    },
+    {
+      "contract": "CashKYCSenderReceiver",
+      "target_functions": [
+        "approve",
+        "burn",
+        "burnFrom",
+        "decreaseAllowance",
+        "grantRole",
+        "increaseAllowance",
+        "initialize",
+        "mint",
+        "pause",
+        "renounceRole",
+        "revokeRole",
+        "setKYCRegistry",
+        "setKYCRequirementGroup",
+        "transfer",
+        "transferFrom",
+        "unpause"
+      ]
+    },
+    {
+      "contract": "CashManager",
+      "target_functions": [
+        "claimMint",
+        "completeRedemptions",
+        "grantRole",
+        "overrideExchangeRate",
+        "pause",
+        "renounceRole",
+        "requestMint",
+        "requestRedemption",
+        "revokeRole",
+        "setAssetRecipient",
+        "setAssetSender",
+        "setEpochDuration",
+        "setFeeRecipient",
+        "setKYCRegistry",
+        "setKYCRequirementGroup",
+        "setMinimumDepositAmount",
+        "setMintExchangeRate",
+        "setMintExchangeRateDeltaLimit",
+        "setMintFee",
+        "setMintLimit",
+        "setPendingMintBalance",
+        "setPendingRedemptionBalance",
+        "setRedeemLimit",
+        "setRedeemMinimum",
+        "transitionEpoch",
+        "unpause"
+      ]
+    },
+    {
+      "contract": "KYCRegistry",
+      "target_functions": [
+        "addKYCAddressViaSignature",
+        "addKYCAddresses",
+        "assignRoletoKYCGroup",
+        "grantRole",
+        "removeKYCAddresses",
+        "renounceRole",
+        "revokeRole"
+      ]
+    },
+    {
+      "contract": "OndoPriceOracleV2",
+      "target_functions": [
+        "renounceOwnership",
+        "setFTokenToCToken",
+        "setFTokenToChainlinkOracle",
+        "setMaxChainlinkOracleTimeDelay",
+        "setOracle",
+        "setPrice",
+        "setPriceCap",
+        "transferOwnership"
+      ]
+    }
+  ],
+  "summary": {
+    "total_contracts": 6,
+    "total_unique_functions": 91
+  }
+}
