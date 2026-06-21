@@ -1,0 +1,152 @@
+[2026-06-21 19:05:50.59] Compiling `.`... WARNING: Slither was explicitly disabled. Echidna uses Slither (https://github.com/crytic/slither) to perform source analysis, which makes fuzzing more effective. You should enable it.
+Done! (59.663106281s)
+Analyzing contract: /home/user/2023-01-ondo/forge-tests/recon/CryticTester.sol:CryticTester
+Loaded 0 transaction sequences from echidna/reproducers
+Loaded 15 transaction sequences from echidna/coverage
+[2026-06-21 19:06:52.62] [Worker 3] New coverage: 35470 instr, 11 contracts, 1 seqs in corpus
+[2026-06-21 19:06:52.64] [Worker 0] New coverage: 37277 instr, 11 contracts, 2 seqs in corpus
+[2026-06-21 19:06:52.64] [Worker 2] New coverage: 37277 instr, 11 contracts, 3 seqs in corpus
+[2026-06-21 19:06:52.64] [Worker 1] New coverage: 37277 instr, 11 contracts, 4 seqs in corpus
+[2026-06-21 19:06:52.71] [Worker 2] Sequence replayed from corpus file 4139477658479006784.txt (1/4)
+[2026-06-21 19:06:52.71] [Worker 1] Sequence replayed from corpus file 8882244953177124668.txt (1/4)
+[2026-06-21 19:06:52.71] [Worker 0] Sequence replayed from corpus file 9207527573179358033.txt (1/4)
+[2026-06-21 19:06:52.71] [Worker 3] Sequence replayed from corpus file 2001732338460532800.txt (1/3)
+[2026-06-21 19:06:52.76] [Worker 3] New coverage: 39068 instr, 11 contracts, 5 seqs in corpus
+[2026-06-21 19:06:52.76] [Worker 1] New coverage: 39068 instr, 11 contracts, 6 seqs in corpus
+[2026-06-21 19:06:52.77] [Worker 3] Sequence replayed from corpus file 9044954807754213689.txt (2/3)
+[2026-06-21 19:06:52.77] [Worker 1] Sequence replayed from corpus file 8812914227908408225.txt (2/4)
+[2026-06-21 19:06:52.77] [Worker 2] New coverage: 39107 instr, 11 contracts, 7 seqs in corpus
+[2026-06-21 19:06:52.77] [Worker 0] New coverage: 39107 instr, 11 contracts, 8 seqs in corpus
+[2026-06-21 19:06:52.77] [Worker 2] Sequence replayed from corpus file 8749119331535323644.txt (2/4)
+[2026-06-21 19:06:52.77] [Worker 0] Sequence replayed from corpus file 6887147042499825417.txt (2/4)
+[2026-06-21 19:06:52.81] [Worker 1] New coverage: 39211 instr, 11 contracts, 9 seqs in corpus
+[2026-06-21 19:06:52.81] [Worker 0] New coverage: 39482 instr, 11 contracts, 10 seqs in corpus
+[2026-06-21 19:06:52.81] [Worker 3] New coverage: 39531 instr, 11 contracts, 11 seqs in corpus
+[2026-06-21 19:06:52.81] [Worker 1] Sequence replayed from corpus file 2588019708860411634.txt (3/4)
+[2026-06-21 19:06:52.81] [Worker 0] Sequence replayed from corpus file 8686938781862750475.txt (3/4)
+[2026-06-21 19:06:52.82] [Worker 3] Sequence replayed from corpus file 7247553505317297682.txt (3/3)
+[2026-06-21 19:06:52.82] [Worker 2] New coverage: 39531 instr, 11 contracts, 12 seqs in corpus
+[2026-06-21 19:06:52.83] [Worker 2] Sequence replayed from corpus file 9059178823375106290.txt (3/4)
+[2026-06-21 19:06:52.86] [Worker 0] New coverage: 39581 instr, 11 contracts, 13 seqs in corpus
+[2026-06-21 19:06:52.86] [Worker 0] Sequence replayed from corpus file 8090317548114321848.txt (4/4)
+[2026-06-21 19:06:52.87] [Worker 1] New coverage: 39581 instr, 11 contracts, 14 seqs in corpus
+[2026-06-21 19:06:52.87] [Worker 1] Sequence replayed from corpus file 9015795026902791708.txt (4/4)
+[2026-06-21 19:06:52.88] [Worker 2] Sequence replayed from corpus file 8497442218245024401.txt (4/4)
+[2026-06-21 19:06:53.02] [Worker 1] New coverage: 40257 instr, 11 contracts, 15 seqs in corpus
+[2026-06-21 19:06:53.03]  Saved reproducer to echidna/coverage/928552394832838261.txt
+[2026-06-21 19:06:53.04] [Worker 2] New coverage: 40257 instr, 11 contracts, 16 seqs in corpus
+[2026-06-21 19:06:53.05]  Saved reproducer to echidna/coverage/148315957190822389.txt
+[2026-06-21 19:06:53.09] [Worker 3] New coverage: 40265 instr, 11 contracts, 17 seqs in corpus
+[2026-06-21 19:06:53.11]  Saved reproducer to echidna/coverage/1597350938219979933.txt
+[2026-06-21 19:06:53.22] [Worker 1] New coverage: 40319 instr, 11 contracts, 18 seqs in corpus
+[2026-06-21 19:06:53.23]  Saved reproducer to echidna/coverage/8782609659368861547.txt
+[2026-06-21 19:06:53.25] [Worker 3] New coverage: 40319 instr, 11 contracts, 19 seqs in corpus
+[2026-06-21 19:06:53.26]  Saved reproducer to echidna/coverage/2504730226572981007.txt
+[2026-06-21 19:06:53.30] [Worker 3] New coverage: 40430 instr, 11 contracts, 20 seqs in corpus
+[2026-06-21 19:06:53.32]  Saved reproducer to echidna/coverage/4010756074481244943.txt
+[2026-06-21 19:06:53.32] [Worker 1] New coverage: 40511 instr, 11 contracts, 21 seqs in corpus
+[2026-06-21 19:06:53.32] [Worker 2] New coverage: 40511 instr, 11 contracts, 22 seqs in corpus
+[2026-06-21 19:06:53.33]  Saved reproducer to echidna/coverage/3994116831647565128.txt
+[2026-06-21 19:06:53.34]  Saved reproducer to echidna/coverage/1311500346604436878.txt
+[2026-06-21 19:06:53.53] [Worker 2] New coverage: 40530 instr, 11 contracts, 23 seqs in corpus
+[2026-06-21 19:06:53.53]  Saved reproducer to echidna/coverage/2327164719974058177.txt
+[2026-06-21 19:06:53.54] [Worker 3] New coverage: 40530 instr, 11 contracts, 24 seqs in corpus
+[2026-06-21 19:06:53.55]  Saved reproducer to echidna/coverage/154441697696306251.txt
+[2026-06-21 19:06:53.60] [Worker 3] New coverage: 40555 instr, 11 contracts, 25 seqs in corpus
+[2026-06-21 19:06:53.61]  Saved reproducer to echidna/coverage/2346574221523910421.txt
+[2026-06-21 19:06:53.65] [Worker 3] New coverage: 40561 instr, 11 contracts, 26 seqs in corpus
+[2026-06-21 19:06:53.66]  Saved reproducer to echidna/coverage/6232778830145070274.txt
+[2026-06-21 19:06:53.68] [Worker 0] New coverage: 40561 instr, 11 contracts, 27 seqs in corpus
+[2026-06-21 19:06:53.69]  Saved reproducer to echidna/coverage/8642916956726735401.txt
+[2026-06-21 19:06:53.75] [Worker 1] New coverage: 40577 instr, 11 contracts, 28 seqs in corpus
+[2026-06-21 19:06:53.75]  Saved reproducer to echidna/coverage/2874149923086228774.txt
+[2026-06-21 19:06:53.87] [Worker 1] New coverage: 40580 instr, 11 contracts, 29 seqs in corpus
+[2026-06-21 19:06:53.88]  Saved reproducer to echidna/coverage/2409364312284081839.txt
+[2026-06-21 19:06:53.97] [Worker 0] New coverage: 40585 instr, 11 contracts, 30 seqs in corpus
+[2026-06-21 19:06:53.98]  Saved reproducer to echidna/coverage/5556184520518610657.txt
+[2026-06-21 19:06:54.14] [Worker 0] New coverage: 40588 instr, 11 contracts, 31 seqs in corpus
+[2026-06-21 19:06:54.16]  Saved reproducer to echidna/coverage/6989212197304676803.txt
+[2026-06-21 19:06:54.32] [Worker 2] New coverage: 40593 instr, 11 contracts, 32 seqs in corpus
+[2026-06-21 19:06:54.33]  Saved reproducer to echidna/coverage/2424451815141371541.txt
+[2026-06-21 19:06:54.45] [Worker 0] New coverage: 40596 instr, 11 contracts, 33 seqs in corpus
+[2026-06-21 19:06:54.47]  Saved reproducer to echidna/coverage/839749635072268471.txt
+[2026-06-21 19:06:54.60] [Worker 3] New coverage: 40599 instr, 11 contracts, 34 seqs in corpus
+[2026-06-21 19:06:54.62]  Saved reproducer to echidna/coverage/6696821758205302123.txt
+[2026-06-21 19:06:54.69] [Worker 1] New coverage: 40683 instr, 11 contracts, 35 seqs in corpus
+[2026-06-21 19:06:54.70] [Worker 0] New coverage: 40683 instr, 11 contracts, 36 seqs in corpus
+[2026-06-21 19:06:54.70]  Saved reproducer to echidna/coverage/5879565478678606856.txt
+[2026-06-21 19:06:54.72]  Saved reproducer to echidna/coverage/5801559536605228697.txt
+[2026-06-21 19:06:54.76] [Worker 0] New coverage: 40686 instr, 11 contracts, 37 seqs in corpus
+[2026-06-21 19:06:54.78]  Saved reproducer to echidna/coverage/5043813805223434490.txt
+[2026-06-21 19:06:54.96] [Worker 1] New coverage: 40702 instr, 11 contracts, 38 seqs in corpus
+[2026-06-21 19:06:54.98]  Saved reproducer to echidna/coverage/2755255147006984729.txt
+[2026-06-21 19:06:55.11] [Worker 3] New coverage: 40802 instr, 11 contracts, 39 seqs in corpus
+[2026-06-21 19:06:55.13]  Saved reproducer to echidna/coverage/700332597758828833.txt
+[2026-06-21 19:06:55.14] [Worker 0] New coverage: 40802 instr, 11 contracts, 40 seqs in corpus
+[2026-06-21 19:06:55.14]  Saved reproducer to echidna/coverage/4020447793056761495.txt
+[2026-06-21 19:06:55.16] [Worker 2] New coverage: 40866 instr, 11 contracts, 41 seqs in corpus
+[2026-06-21 19:06:55.17]  Saved reproducer to echidna/coverage/1916062531490852057.txt
+[2026-06-21 19:06:55.20] [Worker 0] New coverage: 40899 instr, 11 contracts, 42 seqs in corpus
+[2026-06-21 19:06:55.21]  Saved reproducer to echidna/coverage/7369051593779725719.txt
+[2026-06-21 19:06:55.27] [Worker 0] New coverage: 40905 instr, 11 contracts, 43 seqs in corpus
+[2026-06-21 19:06:55.28]  Saved reproducer to echidna/coverage/6393375157670782740.txt
+[2026-06-21 19:06:55.29] [Worker 2] New coverage: 41326 instr, 11 contracts, 44 seqs in corpus
+[2026-06-21 19:06:55.31]  Saved reproducer to echidna/coverage/6183355215107217119.txt
+[2026-06-21 19:06:55.52] [status] tests: 0/1, fuzzing: 19327/50000, values: [], cov: 41330, corpus: 44, gas/s: 99211643340
+[2026-06-21 19:06:55.53] [Worker 2] New coverage: 41330 instr, 11 contracts, 45 seqs in corpus
+[2026-06-21 19:06:55.54]  Saved reproducer to echidna/coverage/6733723445480355240.txt
+[2026-06-21 19:06:55.68] [Worker 3] New coverage: 41333 instr, 11 contracts, 46 seqs in corpus
+[2026-06-21 19:06:55.70]  Saved reproducer to echidna/coverage/6350750630202724107.txt
+[2026-06-21 19:06:55.92] [Worker 2] New coverage: 41336 instr, 11 contracts, 47 seqs in corpus
+[2026-06-21 19:06:55.93]  Saved reproducer to echidna/coverage/8830468573256394207.txt
+[2026-06-21 19:06:56.03] [Worker 0] New coverage: 41360 instr, 11 contracts, 48 seqs in corpus
+[2026-06-21 19:06:56.04]  Saved reproducer to echidna/coverage/519453686025337764.txt
+[2026-06-21 19:06:56.15] [Worker 1] New coverage: 41372 instr, 11 contracts, 49 seqs in corpus
+[2026-06-21 19:06:56.17]  Saved reproducer to echidna/coverage/5252987233204903409.txt
+[2026-06-21 19:06:56.26] [Worker 3] New coverage: 41383 instr, 11 contracts, 50 seqs in corpus
+[2026-06-21 19:06:56.27]  Saved reproducer to echidna/coverage/4104794068458999209.txt
+[2026-06-21 19:06:56.28] [Worker 0] New coverage: 41383 instr, 11 contracts, 51 seqs in corpus
+[2026-06-21 19:06:56.28]  Saved reproducer to echidna/coverage/1738071049023159993.txt
+[2026-06-21 19:06:56.53] [Worker 3] New coverage: 41386 instr, 11 contracts, 52 seqs in corpus
+[2026-06-21 19:06:56.55]  Saved reproducer to echidna/coverage/5158206319617946831.txt
+[2026-06-21 19:06:56.83] [Worker 0] New coverage: 41389 instr, 11 contracts, 53 seqs in corpus
+[2026-06-21 19:06:56.83]  Saved reproducer to echidna/coverage/1016798930229718389.txt
+[2026-06-21 19:06:57.30] [Worker 3] New coverage: 41392 instr, 11 contracts, 54 seqs in corpus
+[2026-06-21 19:06:57.33]  Saved reproducer to echidna/coverage/7392071482449916047.txt
+[2026-06-21 19:06:57.66] [Worker 1] New coverage: 41395 instr, 11 contracts, 55 seqs in corpus
+[2026-06-21 19:06:57.67]  Saved reproducer to echidna/coverage/7982744991779084769.txt
+[2026-06-21 19:06:58.10] [Worker 3] New coverage: 41398 instr, 11 contracts, 56 seqs in corpus
+[2026-06-21 19:06:58.12]  Saved reproducer to echidna/coverage/7124503497540450860.txt
+[2026-06-21 19:06:58.29] [Worker 0] New coverage: 41401 instr, 11 contracts, 57 seqs in corpus
+[2026-06-21 19:06:58.30]  Saved reproducer to echidna/coverage/1312054941087715382.txt
+[2026-06-21 19:06:58.46] [Worker 2] New coverage: 41471 instr, 11 contracts, 58 seqs in corpus
+[2026-06-21 19:06:58.50]  Saved reproducer to echidna/coverage/1076147527641137467.txt
+[2026-06-21 19:06:58.52] [status] tests: 0/1, fuzzing: 39522/50000, values: [], cov: 41471, corpus: 58, gas/s: 104532870163
+[2026-06-21 19:06:58.59] [Worker 0] New coverage: 41594 instr, 11 contracts, 59 seqs in corpus
+[2026-06-21 19:06:58.60]  Saved reproducer to echidna/coverage/5569189141326219709.txt
+[2026-06-21 19:06:58.70] [Worker 2] New coverage: 41600 instr, 11 contracts, 60 seqs in corpus
+[2026-06-21 19:06:58.72]  Saved reproducer to echidna/coverage/6703477685619700804.txt
+[2026-06-21 19:06:58.87] [Worker 2] New coverage: 41887 instr, 11 contracts, 61 seqs in corpus
+[2026-06-21 19:06:58.88]  Saved reproducer to echidna/coverage/6997138322762053761.txt
+[2026-06-21 19:06:58.98] [Worker 3] New coverage: 41890 instr, 11 contracts, 62 seqs in corpus
+[2026-06-21 19:06:58.99]  Saved reproducer to echidna/coverage/204863025504923754.txt
+[2026-06-21 19:06:59.22] [Worker 0] New coverage: 41895 instr, 11 contracts, 63 seqs in corpus
+[2026-06-21 19:06:59.23]  Saved reproducer to echidna/coverage/6898404345487820064.txt
+[2026-06-21 19:06:59.67] [Worker 1] Test limit reached. Stopping.
+[2026-06-21 19:06:59.81] [Worker 3] New coverage: 41980 instr, 11 contracts, 64 seqs in corpus
+[2026-06-21 19:06:59.81]  Saved reproducer to echidna/coverage/7279054988013237311.txt
+[2026-06-21 19:07:00.06] [Worker 2] Test limit reached. Stopping.
+[2026-06-21 19:07:00.08] [Worker 3] Test limit reached. Stopping.
+[2026-06-21 19:07:00.33] [Worker 0] Test limit reached. Stopping.
+[2026-06-21 19:07:00.33] [status] tests: 0/1, fuzzing: 50172/50000, values: [], cov: 41980, corpus: 64, gas/s: 82514336033
+
+Unique instructions: 41980
+Unique codehashes: 11
+Corpus size: 64
+Seed: 1901221901694864874
+Total calls: 50172
+
+[2026-06-21 19:07:00.33] Saving test reproducers... Done! (0.000001289s)
+[2026-06-21 19:07:00.33] Saving corpus... Done! (0.003925815s)
+[2026-06-21 19:07:00.34] Saving foundry reproducers... Done! (0.000011193s)
+[2026-06-21 19:07:00.34] Saving coverage... Done! (7.051935755s)
