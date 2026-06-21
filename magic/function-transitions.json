@@ -1,0 +1,168 @@
+{
+  "protocol_type": "VAULT+LENDING",
+  "entry_points": [
+    "requestMint",
+    "requestRedemption",
+    "addKYCAddresses",
+    "setFTokenToOracleType",
+    "approve"
+  ],
+  "terminal_states": [
+    "claimMint",
+    "completeRedemptions",
+    "seize",
+    "getUnderlyingPrice"
+  ],
+  "transitions": [
+    {
+      "from": "requestMint",
+      "to": "transitionEpoch",
+      "weight": 10,
+      "reason": "requestMint has updateEpoch modifier; transitionEpoch is called first on every requestMint invocation"
+    },
+    {
+      "from": "transitionEpoch",
+      "to": "setMintExchangeRate",
+      "weight": 8,
+      "reason": "After epoch N closes (transitionEpoch increments currentEpoch), SETTER_ADMIN can set epoch N exchange rate. epochToSet must be < currentEpoch."
+    },
+    {
+      "from": "setMintExchangeRate",
+      "to": "claimMint",
+      "weight": 9,
+      "reason": "claimMint requires epochToExchangeRate[epochToClaim] != 0; setMintExchangeRate is the only non-override way to set it. This is the core mint lifecycle path."
+    },
+    {
+      "from": "claimMint",
+      "to": "requestRedemption",
+      "weight": 7,
+      "reason": "User receives CASH via claimMint, then can call requestRedemption to burn CASH and queue redemption in current epoch."
+    },
+    {
+      "from": "requestRedemption",
+      "to": "completeRedemptions",
+      "weight": 8,
+      "reason": "After epoch closes, MANAGER_ADMIN calls completeRedemptions to distribute collateral to redeemers. Requires epochToService < currentEpoch."
+    },
+    {
+      "from": "requestMint",
+      "to": "requestMint",
+      "weight": 5,
+      "reason": "Multiple requestMint calls in same epoch accumulate in mintRequestsPerEpoch[epoch][user] (+=). Limit: mintLimit per epoch."
+    },
+    {
+      "from": "transitionEpoch",
+      "to": "overrideExchangeRate",
+      "weight": 4,
+      "reason": "MANAGER_ADMIN can bypass delta check and set any exchange rate for any past epoch via overrideExchangeRate."
+    },
+    {
+      "from": "setMintExchangeRate",
+      "to": "pause",
+      "weight": 6,
+      "reason": "setMintExchangeRate auto-pauses if |newRate - lastSetMintExchangeRate| > deltaLimit bps. pause is a side effect, not a separate call."
+    },
+    {
+      "from": "pause",
+      "to": "unpause",
+      "weight": 5,
+      "reason": "MANAGER_ADMIN calls unpause to resume operations after pause (auto or manual)."
+    },
+    {
+      "from": "approve",
+      "to": "transferFrom",
+      "weight": 9,
+      "reason": "Standard ERC20 approval flow; approve sets transferAllowances[src][spender], transferFrom consumes it. Applies to both CASH token and cToken."
+    },
+    {
+      "from": "transferFrom",
+      "to": "transferFrom",
+      "weight": 3,
+      "reason": "Multiple transferFrom calls possible within allowance; allowance decrements each time."
+    },
+    {
+      "from": "setFTokenToOracleType",
+      "to": "setPrice",
+      "weight": 8,
+      "reason": "setPrice requires fTokenToOracleType[fToken] == MANUAL; setFTokenToOracleType(MANUAL) must precede setPrice."
+    },
+    {
+      "from": "setPrice",
+      "to": "getUnderlyingPrice",
+      "weight": 9,
+      "reason": "setPrice writes fTokenToUnderlyingPrice[fToken]; getUnderlyingPrice reads it for MANUAL oracle type. This is the primary oracle read path in harness."
+    },
+    {
+      "from": "setPrice",
+      "to": "seize",
+      "weight": 6,
+      "reason": "Oracle price manipulation → Comptroller liquidity check fails → liquidation enabled → seize transfers cTokens from borrower to liquidator. Requires lending market wiring (coverage phase)."
+    },
+    {
+      "from": "mint",
+      "to": "borrow",
+      "weight": 8,
+      "reason": "cToken mint deposits underlying, mints cTokens as collateral. borrow uses collateral value (via oracle) to determine borrowing capacity. Standard Compound supply->borrow sequence."
+    },
+    {
+      "from": "borrow",
+      "to": "seize",
+      "weight": 5,
+      "reason": "If oracle price falls or rate rises, borrower becomes undercollateralized; liquidator calls liquidateBorrow which calls seize on the collateral cToken."
+    },
+    {
+      "from": "accrueInterest",
+      "to": "borrow",
+      "weight": 6,
+      "reason": "borrow calls accrueInterest first; borrowIndex and totalBorrows updated before new borrow is recorded."
+    },
+    {
+      "from": "accrueInterest",
+      "to": "mint",
+      "weight": 6,
+      "reason": "mint calls accrueInterest first (via mintInternal); ensures exchange rate is up-to-date before minting new cTokens."
+    },
+    {
+      "from": "addKYCAddresses",
+      "to": "requestMint",
+      "weight": 7,
+      "reason": "requestMint requires checkKYC(msg.sender); addKYCAddresses must have been called for msg.sender in the correct group before requestMint can succeed."
+    },
+    {
+      "from": "removeKYCAddresses",
+      "to": "requestMint",
+      "weight": 3,
+      "reason": "removeKYCAddresses revokes KYC; subsequent requestMint for that address will revert with KYCCheckFailed."
+    },
+    {
+      "from": "claimMint",
+      "to": "approve",
+      "weight": 6,
+      "reason": "After claimMint, user has CASH; they may approve the CashManager or a cToken market to spend CASH. Enables requestRedemption or cToken deposit."
+    },
+    {
+      "from": "completeRedemptions",
+      "to": "requestMint",
+      "weight": 4,
+      "reason": "After receiving collateral from completeRedemptions, a user may re-enter the protocol by calling requestMint in a new epoch."
+    },
+    {
+      "from": "setPriceCap",
+      "to": "getUnderlyingPrice",
+      "weight": 5,
+      "reason": "setPriceCap sets fTokenToUnderlyingPriceCap[fToken]; getUnderlyingPrice returns min(price, cap) when cap > 0."
+    },
+    {
+      "from": "requestRedemption",
+      "to": "requestRedemption",
+      "weight": 4,
+      "reason": "Multiple requestRedemption calls in same epoch accumulate addressToBurnAmt and totalBurned. Each call burns CASH immediately."
+    },
+    {
+      "from": "setMintExchangeRateDeltaLimit",
+      "to": "setMintExchangeRate",
+      "weight": 5,
+      "reason": "Changing deltaLimit alters when auto-pause fires in setMintExchangeRate. Setting to 0 means any non-equal rate triggers pause; setting to 10000 means no auto-pause."
+    }
+  ]
+}

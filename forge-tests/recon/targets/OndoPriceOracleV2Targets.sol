@@ -43,7 +43,7 @@ abstract contract OndoPriceOracleV2Targets is
     ///         Requires: cTokenDelegate has underlying() that is a real ERC20 (NOT satisfied for bare delegate)
     ///         NOTE: This shortcut will revert because bare cTokenDelegate has no underlying().
     ///         Documented here for coverage-phase reference.
-    function shortcut_chainlinkOraclePath(int256 answer) public updateGhosts {
+    function shortcut_chainlinkOraclePath(int256 /*answer*/) public updateGhosts {
         // Skip — bare delegate has no underlying(); would revert at setFTokenToChainlinkOracle
         // This shortcut is a placeholder for the coverage phase when markets are wired.
         // In that phase: setFTokenToOracleType(fToken, CHAINLINK), setFTokenToChainlinkOracle(fToken, oracle)
