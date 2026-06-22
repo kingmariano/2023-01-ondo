@@ -1,0 +1,782 @@
+{
+  "cTokenDelegate__setReserveFactor": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cTokenDelegate_seize": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint",
+      "cTokenDelegate_borrow",
+      "ondoPriceOracleV2_setPrice"
+    ],
+    "paths": [
+      "allowed == 0 && borrower != liquidator && _totalSupply == 0 && !sanctionsList.isSanctioned(liquidator) && sanctionsList.isSanctioned(liquidator) && !sanctionsList.isSanctioned(borrower) && sanctionsList.isSanctioned(borrower) && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)",
+      "allowed == 0 && borrower != liquidator && _totalSupply != 0 && !sanctionsList.isSanctioned(liquidator) && sanctionsList.isSanctioned(liquidator) && !sanctionsList.isSanctioned(borrower) && sanctionsList.isSanctioned(borrower) && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)"
+    ]
+  },
+  "cCashDelegate__reduceReserves": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "property_neg_nonAdminCannotSetMintExchangeRate": {
+    "prerequisite_functions": [],
+    "paths": [
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate < lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch",
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate > lastSetMintExchangeRate && rateDifference <= maxDifferenceThisEpoch",
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate >= lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch"
+    ]
+  },
+  "ondoPriceOracleV2_setOracle": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "kYCRegistry_addKYCAddressViaSignature": {
+    "prerequisite_functions": [
+      "kYCRegistry_assignRoletoKYCGroup"
+    ],
+    "paths": [
+      "s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && signer == 0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error != RecoverError.InvalidSignatureLength && error == RecoverError.InvalidSignatureS && !hasRole(role, account) && (block.timestamp <= deadline)",
+      "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error == RecoverError.NoError && hasRole(role, account) && (block.timestamp <= deadline)",
+      "s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && signer != 0 && error != RecoverError.NoError && error == RecoverError.InvalidSignature && !hasRole(role, account) && (block.timestamp <= deadline)",
+      "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error == RecoverError.InvalidSignatureLength && !hasRole(role, account) && (block.timestamp <= deadline)",
+      "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error != RecoverError.InvalidSignatureLength && error != RecoverError.InvalidSignatureS && !hasRole(role, account) && (block.timestamp <= deadline)"
+    ]
+  },
+  "cashKYCSenderReceiver_revokeRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  },
+  "cCashDelegate_accrueInterest": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cTokenDelegate__reduceReserves": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_setFeeRecipient": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cCashDelegate_setKYCRequirementGroup": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin)"
+    ]
+  },
+  "cashKYCSenderReceiver_burn": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_mint"
+    ],
+    "paths": [
+      "_msgSender() != 0 && 0 != 0",
+      "_msgSender() == 0 && 0 == 0"
+    ]
+  },
+  "cCashDelegate_approve": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "ondoPriceOracleV2_renounceOwnership": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashManager_setKYCRequirementGroup": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "kYCRegistry_renounceRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  },
+  "cCashDelegate_repayBorrowBehalf_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "ondoPriceOracleV2_setFTokenToCToken": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(fTokenToOracleType[fToken] == OracleType.COMPOUND) && (CTokenLike(fToken).underlying() == CTokenLike(cToken).underlying()) && fToken.underlying() && cToken.underlying()"
+    ]
+  },
+  "cashManager_requestRedemption": {
+    "prerequisite_functions": [
+      "cashManager_requestMint",
+      "cashManager_transitionEpoch",
+      "cashManager_setMintExchangeRate",
+      "cashManager_claimMint",
+      "cashKYCSenderReceiver_approve"
+    ],
+    "paths": [
+      "amountCashToRedeem >= minimumRedeemAmount && amountCashToRedeem != 0 && amountCashToRedeem <= (redeemLimit - currentRedeemAmount) && cash.burnFrom(msg.sender, amountCashToRedeem)"
+    ]
+  },
+  "ondoPriceOracleV2_setPrice": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(fTokenToOracleType[fToken] == OracleType.MANUAL)"
+    ]
+  },
+  "cTokenDelegate_repayBorrow": {
+    "prerequisite_functions": [
+      "cTokenDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+    ]
+  },
+  "cCashDelegate_redeemUnderlying_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cCashDelegate__resignImplementation": {
+    "prerequisite_functions": [],
+    "paths": [
+      "false && (msg.sender == admin)",
+      "!(false) && (msg.sender == admin)"
+    ]
+  },
+  "cashKYCSenderReceiver_initialize": {
+    "prerequisite_functions": [],
+    "paths": [
+      "!hasRole(role, account) && !hasRole(role, account) && !hasRole(role, account) && kycRegistry != 0",
+      "hasRole(role, account) && hasRole(role, account) && hasRole(role, account) && kycRegistry != 0"
+    ]
+  },
+  "cTokenDelegate_transferFrom": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint",
+      "cTokenDelegate_approve"
+    ],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_increaseAllowance": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_pause": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashManager_setRedeemLimit": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_setKYCRequirementGroup": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin)"
+    ]
+  },
+  "cashManager_setPendingMintBalance": {
+    "prerequisite_functions": [
+      "cashManager_requestMint"
+    ],
+    "paths": [
+      "oldBalance == mintRequestsPerEpoch[epoch][user] && epoch <= currentEpoch"
+    ]
+  },
+  "cCashDelegate_seize": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint",
+      "cCashDelegate_borrow",
+      "ondoPriceOracleV2_setPrice"
+    ],
+    "paths": [
+      "allowed == 0 && borrower != liquidator && _totalSupply == 0 && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)",
+      "allowed == 0 && borrower != liquidator && _totalSupply != 0 && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)"
+    ]
+  },
+  "ondoPriceOracleV2_transferOwnership": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate__becomeImplementation": {
+    "prerequisite_functions": [],
+    "paths": [
+      "false && (msg.sender == admin)",
+      "!(false) && (msg.sender == admin)"
+    ]
+  },
+  "cCashDelegate_repayBorrowBehalf": {
+    "prerequisite_functions": [
+      "cCashDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+    ]
+  },
+  "ondoPriceOracleV2_setFTokenToChainlinkOracle": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(fTokenToOracleType[fToken] == OracleType.CHAINLINK) && fToken.underlying() && underlying.decimals() && newChainlinkOracle.decimals()"
+    ]
+  },
+  "cashManager_setMintFee": {
+    "prerequisite_functions": [],
+    "paths": [
+      "_mintFee < BPS_DENOMINATOR"
+    ]
+  },
+  "cTokenDelegate_borrowBalanceCurrent": {
+    "prerequisite_functions": [
+      "cTokenDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cCashDelegate_repayBorrow": {
+    "prerequisite_functions": [
+      "cCashDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+    ]
+  },
+  "cashManager_revokeRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  },
+  "cTokenDelegate__acceptAdmin": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender != pendingAdmin) || (msg.sender != 0)"
+    ]
+  },
+  "cTokenDelegate_repayBorrowBehalf": {
+    "prerequisite_functions": [
+      "cTokenDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+    ]
+  },
+  "cCashDelegate__setReserveFactor": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cTokenDelegate_redeem": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && redeemTokens > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+      "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && redeemTokens <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+    ]
+  },
+  "cTokenDelegate__resignImplementation": {
+    "prerequisite_functions": [],
+    "paths": [
+      "false && (msg.sender == admin)",
+      "!(false) && (msg.sender == admin)"
+    ]
+  },
+  "cashManager_setRedeemMinimum": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_burnFrom": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_mint",
+      "cashKYCSenderReceiver_approve"
+    ],
+    "paths": [
+      "currentAllowance != type(uint256).max && account != 0 && 0 != 0",
+      "currentAllowance == type(uint256).max && account == 0 && 0 == 0"
+    ]
+  },
+  "cTokenDelegate_transfer": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint"
+    ],
+    "paths": []
+  },
+  "asset_mint": {
+    "prerequisite_functions": [],
+    "paths": [
+      "newTotalSupply >= totalSupply"
+    ]
+  },
+  "cashManager_setMinimumDepositAmount": {
+    "prerequisite_functions": [],
+    "paths": [
+      "_minimumDepositAmount >= BPS_DENOMINATOR"
+    ]
+  },
+  "cTokenDelegate_redeemUnderlying_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_setAssetSender": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_totalBorrowsCurrent": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_setKYCRegistry": {
+    "prerequisite_functions": [],
+    "paths": [
+      "_kycRegistry != 0"
+    ]
+  },
+  "cashKYCSenderReceiver_renounceRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  },
+  "cashManager_completeRedemptions": {
+    "prerequisite_functions": [
+      "cashManager_requestRedemption",
+      "cashManager_transitionEpoch"
+    ],
+    "paths": [
+      "_getKYCStatus(account) && _getKYCStatus(account) && epochToService < currentEpoch && cash.mint(refundee, cashAmountBurned) && collateral.safeTransferFrom(assetSender, redeemer, collateralAmountDue) && collateral.safeTransferFrom(assetSender, feeRecipient, fees)"
+    ]
+  },
+  "cashManager_setPendingRedemptionBalance": {
+    "prerequisite_functions": [
+      "cashManager_requestRedemption"
+    ],
+    "paths": [
+      "epoch <= currentEpoch && balance >= previousBalance && balance > previousBalance",
+      "epoch <= currentEpoch && balance < previousBalance",
+      "epoch <= currentEpoch && balance >= previousBalance && balance <= previousBalance"
+    ]
+  },
+  "cashManager_unpause": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashManager_setMintExchangeRate": {
+    "prerequisite_functions": [
+      "cashManager_transitionEpoch"
+    ],
+    "paths": [
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate < lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch",
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate > lastSetMintExchangeRate && rateDifference <= maxDifferenceThisEpoch",
+      "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate >= lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch"
+    ]
+  },
+  "cashManager_overrideExchangeRate": {
+    "prerequisite_functions": [
+      "cashManager_transitionEpoch"
+    ],
+    "paths": [
+      "epochToSet < currentEpoch && _lastSetMintExchangeRate != 0",
+      "epochToSet < currentEpoch && _lastSetMintExchangeRate == 0"
+    ]
+  },
+  "cTokenDelegate_exchangeRateCurrent": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cTokenDelegate_repayBorrowBehalf_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashKYCSenderReceiver_setKYCRequirementGroup": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_balanceOfUnderlying": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cCashDelegate_setKYCRegistry": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin)"
+    ]
+  },
+  "cashKYCSenderReceiver_grantRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "!hasRole(role, account)",
+      "hasRole(role, account)"
+    ]
+  },
+  "cTokenDelegate_accrueInterest": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_setAssetRecipient": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cCashDelegate_transfer": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint"
+    ],
+    "paths": []
+  },
+  "cashManager_pause": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_mint": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply == 0 && !sanctionsList.isSanctioned(minter) && sanctionsList.isSanctioned(msg.sender) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(minter) && sanctionsList.isSanctioned(msg.sender) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)"
+    ]
+  },
+  "cCashDelegate_redeemUnderlying": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && 0 > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+      "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && 0 <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+    ]
+  },
+  "cCashDelegate_borrow": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal == 0 && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)"
+    ]
+  },
+  "cashManager_setMintLimit": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_approve": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "kYCRegistry_grantRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "!hasRole(role, account)",
+      "hasRole(role, account)"
+    ]
+  },
+  "cashManager_setMintExchangeRateDeltaLimit": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_transfer": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_mint"
+    ],
+    "paths": [
+      "owner != 0 && to != 0",
+      "owner == 0 && to == 0"
+    ]
+  },
+  "cCashDelegate__delegateCompLikeTo": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin) && underlying.delegate(compLikeDelegatee)"
+    ]
+  },
+  "ondoPriceOracleV2_setPriceCap": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_repayBorrow_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cCashDelegate_transferFrom": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint",
+      "cCashDelegate_approve"
+    ],
+    "paths": []
+  },
+  "cTokenDelegate__delegateCompLikeTo": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin) && underlying.delegate(compLikeDelegatee)"
+    ]
+  },
+  "cCashDelegate_balanceOfUnderlying": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_requestMint": {
+    "prerequisite_functions": [],
+    "paths": [
+      "collateralAmountIn >= minimumDepositAmount && depositValueAfterFees <= (mintLimit - currentMintAmount) && collateral.safeTransferFrom(msg.sender, feeRecipient, feesInCollateral) && collateral.safeTransferFrom(msg.sender, assetRecipient, depositValueAfterFees)"
+    ]
+  },
+  "kYCRegistry_assignRoletoKYCGroup": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashManager_setEpochDuration": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cashKYCSenderReceiver_mint": {
+    "prerequisite_functions": [],
+    "paths": [
+      "0 != 0 && to != 0",
+      "0 == 0 && to == 0"
+    ]
+  },
+  "cTokenDelegate_redeemUnderlying": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && 0 > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+      "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && 0 <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+    ]
+  },
+  "kYCRegistry_revokeRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  },
+  "property_neg_nonAdminCannotOverrideRate": {
+    "prerequisite_functions": [],
+    "paths": [
+      "epochToSet < currentEpoch && _lastSetMintExchangeRate != 0",
+      "epochToSet < currentEpoch && _lastSetMintExchangeRate == 0"
+    ]
+  },
+  "cashKYCSenderReceiver_setKYCRegistry": {
+    "prerequisite_functions": [],
+    "paths": [
+      "registry != 0"
+    ]
+  },
+  "property_t13_manualPriceNoRevert": {
+    "prerequisite_functions": [],
+    "paths": [
+      "oracleType != OracleType.MANUAL && oracleType != OracleType.COMPOUND && oracleType == OracleType.CHAINLINK && fTokenToUnderlyingPriceCap[fToken] > 0 && (fTokenToOracleType[fToken] == OracleType.CHAINLINK) && chainlinkInfo.oracle.latestRoundData() && ((answeredInRound >= roundId) && (updatedAt >= (block.timestamp - maxChainlinkOracleTimeDelay)))",
+      "oracleType == OracleType.MANUAL && fTokenToUnderlyingPriceCap[fToken] <= 0",
+      "oracleType != OracleType.MANUAL && oracleType == OracleType.COMPOUND && fTokenToUnderlyingPriceCap[fToken] > 0 && cTokenOracle.getUnderlyingPrice(cTokenAddress)",
+      "oracleType != OracleType.MANUAL && oracleType != OracleType.COMPOUND && oracleType != OracleType.CHAINLINK && fTokenToUnderlyingPriceCap[fToken] > 0"
+    ]
+  },
+  "cTokenDelegate_setKYCRegistry": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender == admin)"
+    ]
+  },
+  "cashManager_claimMint": {
+    "prerequisite_functions": [
+      "cashManager_requestMint",
+      "cashManager_transitionEpoch",
+      "cashManager_setMintExchangeRate"
+    ],
+    "paths": [
+      "collateralDeposited != 0 && epochToExchangeRate[epochToClaim] != 0 && cash.mint(user, cashOwed)"
+    ]
+  },
+  "cashKYCSenderReceiver_decreaseAllowance": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_approve",
+      "cashKYCSenderReceiver_increaseAllowance"
+    ],
+    "paths": []
+  },
+  "cCashDelegate_borrowBalanceCurrent": {
+    "prerequisite_functions": [
+      "cCashDelegate_borrow"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cCashDelegate_mint": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply == 0 && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)"
+    ]
+  },
+  "cashManager_grantRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "!hasRole(role, account)",
+      "hasRole(role, account)"
+    ]
+  },
+  "kYCRegistry_addKYCAddresses": {
+    "prerequisite_functions": [
+      "kYCRegistry_assignRoletoKYCGroup"
+    ],
+    "paths": []
+  },
+  "cCashDelegate__acceptAdmin": {
+    "prerequisite_functions": [],
+    "paths": [
+      "(msg.sender != pendingAdmin) || (msg.sender != 0)"
+    ]
+  },
+  "kYCRegistry_removeKYCAddresses": {
+    "prerequisite_functions": [
+      "kYCRegistry_assignRoletoKYCGroup",
+      "kYCRegistry_addKYCAddresses"
+    ],
+    "paths": []
+  },
+  "cCashDelegate_totalBorrowsCurrent": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cCashDelegate_exchangeRateCurrent": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cashManager_transitionEpoch": {
+    "prerequisite_functions": [],
+    "paths": [
+      "epochDifference > 0",
+      "epochDifference <= 0"
+    ]
+  },
+  "property_neg_nonAdminCannotSetMintFee": {
+    "prerequisite_functions": [],
+    "paths": [
+      "_mintFee < BPS_DENOMINATOR"
+    ]
+  },
+  "cashKYCSenderReceiver_transferFrom": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_mint",
+      "cashKYCSenderReceiver_approve"
+    ],
+    "paths": [
+      "currentAllowance != type(uint256).max && from != 0 && to != 0",
+      "currentAllowance == type(uint256).max && from == 0 && to == 0"
+    ]
+  },
+  "cCashDelegate__becomeImplementation": {
+    "prerequisite_functions": [],
+    "paths": [
+      "false && (msg.sender == admin)",
+      "!(false) && (msg.sender == admin)"
+    ]
+  },
+  "cCashDelegate_repayBorrow_clamped": {
+    "prerequisite_functions": [],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber",
+      "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+    ]
+  },
+  "cTokenDelegate_approve": {
+    "prerequisite_functions": [],
+    "paths": []
+  },
+  "cTokenDelegate_borrow": {
+    "prerequisite_functions": [
+      "cTokenDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal == 0 && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)",
+      "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)"
+    ]
+  },
+  "cCashDelegate_redeem": {
+    "prerequisite_functions": [
+      "cCashDelegate_mint"
+    ],
+    "paths": [
+      "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && redeemTokens > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+      "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && redeemTokens <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+    ]
+  },
+  "cashKYCSenderReceiver_unpause": {
+    "prerequisite_functions": [
+      "cashKYCSenderReceiver_pause"
+    ],
+    "paths": []
+  },
+  "cashManager_renounceRole": {
+    "prerequisite_functions": [],
+    "paths": [
+      "hasRole(role, account)",
+      "!(hasRole(role, account))"
+    ]
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "property_t13_manualPriceNoRevert": [
+    "oracleType != OracleType.MANUAL && oracleType != OracleType.COMPOUND && oracleType == OracleType.CHAINLINK && fTokenToUnderlyingPriceCap[fToken] > 0 && (fTokenToOracleType[fToken] == OracleType.CHAINLINK) && chainlinkInfo.oracle.latestRoundData() && ((answeredInRound >= roundId) && (updatedAt >= (block.timestamp - maxChainlinkOracleTimeDelay)))",
+    "oracleType == OracleType.MANUAL && fTokenToUnderlyingPriceCap[fToken] <= 0",
+    "oracleType != OracleType.MANUAL && oracleType == OracleType.COMPOUND && fTokenToUnderlyingPriceCap[fToken] > 0 && cTokenOracle.getUnderlyingPrice(cTokenAddress)",
+    "oracleType != OracleType.MANUAL && oracleType != OracleType.COMPOUND && oracleType != OracleType.CHAINLINK && fTokenToUnderlyingPriceCap[fToken] > 0"
+  ],
+  "property_neg_nonAdminCannotSetMintExchangeRate": [
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate < lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch",
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate > lastSetMintExchangeRate && rateDifference <= maxDifferenceThisEpoch",
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate >= lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch"
+  ],
+  "property_neg_nonAdminCannotSetMintFee": [
+    "_mintFee < BPS_DENOMINATOR"
+  ],
+  "property_neg_nonAdminCannotOverrideRate": [
+    "epochToSet < currentEpoch && _lastSetMintExchangeRate != 0",
+    "epochToSet < currentEpoch && _lastSetMintExchangeRate == 0"
+  ],
+  "asset_mint": [
+    "newTotalSupply >= totalSupply"
+  ],
+  "kYCRegistry_addKYCAddressViaSignature": [
+    "s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && signer == 0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error != RecoverError.InvalidSignatureLength && error == RecoverError.InvalidSignatureS && !hasRole(role, account) && (block.timestamp <= deadline)",
+    "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error == RecoverError.NoError && hasRole(role, account) && (block.timestamp <= deadline)",
+    "s <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && signer != 0 && error != RecoverError.NoError && error == RecoverError.InvalidSignature && !hasRole(role, account) && (block.timestamp <= deadline)",
+    "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error == RecoverError.InvalidSignatureLength && !hasRole(role, account) && (block.timestamp <= deadline)",
+    "s > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0 && error != RecoverError.NoError && error != RecoverError.InvalidSignature && error != RecoverError.InvalidSignatureLength && error != RecoverError.InvalidSignatureS && !hasRole(role, account) && (block.timestamp <= deadline)"
+  ],
+  "kYCRegistry_renounceRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "cashManager_claimMint": [
+    "collateralDeposited != 0 && epochToExchangeRate[epochToClaim] != 0 && cash.mint(user, cashOwed)"
+  ],
+  "cashManager_renounceRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "cashManager_requestMint": [
+    "collateralAmountIn >= minimumDepositAmount && depositValueAfterFees <= (mintLimit - currentMintAmount) && collateral.safeTransferFrom(msg.sender, feeRecipient, feesInCollateral) && collateral.safeTransferFrom(msg.sender, assetRecipient, depositValueAfterFees)"
+  ],
+  "cashManager_requestRedemption": [
+    "amountCashToRedeem >= minimumRedeemAmount && amountCashToRedeem != 0 && amountCashToRedeem <= (redeemLimit - currentRedeemAmount) && cash.burnFrom(msg.sender, amountCashToRedeem)"
+  ],
+  "cashManager_transitionEpoch": [
+    "epochDifference > 0",
+    "epochDifference <= 0"
+  ],
+  "cashKYCSenderReceiver_burn": [
+    "_msgSender() != 0 && 0 != 0",
+    "_msgSender() == 0 && 0 == 0"
+  ],
+  "cashKYCSenderReceiver_burnFrom": [
+    "currentAllowance != type(uint256).max && account != 0 && 0 != 0",
+    "currentAllowance == type(uint256).max && account == 0 && 0 == 0"
+  ],
+  "cashKYCSenderReceiver_initialize": [
+    "!hasRole(role, account) && !hasRole(role, account) && !hasRole(role, account) && kycRegistry != 0",
+    "hasRole(role, account) && hasRole(role, account) && hasRole(role, account) && kycRegistry != 0"
+  ],
+  "cashKYCSenderReceiver_renounceRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "cashKYCSenderReceiver_transfer": [
+    "owner != 0 && to != 0",
+    "owner == 0 && to == 0"
+  ],
+  "cashKYCSenderReceiver_transferFrom": [
+    "currentAllowance != type(uint256).max && from != 0 && to != 0",
+    "currentAllowance == type(uint256).max && from == 0 && to == 0"
+  ],
+  "cTokenDelegate_redeemUnderlying_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_repayBorrow_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_repayBorrowBehalf_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_accrueInterest": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_balanceOfUnderlying": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_borrow": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal == 0 && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)"
+  ],
+  "cTokenDelegate_borrowBalanceCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_exchangeRateCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_mint": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply == 0 && !sanctionsList.isSanctioned(minter) && sanctionsList.isSanctioned(msg.sender) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(minter) && sanctionsList.isSanctioned(msg.sender) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)"
+  ],
+  "cTokenDelegate_redeem": [
+    "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && redeemTokens > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+    "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && redeemTokens <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+  ],
+  "cTokenDelegate_redeemUnderlying": [
+    "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && 0 > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+    "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && 0 <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && !sanctionsList.isSanctioned(redeemer) && sanctionsList.isSanctioned(msg.sender) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+  ],
+  "cTokenDelegate_repayBorrow": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+  ],
+  "cTokenDelegate_repayBorrowBehalf": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+  ],
+  "cTokenDelegate_seize": [
+    "allowed == 0 && borrower != liquidator && _totalSupply == 0 && !sanctionsList.isSanctioned(liquidator) && sanctionsList.isSanctioned(liquidator) && !sanctionsList.isSanctioned(borrower) && sanctionsList.isSanctioned(borrower) && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)",
+    "allowed == 0 && borrower != liquidator && _totalSupply != 0 && !sanctionsList.isSanctioned(liquidator) && sanctionsList.isSanctioned(liquidator) && !sanctionsList.isSanctioned(borrower) && sanctionsList.isSanctioned(borrower) && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)"
+  ],
+  "cTokenDelegate_totalBorrowsCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_redeemUnderlying_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_repayBorrow_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_repayBorrowBehalf_clamped": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_accrueInterest": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_balanceOfUnderlying": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_borrow": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal == 0 && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= borrowAmount && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.borrowAllowed(this, msg.sender, borrowAmount) && token.transfer(msg.sender, borrowAmount)"
+  ],
+  "cCashDelegate_borrowBalanceCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_exchangeRateCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_mint": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply == 0 && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && _totalSupply != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.mintAllowed(this, msg.sender, mintAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, mintAmount) && underlying_.balanceOf(this)"
+  ],
+  "cCashDelegate_redeem": [
+    "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && redeemTokens > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+    "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && redeemTokens <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+  ],
+  "cCashDelegate_redeemUnderlying": [
+    "accrualBlockNumberPrior == currentBlockNumber && _totalSupply == 0 && 0 > 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)",
+    "accrualBlockNumberPrior != currentBlockNumber && _totalSupply != 0 && 0 <= 0 && allowed == 0 && accrualBlockNumber == getBlockNumber() && getCashPrior() >= redeemAmount && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.redeemAllowed(this, msg.sender, redeemTokens) && token.transfer(msg.sender, redeemAmount) && comptroller.redeemVerify(this, msg.sender, redeemAmount, redeemTokens)"
+  ],
+  "cCashDelegate_repayBorrow": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, msg.sender, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+  ],
+  "cCashDelegate_repayBorrowBehalf": [
+    "accrualBlockNumberPrior == currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal == 0 && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)",
+    "accrualBlockNumberPrior != currentBlockNumber && allowed == 0 && accrualBlockNumber == getBlockNumber() && borrowSnapshot.principal != 0 && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior) && comptroller.repayBorrowAllowed(this, msg.sender, borrower, repayAmount) && underlying_.balanceOf(this) && token.transferFrom(msg.sender, this, repayAmountFinal) && underlying_.balanceOf(this)"
+  ],
+  "cCashDelegate_seize": [
+    "allowed == 0 && borrower != liquidator && _totalSupply == 0 && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)",
+    "allowed == 0 && borrower != liquidator && _totalSupply != 0 && comptroller.seizeAllowed(this, msg.sender, liquidator, borrower, seizeTokens)"
+  ],
+  "cCashDelegate_totalBorrowsCurrent": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cashManager_completeRedemptions": [
+    "_getKYCStatus(account) && _getKYCStatus(account) && epochToService < currentEpoch && cash.mint(refundee, cashAmountBurned) && collateral.safeTransferFrom(assetSender, redeemer, collateralAmountDue) && collateral.safeTransferFrom(assetSender, feeRecipient, fees)"
+  ],
+  "cashManager_grantRole": [
+    "!hasRole(role, account)",
+    "hasRole(role, account)"
+  ],
+  "cashManager_overrideExchangeRate": [
+    "epochToSet < currentEpoch && _lastSetMintExchangeRate != 0",
+    "epochToSet < currentEpoch && _lastSetMintExchangeRate == 0"
+  ],
+  "cashManager_revokeRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "cashManager_setKYCRegistry": [
+    "_kycRegistry != 0"
+  ],
+  "cashManager_setMinimumDepositAmount": [
+    "_minimumDepositAmount >= BPS_DENOMINATOR"
+  ],
+  "cashManager_setMintExchangeRate": [
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate < lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch",
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate > lastSetMintExchangeRate && rateDifference <= maxDifferenceThisEpoch",
+    "exchangeRate != 0 && epochToSet < currentEpoch && epochToExchangeRate[epochToSet] == 0 && exchangeRate <= lastSetMintExchangeRate && exchangeRate >= lastSetMintExchangeRate && rateDifference > maxDifferenceThisEpoch"
+  ],
+  "cashManager_setMintFee": [
+    "_mintFee < BPS_DENOMINATOR"
+  ],
+  "cashManager_setPendingMintBalance": [
+    "oldBalance == mintRequestsPerEpoch[epoch][user] && epoch <= currentEpoch"
+  ],
+  "cashManager_setPendingRedemptionBalance": [
+    "epoch <= currentEpoch && balance >= previousBalance && balance > previousBalance",
+    "epoch <= currentEpoch && balance < previousBalance",
+    "epoch <= currentEpoch && balance >= previousBalance && balance <= previousBalance"
+  ],
+  "kYCRegistry_grantRole": [
+    "!hasRole(role, account)",
+    "hasRole(role, account)"
+  ],
+  "kYCRegistry_revokeRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "ondoPriceOracleV2_setFTokenToCToken": [
+    "(fTokenToOracleType[fToken] == OracleType.COMPOUND) && (CTokenLike(fToken).underlying() == CTokenLike(cToken).underlying()) && fToken.underlying() && cToken.underlying()"
+  ],
+  "ondoPriceOracleV2_setFTokenToChainlinkOracle": [
+    "(fTokenToOracleType[fToken] == OracleType.CHAINLINK) && fToken.underlying() && underlying.decimals() && newChainlinkOracle.decimals()"
+  ],
+  "ondoPriceOracleV2_setPrice": [
+    "(fTokenToOracleType[fToken] == OracleType.MANUAL)"
+  ],
+  "cCashDelegate__acceptAdmin": [
+    "(msg.sender != pendingAdmin) || (msg.sender != 0)"
+  ],
+  "cCashDelegate__becomeImplementation": [
+    "false && (msg.sender == admin)",
+    "!(false) && (msg.sender == admin)"
+  ],
+  "cCashDelegate__delegateCompLikeTo": [
+    "(msg.sender == admin) && underlying.delegate(compLikeDelegatee)"
+  ],
+  "cCashDelegate__reduceReserves": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate__resignImplementation": [
+    "false && (msg.sender == admin)",
+    "!(false) && (msg.sender == admin)"
+  ],
+  "cCashDelegate__setReserveFactor": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cCashDelegate_setKYCRegistry": [
+    "(msg.sender == admin)"
+  ],
+  "cCashDelegate_setKYCRequirementGroup": [
+    "(msg.sender == admin)"
+  ],
+  "cTokenDelegate__acceptAdmin": [
+    "(msg.sender != pendingAdmin) || (msg.sender != 0)"
+  ],
+  "cTokenDelegate__becomeImplementation": [
+    "false && (msg.sender == admin)",
+    "!(false) && (msg.sender == admin)"
+  ],
+  "cTokenDelegate__delegateCompLikeTo": [
+    "(msg.sender == admin) && underlying.delegate(compLikeDelegatee)"
+  ],
+  "cTokenDelegate__reduceReserves": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate__resignImplementation": [
+    "false && (msg.sender == admin)",
+    "!(false) && (msg.sender == admin)"
+  ],
+  "cTokenDelegate__setReserveFactor": [
+    "accrualBlockNumberPrior == currentBlockNumber",
+    "accrualBlockNumberPrior != currentBlockNumber && interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior)"
+  ],
+  "cTokenDelegate_setKYCRegistry": [
+    "(msg.sender == admin)"
+  ],
+  "cTokenDelegate_setKYCRequirementGroup": [
+    "(msg.sender == admin)"
+  ],
+  "cashKYCSenderReceiver_grantRole": [
+    "!hasRole(role, account)",
+    "hasRole(role, account)"
+  ],
+  "cashKYCSenderReceiver_mint": [
+    "0 != 0 && to != 0",
+    "0 == 0 && to == 0"
+  ],
+  "cashKYCSenderReceiver_revokeRole": [
+    "hasRole(role, account)",
+    "!(hasRole(role, account))"
+  ],
+  "cashKYCSenderReceiver_setKYCRegistry": [
+    "registry != 0"
+  ]
+}
