@@ -70,9 +70,16 @@
       "target_functions": [
         "claimMint",
         "completeRedemptions",
+        "currentEpoch",
+        "epochDuration",
         "grantRole",
+        "lastSetMintExchangeRate",
+        "minimumDepositAmount",
+        "minimumRedeemAmount",
+        "mintLimit",
         "overrideExchangeRate",
         "pause",
+        "redeemLimit",
         "renounceRole",
         "requestMint",
         "requestRedemption",
@@ -103,6 +110,7 @@
         "addKYCAddresses",
         "assignRoletoKYCGroup",
         "grantRole",
+        "kycState",
         "removeKYCAddresses",
         "renounceRole",
         "revokeRole"
@@ -111,6 +119,7 @@
     {
       "contract": "OndoPriceOracleV2",
       "target_functions": [
+        "getUnderlyingPrice",
         "renounceOwnership",
         "setFTokenToCToken",
         "setFTokenToChainlinkOracle",
@@ -124,6 +133,6 @@
   ],
   "summary": {
     "total_contracts": 6,
-    "total_unique_functions": 91
+    "total_unique_functions": 100
   }
 }
