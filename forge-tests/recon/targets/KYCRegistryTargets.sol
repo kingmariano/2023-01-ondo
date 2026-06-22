@@ -68,6 +68,28 @@ abstract contract KYCRegistryTargets is
         kYCRegistry.revokeRole(kYCRegistry.REGISTRY_ADMIN(), user);
     }
 
+    // === CLAMPED HANDLERS ===
+
+    /// @notice Clamped addKYCAddressViaSignature: group pinned to KYC_GROUP, deadline clamped to 30 days from now
+    function kYCRegistry_addKYCAddressViaSignature_clamped(address targetUser, uint256 deadlineOffset) public {
+        uint256 deadline = block.timestamp + (deadlineOffset % (30 days + 1));
+        // Build EIP-712 digest
+        bytes32 structHash = keccak256(
+            abi.encode(
+                kYCRegistry._APPROVAL_TYPEHASH(),
+                KYC_GROUP,
+                targetUser,
+                deadline
+            )
+        );
+        bytes32 digest = keccak256(
+            abi.encodePacked("\x19\x01", kYCRegistry.DOMAIN_SEPARATOR(), structHash)
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, digest);
+        if (v < 27) v += 27;
+        kYCRegistry_addKYCAddressViaSignature(KYC_GROUP, targetUser, deadline, v, r, s);
+    }
+
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 
     function kYCRegistry_addKYCAddressViaSignature(uint256 kycRequirementGroup, address user, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public trackOp(SelectorStorage.KYCREGISTRY_ADD_KYC_ADDRESS_VIA_SIGNATURE) asActor {

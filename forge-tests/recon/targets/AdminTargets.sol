@@ -13,6 +13,7 @@ import {Panic} from "@recon/Panic.sol";
 import {SelectorStorage} from "../SelectorStorage.sol";
 
 import {IMulticall} from "contracts/cash/interfaces/IMulticall.sol";
+import {IERC20} from "contracts/cash/external/openzeppelin/contracts/token/IERC20.sol";
 
 abstract contract AdminTargets is
     BaseTargetFunctions,
@@ -20,6 +21,208 @@ abstract contract AdminTargets is
 {
     /// CUSTOM TARGET FUNCTIONS - Add your own target functions here ///
 
+    // === CLAMPED HANDLERS ===
+
+    /// @notice Clamped completeRedemptions: clamps epoch to currentEpoch, collateral amounts to
+    ///         address(this) collateral balance; redeemers/refundees pinned to [actor] and []
+    function cashManager_completeRedemptions_clamped(uint256 collateralAmountToDist, uint256 epochToService, uint256 fees) public {
+        uint256 epoch = cashManager.currentEpoch();
+        epochToService = epochToService % (epoch + 1);
+        uint256 contractBal = IERC20(collateralToken).balanceOf(address(this));
+        collateralAmountToDist = collateralAmountToDist % (contractBal + 1);
+        fees = fees % (contractBal + 1);
+        address[] memory redeemers = new address[](1);
+        redeemers[0] = _getActor();
+        address[] memory refundees = new address[](0);
+        cashManager_completeRedemptions(redeemers, refundees, collateralAmountToDist, epochToService, fees);
+    }
+
+    /// @notice Clamped setMintExchangeRate: clamps rate to lastSetMintExchangeRate, epoch to currentEpoch
+    function cashManager_setMintExchangeRate_clamped(uint256 exchangeRate, uint256 epochToSet) public {
+        uint256 lastRate = cashManager.lastSetMintExchangeRate();
+        exchangeRate = exchangeRate % (lastRate + 1);
+        uint256 epoch = cashManager.currentEpoch();
+        epochToSet = epochToSet % (epoch + 1);
+        cashManager_setMintExchangeRate(exchangeRate, epochToSet);
+    }
+
+    /// @notice Clamped overrideExchangeRate: all three rate params clamped to lastSetMintExchangeRate, epoch to currentEpoch
+    function cashManager_overrideExchangeRate_clamped(uint256 correctExchangeRate, uint256 epochToSet, uint256 _lastSetMintExchangeRate) public {
+        uint256 lastRate = cashManager.lastSetMintExchangeRate();
+        correctExchangeRate = correctExchangeRate % (lastRate + 1);
+        _lastSetMintExchangeRate = _lastSetMintExchangeRate % (lastRate + 1);
+        uint256 epoch = cashManager.currentEpoch();
+        epochToSet = epochToSet % (epoch + 1);
+        cashManager_overrideExchangeRate(correctExchangeRate, epochToSet, _lastSetMintExchangeRate);
+    }
+
+    /// @notice Clamped setMintFee: clamps fee to BPS_DENOMINATOR
+    function cashManager_setMintFee_clamped(uint256 _mintFee) public {
+        _mintFee = _mintFee % (cashManager.BPS_DENOMINATOR() + 1);
+        cashManager_setMintFee(_mintFee);
+    }
+
+    /// @notice Clamped setMinimumDepositAmount: clamps to current mintLimit
+    function cashManager_setMinimumDepositAmount_clamped(uint256 _minimumDepositAmount) public {
+        _minimumDepositAmount = _minimumDepositAmount % (cashManager.mintLimit() + 1);
+        cashManager_setMinimumDepositAmount(_minimumDepositAmount);
+    }
+
+    /// @notice Clamped setMintLimit: clamps to current mintLimit (keeps fuzzer in meaningful range)
+    function cashManager_setMintLimit_clamped(uint256 _mintLimit) public {
+        _mintLimit = _mintLimit % (cashManager.mintLimit() + 1);
+        cashManager_setMintLimit(_mintLimit);
+    }
+
+    /// @notice Clamped setRedeemLimit: clamps to current redeemLimit
+    function cashManager_setRedeemLimit_clamped(uint256 _redeemLimit) public {
+        _redeemLimit = _redeemLimit % (cashManager.redeemLimit() + 1);
+        cashManager_setRedeemLimit(_redeemLimit);
+    }
+
+    /// @notice Clamped setRedeemMinimum: clamps to current redeemLimit
+    function cashManager_setRedeemMinimum_clamped(uint256 newRedeemMinimum) public {
+        newRedeemMinimum = newRedeemMinimum % (cashManager.redeemLimit() + 1);
+        cashManager_setRedeemMinimum(newRedeemMinimum);
+    }
+
+    /// @notice Clamped setEpochDuration: clamps to current epochDuration (avoids 0 which breaks transitionEpoch)
+    function cashManager_setEpochDuration_clamped(uint256 _epochDuration) public {
+        _epochDuration = _epochDuration % (cashManager.epochDuration() + 1);
+        cashManager_setEpochDuration(_epochDuration);
+    }
+
+    /// @notice Clamped setMintExchangeRateDeltaLimit: clamps to BPS_DENOMINATOR
+    function cashManager_setMintExchangeRateDeltaLimit_clamped(uint256 _exchangeRateDeltaLimit) public {
+        _exchangeRateDeltaLimit = _exchangeRateDeltaLimit % (cashManager.BPS_DENOMINATOR() + 1);
+        cashManager_setMintExchangeRateDeltaLimit(_exchangeRateDeltaLimit);
+    }
+
+    /// @notice Clamped setPendingMintBalance: epoch clamped to currentEpoch, balance to mintLimit; user pinned to actor
+    function cashManager_setPendingMintBalance_clamped(uint256 epoch, uint256 oldBalance, uint256 newBalance) public {
+        epoch = epoch % (cashManager.currentEpoch() + 1);
+        newBalance = newBalance % (cashManager.mintLimit() + 1);
+        cashManager_setPendingMintBalance(_getActor(), epoch, oldBalance, newBalance);
+    }
+
+    /// @notice Clamped setPendingRedemptionBalance: epoch clamped to currentEpoch, balance to redeemLimit; user pinned to actor
+    function cashManager_setPendingRedemptionBalance_clamped(uint256 epoch, uint256 balance) public {
+        epoch = epoch % (cashManager.currentEpoch() + 1);
+        balance = balance % (cashManager.redeemLimit() + 1);
+        cashManager_setPendingRedemptionBalance(_getActor(), epoch, balance);
+    }
+
+    /// @notice Clamped setKYCRequirementGroup: pins to the active KYC_GROUP constant
+    function cashManager_setKYCRequirementGroup_clamped() public {
+        cashManager_setKYCRequirementGroup(KYC_GROUP);
+    }
+
+    // === KYCRegistry clamped handlers ===
+
+    /// @notice Clamped addKYCAddresses: pins group to KYC_GROUP, adds actor to KYC
+    function kYCRegistry_addKYCAddresses_clamped() public {
+        address[] memory addrs = new address[](1);
+        addrs[0] = _getActor();
+        kYCRegistry_addKYCAddresses(KYC_GROUP, addrs);
+    }
+
+    /// @notice Clamped assignRoletoKYCGroup: pins group to KYC_GROUP and role to REGISTRY_ADMIN
+    function kYCRegistry_assignRoletoKYCGroup_clamped() public {
+        kYCRegistry_assignRoletoKYCGroup(KYC_GROUP, kYCRegistry.REGISTRY_ADMIN());
+    }
+
+    // === OndoPriceOracleV2 clamped handlers ===
+
+    /// @notice Clamped setPrice: fToken pinned to cTokenDelegate, price clamped to existing price
+    function ondoPriceOracleV2_setPrice_clamped(uint256 price) public {
+        address fToken = address(cTokenDelegate);
+        price = price % (ondoPriceOracleV2.fTokenToUnderlyingPrice(fToken) + 1);
+        ondoPriceOracleV2_setPrice(fToken, price);
+    }
+
+    /// @notice Clamped setPriceCap: fToken pinned to cTokenDelegate, value clamped to existing price
+    function ondoPriceOracleV2_setPriceCap_clamped(uint256 value) public {
+        address fToken = address(cTokenDelegate);
+        value = value % (ondoPriceOracleV2.fTokenToUnderlyingPrice(fToken) + 1);
+        ondoPriceOracleV2_setPriceCap(fToken, value);
+    }
+
+    /// @notice Clamped setMaxChainlinkOracleTimeDelay: clamps to current max delay
+    function ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay_clamped(uint256 _maxChainlinkOracleTimeDelay) public {
+        _maxChainlinkOracleTimeDelay = _maxChainlinkOracleTimeDelay % (ondoPriceOracleV2.maxChainlinkOracleTimeDelay() + 1);
+        ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay(_maxChainlinkOracleTimeDelay);
+    }
+
+    /// @notice Clamped setFTokenToCToken: fToken pinned to cTokenDelegate
+    function ondoPriceOracleV2_setFTokenToCToken_clamped(address cToken) public {
+        ondoPriceOracleV2_setFTokenToCToken(address(cTokenDelegate), cToken);
+    }
+
+    /// @notice Clamped setFTokenToChainlinkOracle: fToken pinned to cTokenDelegate
+    function ondoPriceOracleV2_setFTokenToChainlinkOracle_clamped(address newChainlinkOracle) public {
+        ondoPriceOracleV2_setFTokenToChainlinkOracle(address(cTokenDelegate), newChainlinkOracle);
+    }
+
+    // === CCashDelegate clamped handlers (note: bare delegate; will still revert at runtime) ===
+
+    /// @notice Clamped _setReserveFactor for cCash: clamps to reserveFactorMaxMantissa (1e18)
+    function cCashDelegate__setReserveFactor_clamped(uint256 newReserveFactorMantissa) public {
+        newReserveFactorMantissa = newReserveFactorMantissa % (1e18 + 1);
+        cCashDelegate__setReserveFactor(newReserveFactorMantissa);
+    }
+
+    /// @notice Clamped _reduceReserves for cCash: clamps to totalReserves
+    function cCashDelegate__reduceReserves_clamped(uint256 reduceAmount) public {
+        reduceAmount = reduceAmount % (cCashDelegate.totalReserves() + 1);
+        cCashDelegate__reduceReserves(reduceAmount);
+    }
+
+    /// @notice Clamped setKYCRequirementGroup for cCash: pins to KYC_GROUP
+    function cCashDelegate_setKYCRequirementGroup_clamped() public {
+        cCashDelegate_setKYCRequirementGroup(KYC_GROUP);
+    }
+
+    // === CTokenDelegate clamped handlers (note: bare delegate; will still revert at runtime) ===
+
+    /// @notice Clamped _setReserveFactor for cToken: clamps to reserveFactorMaxMantissa (1e18)
+    function cTokenDelegate__setReserveFactor_clamped(uint256 newReserveFactorMantissa) public {
+        newReserveFactorMantissa = newReserveFactorMantissa % (1e18 + 1);
+        cTokenDelegate__setReserveFactor(newReserveFactorMantissa);
+    }
+
+    /// @notice Clamped _reduceReserves for cToken: clamps to totalReserves
+    function cTokenDelegate__reduceReserves_clamped(uint256 reduceAmount) public {
+        reduceAmount = reduceAmount % (cTokenDelegate.totalReserves() + 1);
+        cTokenDelegate__reduceReserves(reduceAmount);
+    }
+
+    /// @notice Clamped setKYCRequirementGroup for cToken: pins to KYC_GROUP
+    function cTokenDelegate_setKYCRequirementGroup_clamped() public {
+        cTokenDelegate_setKYCRequirementGroup(KYC_GROUP);
+    }
+
+    // === CashKYCSenderReceiver clamped handlers ===
+
+    /// @notice Clamped mint: amount clamped to mintLimit; to pinned to actor
+    function cashKYCSenderReceiver_mint_clamped(uint256 amount) public {
+        amount = amount % (cashManager.mintLimit() + 1);
+        cashKYCSenderReceiver_mint(_getActor(), amount);
+    }
+
+    /// @notice Clamped grantRole: pins role to MINTER_ROLE
+    function cashKYCSenderReceiver_grantRole_clamped(address account) public {
+        cashKYCSenderReceiver_grantRole(cashKYCSenderReceiver.MINTER_ROLE(), account);
+    }
+
+    /// @notice Clamped revokeRole: pins role to MINTER_ROLE
+    function cashKYCSenderReceiver_revokeRole_clamped(address account) public {
+        cashKYCSenderReceiver_revokeRole(cashKYCSenderReceiver.MINTER_ROLE(), account);
+    }
+
+    /// @notice Clamped setKYCRequirementGroup: pins to KYC_GROUP
+    function cashKYCSenderReceiver_setKYCRequirementGroup_clamped() public {
+        cashKYCSenderReceiver_setKYCRequirementGroup(KYC_GROUP);
+    }
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 

@@ -13,6 +13,7 @@ import {Panic} from "@recon/Panic.sol";
 import {SelectorStorage} from "../SelectorStorage.sol";
 
 import "contracts/lending/tokens/cCash/CCashDelegate.sol";
+import {IERC20} from "contracts/cash/external/openzeppelin/contracts/token/IERC20.sol";
 
 abstract contract CCashDelegateTargets is
     BaseTargetFunctions,
@@ -20,6 +21,71 @@ abstract contract CCashDelegateTargets is
 {
     /// CUSTOM TARGET FUNCTIONS - Add your own target functions here ///
 
+    // === CLAMPED HANDLERS ===
+    // NOTE: bare CCashDelegate has admin==address(0); most handlers will still revert
+    // at runtime. Clamps are added to avoid bad-input reverts on top of that.
+
+    /// @notice Clamped approve for cCash: amount clamped to actor's cCash balance
+    function cCashDelegate_approve_clamped(uint256 amount) public {
+        amount = amount % (cCashDelegate.balanceOf(_getActor()) + 1);
+        cCashDelegate_approve(_getActor(), amount);
+    }
+
+    /// @notice Clamped mint for cCash: mintAmount clamped to actor's collateral balance
+    function cCashDelegate_mint_clamped(uint256 mintAmount) public {
+        mintAmount = mintAmount % (IERC20(collateralToken).balanceOf(_getActor()) + 1);
+        cCashDelegate_mint(mintAmount);
+    }
+
+    /// @notice Clamped borrow for cCash: borrowAmount clamped to available cash in contract
+    function cCashDelegate_borrow_clamped(uint256 borrowAmount) public {
+        borrowAmount = borrowAmount % (cCashDelegate.getCash() + 1);
+        cCashDelegate_borrow(borrowAmount);
+    }
+
+    /// @notice Clamped redeem for cCash: redeemTokens clamped to actor's cCash balance
+    function cCashDelegate_redeem_clamped(uint256 redeemTokens) public {
+        redeemTokens = redeemTokens % (cCashDelegate.balanceOf(_getActor()) + 1);
+        cCashDelegate_redeem(redeemTokens);
+    }
+
+    /// @notice Clamped redeemUnderlying for cCash: redeemAmount clamped to actor's underlying balance
+    function cCashDelegate_redeemUnderlying_clamped(uint256 redeemAmount) public {
+        redeemAmount = redeemAmount % (cCashDelegate.balanceOfUnderlying(_getActor()) + 1);
+        cCashDelegate_redeemUnderlying(redeemAmount);
+    }
+
+    /// @notice Clamped repayBorrow for cCash: repayAmount clamped to actor's current borrow
+    function cCashDelegate_repayBorrow_clamped(uint256 repayAmount) public {
+        repayAmount = repayAmount % (cCashDelegate.borrowBalanceCurrent(_getActor()) + 1);
+        cCashDelegate_repayBorrow(repayAmount);
+    }
+
+    /// @notice Clamped repayBorrowBehalf for cCash: borrower pinned to actor, amount clamped to borrower's borrow
+    function cCashDelegate_repayBorrowBehalf_clamped(uint256 repayAmount) public {
+        address borrower = _getActor();
+        repayAmount = repayAmount % (cCashDelegate.borrowBalanceCurrent(borrower) + 1);
+        cCashDelegate_repayBorrowBehalf(borrower, repayAmount);
+    }
+
+    /// @notice Clamped seize for cCash: borrower pinned to actor, seizeTokens clamped to borrower balance
+    function cCashDelegate_seize_clamped(uint256 seizeTokens) public {
+        address borrower = _getActor();
+        seizeTokens = seizeTokens % (cCashDelegate.balanceOf(borrower) + 1);
+        cCashDelegate_seize(_getActor(), borrower, seizeTokens);
+    }
+
+    /// @notice Clamped transfer for cCash: dst pinned to actor, amount clamped to actor balance
+    function cCashDelegate_transfer_clamped(uint256 amount) public {
+        amount = amount % (cCashDelegate.balanceOf(_getActor()) + 1);
+        cCashDelegate_transfer(_getActor(), amount);
+    }
+
+    /// @notice Clamped transferFrom for cCash: src/dst pinned to actor, amount clamped to allowance
+    function cCashDelegate_transferFrom_clamped(address src, uint256 amount) public {
+        amount = amount % (cCashDelegate.allowance(src, _getActor()) + 1);
+        cCashDelegate_transferFrom(src, _getActor(), amount);
+    }
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 

@@ -101,6 +101,33 @@ abstract contract CashManagerTargets is
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 
+    // === CLAMPED HANDLERS ===
+
+    /// @notice Clamped requestMint: clamps collateralAmountIn to actor balance and mintLimit
+    function cashManager_requestMint_clamped(uint256 collateralAmountIn) public {
+        uint256 actorBalance = IERC20(collateralToken).balanceOf(_getActor());
+        uint256 mintLimitVal = cashManager.mintLimit();
+        uint256 maxAmount = actorBalance < mintLimitVal ? actorBalance : mintLimitVal;
+        collateralAmountIn = collateralAmountIn % (maxAmount + 1);
+        cashManager_requestMint(collateralAmountIn);
+    }
+
+    /// @notice Clamped claimMint: pins user to actor, clamps epochToClaim to currentEpoch
+    function cashManager_claimMint_clamped(uint256 epochToClaim) public {
+        uint256 epoch = cashManager.currentEpoch();
+        epochToClaim = epochToClaim % (epoch + 1);
+        cashManager_claimMint(_getActor(), epochToClaim);
+    }
+
+    /// @notice Clamped requestRedemption: clamps amountCashToRedeem to actor CASH balance and redeemLimit
+    function cashManager_requestRedemption_clamped(uint256 amountCashToRedeem) public {
+        uint256 actorBalance = cashKYCSenderReceiver.balanceOf(_getActor());
+        uint256 redeemLimitVal = cashManager.redeemLimit();
+        uint256 maxAmount = actorBalance < redeemLimitVal ? actorBalance : redeemLimitVal;
+        amountCashToRedeem = amountCashToRedeem % (maxAmount + 1);
+        cashManager_requestRedemption(amountCashToRedeem);
+    }
+
     function cashManager_claimMint(address user, uint256 epochToClaim) public trackOp(SelectorStorage.CASH_MANAGER_CLAIM_MINT) asActor {
         cashManager.claimMint(user, epochToClaim);
     }

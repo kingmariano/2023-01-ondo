@@ -20,6 +20,49 @@ abstract contract CashKYCSenderReceiverTargets is
 {
     /// CUSTOM TARGET FUNCTIONS - Add your own target functions here ///
 
+    // === CLAMPED HANDLERS ===
+
+    /// @notice Clamped approve: spender pinned to cashManager, amount clamped to actor balance
+    function cashKYCSenderReceiver_approve_clamped(uint256 amount) public {
+        amount = amount % (cashKYCSenderReceiver.balanceOf(_getActor()) + 1);
+        cashKYCSenderReceiver_approve(address(cashManager), amount);
+    }
+
+    /// @notice Clamped burn: amount clamped to actor balance
+    function cashKYCSenderReceiver_burn_clamped(uint256 amount) public {
+        amount = amount % (cashKYCSenderReceiver.balanceOf(_getActor()) + 1);
+        cashKYCSenderReceiver_burn(amount);
+    }
+
+    /// @notice Clamped burnFrom: amount clamped to allowance of actor from another actor
+    function cashKYCSenderReceiver_burnFrom_clamped(address account, uint256 amount) public {
+        amount = amount % (cashKYCSenderReceiver.allowance(account, _getActor()) + 1);
+        cashKYCSenderReceiver_burnFrom(account, amount);
+    }
+
+    /// @notice Clamped decreaseAllowance: spender pinned to cashManager, subtractedValue clamped to current allowance
+    function cashKYCSenderReceiver_decreaseAllowance_clamped(uint256 subtractedValue) public {
+        subtractedValue = subtractedValue % (cashKYCSenderReceiver.allowance(_getActor(), address(cashManager)) + 1);
+        cashKYCSenderReceiver_decreaseAllowance(address(cashManager), subtractedValue);
+    }
+
+    /// @notice Clamped increaseAllowance: spender pinned to cashManager, addedValue clamped to actor balance
+    function cashKYCSenderReceiver_increaseAllowance_clamped(uint256 addedValue) public {
+        addedValue = addedValue % (cashKYCSenderReceiver.balanceOf(_getActor()) + 1);
+        cashKYCSenderReceiver_increaseAllowance(address(cashManager), addedValue);
+    }
+
+    /// @notice Clamped transfer: to pinned to actor, amount clamped to actor balance
+    function cashKYCSenderReceiver_transfer_clamped(uint256 amount) public {
+        amount = amount % (cashKYCSenderReceiver.balanceOf(_getActor()) + 1);
+        cashKYCSenderReceiver_transfer(_getActor(), amount);
+    }
+
+    /// @notice Clamped transferFrom: amount clamped to allowance from->actor
+    function cashKYCSenderReceiver_transferFrom_clamped(address from, uint256 amount) public {
+        amount = amount % (cashKYCSenderReceiver.allowance(from, _getActor()) + 1);
+        cashKYCSenderReceiver_transferFrom(from, _getActor(), amount);
+    }
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///
 
