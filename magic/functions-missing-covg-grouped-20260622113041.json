@@ -1,6 +1,6 @@
 {
-  "timestamp": "1782127626",
-  "lcov_file": "echidna/covered.1782127626.lcov",
+  "timestamp": "20260622113041",
+  "lcov_file": "echidna/covered.1782111834.lcov",
   "missing_coverage": [
     {
       "function": "getUnderlyingPrice",
@@ -789,8 +789,9 @@
   ],
   "summary": {
     "functions_analyzed": 265,
-    "functions_with_missing_coverage": 21,
-    "uncovered_sections": 39,
-    "full_coverage": false
+    "functions_missing_coverage": 39,
+    "functions_removed_now_covered": 38,
+    "new_uncovered_functions": 39,
+    "functions_retained_still_uncovered": 0
   }
 }
