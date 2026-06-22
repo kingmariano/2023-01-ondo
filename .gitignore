@@ -59,3 +59,4 @@ medusa
 # recon-magic coverage build artifacts
 out/
 context_output/
+magic/*.err
