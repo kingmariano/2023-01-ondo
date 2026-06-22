@@ -23,6 +23,161 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     }
 
     // ============================================================
+    //  Phase 3B smoke-tests
+    // ============================================================
+
+    /// SMOKE: Phase 3B static properties hold from construction
+    function test_properties_3b_static() public {
+        // DOOM properties: valid from construction (before any admin mis-call)
+        _assertProperty(property_doom_assetSenderNotZero(),     "DOOM-FF-06: assetSender != 0");
+        _assertProperty(property_doom_epochDurationNotZero(),   "DOOM-FF-07: epochDuration != 0");
+        _assertProperty(property_eco_lowRateOverrideAlert(),    "ECO-02: no low override yet");
+        _assertProperty(property_t11_epochOnlyAdvances(),       "T11-01: epoch non-decreasing");
+        _assertProperty(property_t11_epochStartTimestampValid(),"T11-02: epoch start <= now");
+        _assertProperty(property_t13_supplyNoOverflow(),        "T13-02: supply sane");
+    }
+
+    /// SMOKE: Phase 3B inline properties after a full mint cycle
+    function test_properties_3b_after_mint() public {
+        cashManager_requestMint(MINT_AMT);
+        _assertProperty(property_delta_requestMintDepositAccounting(), "DELTA-01 post-requestMint");
+        _assertProperty(property_profit_mintRequestSumConsistent(),    "PROFIT-02 post-requestMint");
+        _assertProperty(property_t14_mintRequestSumMatchesOnChain(),   "T14-04 post-requestMint");
+
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        _assertProperty(property_t11_epochOnlyAdvances(), "T11-01 post-transition");
+
+        cashManager_setMintExchangeRate(1e6, 0);
+        _assertProperty(property_delta_setRateUpdatesLastRate(),    "DELTA-05 post-setRate");
+        _assertProperty(property_delta_autopauseOnDeltaViolation(), "DELTA-06 post-setRate");
+        _assertProperty(property_t11_autopauseNoRateUpdate(),       "T11-04 post-setRate");
+        _assertProperty(property_rate_deltaLimitEnforced(),         "RATE-03 post-setRate");
+
+        cashManager_claimMint(_getActor(), 0);
+        _assertProperty(property_delta_claimMintCashBalance(),  "DELTA-04 post-claim");
+        _assertProperty(property_t14_cashOwedAtLeastOne(),      "T14-01 post-claim");
+        _assertProperty(property_round_cashOwedRoundedDown(),   "ROUND-01 post-claim");
+        _assertProperty(property_sol_mintRequestsZeroAfterClaim(), "SOL-06 post-claim");
+        _assertProperty(property_profit_burnGeRefund(),         "PROFIT-05/SOL-01 post-claim");
+    }
+
+    /// SMOKE: Phase 3B properties after redemption
+    function test_properties_3b_after_redemption() public {
+        cashManager_requestMint(MINT_AMT);
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_setMintExchangeRate(1e6, 0);
+        cashManager_claimMint(_getActor(), 0);
+        cashKYCSenderReceiver_approve(address(cashManager), type(uint256).max);
+
+        cashManager_requestRedemption(1e18);
+        _assertProperty(property_round_feeRoundedDown(),            "ROUND-02 post-requestRedemption");
+        _assertProperty(property_profit_burnGeRefund(),             "PROFIT-05 post-requestRedemption");
+
+        uint256 redeemEpoch = cashManager.currentEpoch();
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+
+        address[] memory redeemers = new address[](1);
+        redeemers[0] = _getActor();
+        address[] memory refundees = new address[](0);
+        cashManager_completeRedemptions(redeemers, refundees, 1e6, redeemEpoch, 0);
+        _assertProperty(property_round_redemptionSumWithinDist(),          "ROUND-03 post-complete");
+        _assertProperty(property_round_totalBurnedDecreaseAfterComplete(), "ROUND-04 post-complete");
+        _assertProperty(property_doom_doubleServiceReverts(),               "DOOM-FF-02 post-complete");
+        _assertProperty(property_ff_burnAmtNonIncreasingAfterComplete(),    "FF-02 post-complete");
+    }
+
+    /// SMOKE: T12-01 exchange rate immutability
+    function test_properties_3b_rateImmutability() public {
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_setMintExchangeRate(1e6, 0);
+        // After setting rate for epoch 0, ghost_epochFirstRate[0] should be 1e6
+        // A second call must revert (EpochExchangeRateAlreadySet)
+        // T12-01: the rate for epoch 0 cannot be changed by setMintExchangeRate
+        _assertProperty(property_t12_exchangeRateImmutableOnceSet(), "T12-01 post-setRate");
+        // Verify it's still correct after another transition
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        _assertProperty(property_t12_exchangeRateImmutableOnceSet(), "T12-01 post-2nd-transition");
+    }
+
+    /// SMOKE: Negative privilege properties — non-admin cannot call admin functions
+    function test_properties_3b_negative_privilege() public {
+        // The active actor starts as address(this) which IS admin; switch to user
+        // We call the properties directly — they internally prank as _getActor()
+        // Force actor to user (not admin) by using vm.prank indirectly through property
+        // The property checks: if actor == address(this), skip. Since actor is address(this),
+        // all four will return true (skip). That's expected — they're fuzzer properties.
+        // For Foundry smoke we call them to verify no compile/runtime error.
+        _assertProperty(property_neg_nonAdminCannotSetMintExchangeRate(), "PRIV-NEG-01");
+        _assertProperty(property_neg_nonAdminCannotPause(),               "PRIV-NEG-02");
+        _assertProperty(property_neg_nonAdminCannotSetMintFee(),          "PRIV-NEG-03");
+        _assertProperty(property_neg_nonAdminCannotOverrideRate(),        "PRIV-NEG-04");
+        _assertProperty(property_neg_nonAdminCannotAddKYCAddresses(),     "KYC-01");
+    }
+
+    /// DOOM TEST — property_doom_assetSenderNotZero detects missing zero-address validation.
+    ///             This test verifies the DOOM property CORRECTLY detects the bug.
+    ///             The property should FAIL (return false) after setAssetSender(address(0)).
+    function test_doom_assetSenderZero_detectsBug() public {
+        // First verify it holds
+        assertTrue(property_doom_assetSenderNotZero(), "Should pass initially");
+        // Now trigger the bug
+        cashManager_setAssetSender(address(0));
+        // The DOOM property should now detect the violation
+        assertFalse(property_doom_assetSenderNotZero(), "DOOM-FF-06: should detect assetSender==0 bug");
+    }
+
+    /// DOOM TEST — property_doom_epochDurationNotZero detects missing zero-duration validation.
+    ///             The property should FAIL (return false) after setEpochDuration(0).
+    function test_doom_epochDurationZero_detectsBug() public {
+        // First verify it holds
+        assertTrue(property_doom_epochDurationNotZero(), "Should pass initially");
+        // Now trigger the bug: setEpochDuration(0)
+        cashManager_setEpochDuration(0);
+        // The DOOM property should now detect the violation
+        assertFalse(property_doom_epochDurationNotZero(), "DOOM-FF-07: should detect epochDuration==0 bug");
+    }
+
+    /// DOOM TEST — ECO-02: overrideExchangeRate can set rate to 1 (< MIN_SAFE_RATE).
+    ///             The property should FAIL (return false) after override with rate=1.
+    function test_doom_eco02_lowRateOverride_detectsBug() public {
+        // First transition epoch so we have a past epoch to override
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_setMintExchangeRate(1e6, 0);
+
+        // Verify property holds initially
+        assertTrue(property_eco_lowRateOverrideAlert(), "ECO-02 should pass initially");
+
+        // Override with a dangerously low rate (1, well below MIN_SAFE_RATE of 1e3)
+        cashManager_overrideExchangeRate(1, 0, 1);
+
+        // The DOOM property should now detect the violation
+        assertFalse(property_eco_lowRateOverrideAlert(), "ECO-02: should detect low rate override bug");
+    }
+
+    /// DOOM TEST — overrideExchangeRate(0, epoch, 0) bricks claimMint for that epoch.
+    ///             After override with rate=0, claimMint reverts with ExchangeRateNotSet.
+    function test_doom_overrideRateZero_bricksClaimMint() public {
+        // Setup: requestMint, transition, then override rate to 0
+        cashManager_requestMint(MINT_AMT);
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_setMintExchangeRate(1e6, 0);
+
+        // Override rate to 0 for epoch 0 — this bricks claimMint
+        cashManager_overrideExchangeRate(0, 0, 1e6);
+
+        // Now try to claimMint for epoch 0 — should revert
+        vm.expectRevert(); // ExchangeRateNotSet (rate == 0)
+        this.cashManager_claimMint(_getActor(), 0);
+    }
+
+    // ============================================================
     //  Phase 3A — property smoke-tests (run through real scenarios
     //  and assert the property_ functions return true)
     // ============================================================

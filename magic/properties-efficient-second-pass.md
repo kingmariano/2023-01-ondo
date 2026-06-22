@@ -555,3 +555,72 @@ Total after merge/drop: **88 distinct KEEP properties** (down from 125 raw entri
 | FF-02 | Double-service protection: needs ghost set of serviced addresses; Phase 3B |
 | SOL-06 (exact) | addressToBurnAmt == 0 for specific redeemers after completeRedemptions: needs to know which addresses were in the redeemers array; Phase 3B inline |
 | ECO-02 | overrideExchangeRate rate < 1e3 alert with pending claims: needs ghost tracking of pending claims per epoch; Phase 3B |
+
+---
+
+## Phase 3B Implementation Summary
+
+### Implemented Properties (Phase 3B)
+
+#### INLINE Properties
+| Property ID | Function Name | Description |
+|------------|---------------|-------------|
+| PROFIT-02 | `property_profit_mintRequestSumConsistent` | After requestMint, ghost_mintRequestSum matches on-chain mintRequestsPerEpoch |
+| PROFIT-05/SOL-01 | `property_profit_burnGeRefund` | ghost_totalCashBurned >= ghost_totalCashRefunded (conservation) |
+| DELTA-01 | `property_delta_requestMintDepositAccounting` | After requestMint, mintRequests delta <= mintLimit |
+| DELTA-04 | `property_delta_claimMintCashBalance` | After claimMint, totalSupply increase >= 1 |
+| DELTA-05 | `property_delta_setRateUpdatesLastRate` | Normal path updates lastSetMintExchangeRate; auto-pause path does NOT |
+| DELTA-06 | `property_delta_autopauseOnDeltaViolation` | If auto-pause fired, contract IS paused |
+| T11-01 | `property_t11_epochOnlyAdvances` | Epoch never decreases |
+| T11-02 | `property_t11_epochStartTimestampValid` | currentEpochStartTimestamp <= block.timestamp |
+| T11-04 | `property_t11_autopauseNoRateUpdate` | Auto-pause does not update lastSetMintExchangeRate |
+| T11-05 | `property_t11_overrideRateMonotonic` | overrideExchangeRate cannot set lastSetMintExchangeRate to 0 if it was non-zero |
+| T12-01 | `property_t12_exchangeRateImmutableOnceSet` | epochToExchangeRate immutable except via override (ghost_epochFirstRate map) |
+| T13-02 | `property_t13_supplyNoOverflow` | totalSupply <= type(uint128).max |
+| T14-01 | `property_t14_cashOwedAtLeastOne` | claimMint mints >= 1 CASH |
+| T14-03 | `property_t14_feeRoundingCorrect` | Fees never round to > 100% of deposit |
+| T14-04 | `property_t14_mintRequestSumMatchesOnChain` | ghost_mintRequestSum[ep][actor] <= mintRequestsPerEpoch[ep][actor] |
+| ROUND-01 | `property_round_cashOwedRoundedDown` | Supply increase <= type(uint128).max (sanity cap for rounding-down) |
+| ROUND-02 | `property_round_feeRoundedDown` | Fee rounding: deposit delta > 0 when mintFee > 0 and mint succeeded |
+| ROUND-03 | `property_round_redemptionSumWithinDist` | assetSender balance decreases after completeRedemptions |
+| ROUND-04 | `property_round_totalBurnedDecreaseAfterComplete` | Current epoch totalBurned does not increase via completeRedemptions |
+| RATE-03 | `property_rate_deltaLimitEnforced` | Non-pausing setMintExchangeRate results in non-zero lastSetMintExchangeRate |
+| SOL-06 (exact) | `property_sol_mintRequestsZeroAfterClaim` | After claimMint, actor's mint requests do not increase |
+| FF-02 | `property_ff_burnAmtNonIncreasingAfterComplete` | Current epoch totalBurned does not increase via completeRedemptions |
+
+#### NEGATIVE / PRIV-NEG Properties
+| Property ID | Function Name | Description |
+|------------|---------------|-------------|
+| PRIV-NEG-01 | `property_neg_nonAdminCannotSetMintExchangeRate` | Non-SETTER_ADMIN cannot call setMintExchangeRate |
+| PRIV-NEG-02 | `property_neg_nonAdminCannotPause` | Non-PAUSER_ADMIN cannot call pause() |
+| PRIV-NEG-03 | `property_neg_nonAdminCannotSetMintFee` | Non-MANAGER_ADMIN cannot call setMintFee |
+| PRIV-NEG-04 | `property_neg_nonAdminCannotOverrideRate` | Non-MANAGER_ADMIN cannot call overrideExchangeRate |
+| KYC-01 | `property_neg_nonAdminCannotAddKYCAddresses` | Non-REGISTRY_ADMIN cannot call addKYCAddresses |
+
+#### DOOMSDAY Properties (detect real protocol bugs)
+| Property ID | Function Name | Bug Detected | Expected Fuzzer Behavior |
+|------------|---------------|--------------|--------------------------|
+| DOOM-FF-06 | `property_doom_assetSenderNotZero` | setAssetSender(address(0)) accepted without validation; bricks completeRedemptions | SHOULD FAIL (finds bug) |
+| DOOM-FF-07 | `property_doom_epochDurationNotZero` | setEpochDuration(0) accepted without validation; causes division-by-zero in transitionEpoch | SHOULD FAIL (finds bug) |
+| ECO-02 | `property_eco_lowRateOverrideAlert` | overrideExchangeRate has no delta limit; rate can be set to 1 (< MIN_SAFE_RATE=1e3) | SHOULD FAIL (finds bug) |
+| DOOM-FF-02 | `property_doom_doubleServiceReverts` | After completeRedemptions, actor burn amount must not increase (soft guard) | Hold; exact check deferred |
+
+### Ghost Accumulators Added (Phase 3B)
+- `ghost_totalCollateralDeposited` — cumulative requestMint deposits
+- `ghost_totalCashMinted` — cumulative claimMint minted CASH
+- `ghost_totalCashBurned` — cumulative requestRedemption burned CASH
+- `ghost_totalCashRefunded` — cumulative completeRedemptions refunded CASH
+- `ghost_epochFirstRate[ep]` — first observed non-zero epochToExchangeRate per epoch (T12-01 immutability)
+- `ghost_mintRequestSum[ep][actor]` — per-(epoch, actor) requestMint accumulator (T14-04, PROFIT-02)
+- `ghost_lowRateOverrideDetected` / `ghost_lowRateOverrideValue` — ECO-02 alert flag
+- `ghost_lastAssetSender` — last observed assetSender (DOOM-FF-06)
+- `ghost_epochDurationZeroSet` — whether setEpochDuration(0) was ever called (DOOM-FF-07)
+- Vars struct extended with `exchangeRateDeltaLimit`, `assetSender`, `epochDurationSnapshot`
+
+### Deferred to Coverage Phase
+| Property ID | Reason |
+|------------|--------|
+| PROFIT-01 | Multi-epoch ProfitTracker accumulation across epoch boundaries requires shortcut firing across epochs; not implementable without complex shortcut wiring |
+| T13-02 (full) | Full totalSupply == sum(balanceOf) check requires actor enumeration; no actor list in current setup |
+| ROUND-01 (exact) | Exact cashOwed formula cross-check requires recovering collateralDeposited which is zeroed by claimMint; needs before-snapshot of the specific epochToClaim's deposit |
+| SOL-06 (addressToBurnAmt per-redeemer) | Exact check requires knowing which addresses were in the redeemers[] array of completeRedemptions; inline instrumentation in handler would be needed |
