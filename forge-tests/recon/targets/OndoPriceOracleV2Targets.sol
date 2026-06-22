@@ -16,6 +16,7 @@ import "contracts/lending/OndoPriceOracleV2.sol";
 
 import {IOndoPriceOracleV2} from "contracts/lending/IOndoPriceOracleV2.sol";
 import {MockAggregatorV3} from "../mocks/MockAggregatorV3.sol";
+import {MockFToken} from "../mocks/MockFToken.sol";
 
 abstract contract OndoPriceOracleV2Targets is
     BaseTargetFunctions,
@@ -38,17 +39,47 @@ abstract contract OndoPriceOracleV2Targets is
         ondoPriceOracleV2.setPriceCap(fToken, 0);
     }
 
-    /// @notice Shortcut: exercises the CHAINLINK oracle path in getUnderlyingPrice (line ~106)
-    ///         Configures fToken with CHAINLINK oracle type and mock aggregator.
-    ///         Requires: cTokenDelegate has underlying() that is a real ERC20 (NOT satisfied for bare delegate)
-    ///         NOTE: This shortcut will revert because bare cTokenDelegate has no underlying().
-    ///         Documented here for coverage-phase reference.
+    // === GROUP B: COMPOUND oracle path handler ===
+
+    /// @notice Exercises the COMPOUND oracle path in getUnderlyingPrice.
+    ///         fTokenCompound is wired to OracleType.COMPOUND with cCashDelegate as cToken.
+    ///         mockCTokenOracle returns a fixed price, so this will not revert.
+    function shortcut_compoundOraclePath() public updateGhosts {
+        ondoPriceOracleV2.getUnderlyingPrice(address(fTokenCompound));
+    }
+
+    // === GROUP B: CHAINLINK oracle path handler ===
+
+    /// @notice Exercises the CHAINLINK oracle path in getUnderlyingPrice.
+    ///         fTokenChainlink is wired to OracleType.CHAINLINK with the MockAggregatorV3.
+    ///         The mock returns updatedAt=block.timestamp so the staleness check passes.
     function shortcut_chainlinkOraclePath(int256 /*answer*/) public updateGhosts {
-        // Skip — bare delegate has no underlying(); would revert at setFTokenToChainlinkOracle
-        // This shortcut is a placeholder for the coverage phase when markets are wired.
-        // In that phase: setFTokenToOracleType(fToken, CHAINLINK), setFTokenToChainlinkOracle(fToken, oracle)
-        // then getUnderlyingPrice(fToken).
-        return;
+        ondoPriceOracleV2.getUnderlyingPrice(address(fTokenChainlink));
+    }
+
+    /// @notice Directly calls getChainlinkOraclePrice for fTokenChainlink.
+    ///         Covers the getChainlinkOraclePrice function body (lines 280-300).
+    function ondoPriceOracleV2_getChainlinkOraclePrice_clamped() public updateGhosts {
+        ondoPriceOracleV2.getChainlinkOraclePrice(address(fTokenChainlink));
+    }
+
+    // === GROUP B: setFTokenToCToken clamped handler (emit coverage) ===
+
+    /// @notice Clamped setFTokenToCToken: uses fTokenCompound + cCashDelegate so
+    ///         _setFTokenToCToken succeeds and the emit line is reached.
+    ///         fTokenCompound is already set to OracleType.COMPOUND in Setup.
+    function ondoPriceOracleV2_setFTokenToCToken_compound_clamped() public updateGhosts {
+        // fTokenCompound.underlying() == address(0) == cCashDelegate.underlying() → passes equality check
+        ondoPriceOracleV2.setFTokenToCToken(address(fTokenCompound), address(cCashDelegate));
+    }
+
+    // === GROUP B: setFTokenToChainlinkOracle clamped handler (emit coverage) ===
+
+    /// @notice Clamped setFTokenToChainlinkOracle: uses fTokenChainlink + chainlinkOracle so
+    ///         _setFTokenToChainlinkOracle succeeds and the emit line is reached.
+    ///         fTokenChainlink is already set to OracleType.CHAINLINK in Setup.
+    function ondoPriceOracleV2_setFTokenToChainlinkOracle_chainlink_clamped() public updateGhosts {
+        ondoPriceOracleV2.setFTokenToChainlinkOracle(address(fTokenChainlink), address(chainlinkOracle));
     }
 
     /// AUTO GENERATED TARGET FUNCTIONS - WARNING: DO NOT DELETE OR MODIFY THIS LINE ///

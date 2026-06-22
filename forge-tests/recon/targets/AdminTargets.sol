@@ -163,6 +163,37 @@ abstract contract AdminTargets is
         ondoPriceOracleV2_setFTokenToChainlinkOracle(address(cTokenDelegate), newChainlinkOracle);
     }
 
+    // === GROUP C: Ownable owner() + transferOwnership() handlers ===
+
+    /// @notice Calls owner() on OndoPriceOracleV2 to cover the Ownable.owner view function.
+    function ondoPriceOracleV2_owner() public {
+        ondoPriceOracleV2.owner();
+    }
+
+    /// @notice Clamped transferOwnership: transfers to a known actor then immediately transfers back.
+    ///         Uses vm.startPrank so the actor can call transferOwnership back to address(this).
+    ///         Ensures ownership is never lost.
+    function ondoPriceOracleV2_transferOwnership_clamped() public asAdmin {
+        address actor = _getActor();
+        // Do not transfer to address(this) (would revert in OZ Ownable if same, or is a no-op risk)
+        // address(this) is the owner; transfer to a different actor
+        if (actor == address(this)) return;
+        // Transfer to actor
+        ondoPriceOracleV2.transferOwnership(actor);
+        // Transfer back from actor to address(this)
+        vm.startPrank(actor);
+        ondoPriceOracleV2.transferOwnership(address(this));
+        vm.stopPrank();
+    }
+
+    // === GROUP C: CashKYCSenderReceiver.setKYCRegistry clamped handler ===
+    // NOTE: KYC_CONFIGURER_ROLE is granted to address(this) in Setup so this succeeds.
+
+    /// @notice Clamped setKYCRegistry: clamps registry to the known KYCRegistry address.
+    function cashKYCSenderReceiver_setKYCRegistry_clamped() public asAdmin {
+        cashKYCSenderReceiver_setKYCRegistry(address(kYCRegistry));
+    }
+
     // === CCashDelegate clamped handlers (note: bare delegate; will still revert at runtime) ===
 
     /// @notice Clamped _setReserveFactor for cCash: clamps to reserveFactorMaxMantissa (1e18)
