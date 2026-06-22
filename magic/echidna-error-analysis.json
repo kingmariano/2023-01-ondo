@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "exit_code": 0,
+  "error_type": null,
+  "workflow_action": "continue",
+  "message": "Echidna completed successfully",
+  "coverage_files": [
+    "/home/user/2023-01-ondo/echidna/covered.1782068730.txt",
+    "/home/user/2023-01-ondo/echidna/covered.1782068820.txt",
+    "/home/user/2023-01-ondo/echidna/covered.1782108370.txt",
+    "/home/user/2023-01-ondo/echidna/covered.1782111834.txt",
+    "/home/user/2023-01-ondo/echidna/covered.1782127626.txt"
+  ],
+  "coverage_generated": true,
+  "timestamp": "2026-06-22T11:27:34.732636"
+}

@@ -1,0 +1,140 @@
+{
+  "reverting_handlers": [
+    {
+      "handler": "cCashDelegate_accrueInterest",
+      "reason": "Bare CCashDelegate has interestRateModel == address(0); accrueInterest calls into a zero InterestRateModel and reverts. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_exchangeRateCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_totalBorrowsCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_balanceOfUnderlying",
+      "reason": "Calls exchangeRateCurrent -> accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_borrowBalanceCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_mint",
+      "reason": "Requires accrued interest (interestRateModel == address(0)) and a configured Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_redeem",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_redeemUnderlying",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_borrow",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_repayBorrow",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_repayBorrowBehalf",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_seize",
+      "reason": "Requires accrued interest + Comptroller + liquidation state; bare delegate has none. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_transfer",
+      "reason": "Transfer is gated by the Comptroller (transferAllowed); bare delegate has comptroller == address(0). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_transferFrom",
+      "reason": "Transfer is gated by the Comptroller (transferAllowed); bare delegate has comptroller == address(0). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_setKYCRegistry",
+      "reason": "require(msg.sender == admin); bare delegate admin == address(0), so no caller can pass. Admin/market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cCashDelegate_setKYCRequirementGroup",
+      "reason": "require(msg.sender == admin); bare delegate admin == address(0). Admin/market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_accrueInterest",
+      "reason": "Bare CTokenDelegate has interestRateModel == address(0); accrueInterest calls into a zero InterestRateModel and reverts. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_exchangeRateCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_totalBorrowsCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_balanceOfUnderlying",
+      "reason": "Calls exchangeRateCurrent -> accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_borrowBalanceCurrent",
+      "reason": "Calls accrueInterest (interestRateModel == address(0)). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_mint",
+      "reason": "Requires accrued interest (interestRateModel == address(0)) and a configured Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_redeem",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_redeemUnderlying",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_borrow",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_repayBorrow",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_repayBorrowBehalf",
+      "reason": "Requires accrued interest + Comptroller; bare delegate has neither. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_seize",
+      "reason": "Requires accrued interest + Comptroller + liquidation state; bare delegate has none. Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_transfer",
+      "reason": "Transfer is gated by the Comptroller (transferAllowed); bare delegate has comptroller == address(0). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_transferFrom",
+      "reason": "Transfer is gated by the Comptroller (transferAllowed); bare delegate has comptroller == address(0). Lending market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_setKYCRegistry",
+      "reason": "require(msg.sender == admin); bare delegate admin == address(0), so no caller can pass. Admin/market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "cTokenDelegate_setKYCRequirementGroup",
+      "reason": "require(msg.sender == admin); bare delegate admin == address(0). Admin/market not wired in base setup; deferred to coverage phase."
+    },
+    {
+      "handler": "ondoPriceOracleV2_setFTokenToCToken",
+      "reason": "_setFTokenToCToken requires fTokenToOracleType[fToken] == COMPOUND (set only via owner-only setFTokenToOracleType, which is not exposed as a handler) and a wired cToken whose underlying() matches the fToken's. The delegates are configured MANUAL in base setup and have no underlying wired; this is part of the deferred Compound-market wiring (coverage phase)."
+    },
+    {
+      "handler": "ondoPriceOracleV2_setFTokenToChainlinkOracle",
+      "reason": "_setFTokenToChainlinkOracle requires fTokenToOracleType[fToken] == CHAINLINK (owner-only setFTokenToOracleType, not exposed as a handler) and reads fToken.underlying().decimals(); the bare delegate has no underlying wired. Deferred to coverage phase."
+    }
+  ]
+}

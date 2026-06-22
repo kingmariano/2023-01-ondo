@@ -1,0 +1,494 @@
+[
+  {
+    "target_function": "cashManager_requestMint",
+    "type": "max",
+    "value": "uint256 collateralAmountIn",
+    "access": "cashManager.mintLimit()"
+  },
+  {
+    "target_function": "cashManager_requestMint",
+    "type": "max",
+    "value": "uint256 collateralAmountIn",
+    "access": "IERC20(collateralToken).balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashManager_claimMint",
+    "type": "max",
+    "value": "uint256 epochToClaim",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_claimMint",
+    "type": "exact",
+    "value": "address user",
+    "access": "_getActor()"
+  },
+  {
+    "target_function": "cashManager_requestRedemption",
+    "type": "max",
+    "value": "uint256 amountCashToRedeem",
+    "access": "cashKYCSenderReceiver.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashManager_requestRedemption",
+    "type": "max",
+    "value": "uint256 amountCashToRedeem",
+    "access": "cashManager.redeemLimit()"
+  },
+  {
+    "target_function": "cashManager_completeRedemptions",
+    "type": "max",
+    "value": "uint256 collateralAmountToDist",
+    "access": "IERC20(collateralToken).balanceOf(address(this))"
+  },
+  {
+    "target_function": "cashManager_completeRedemptions",
+    "type": "max",
+    "value": "uint256 fees",
+    "access": "IERC20(collateralToken).balanceOf(address(this))"
+  },
+  {
+    "target_function": "cashManager_completeRedemptions",
+    "type": "max",
+    "value": "uint256 epochToService",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_setMintExchangeRate",
+    "type": "max",
+    "value": "uint256 exchangeRate",
+    "access": "cashManager.lastSetMintExchangeRate()"
+  },
+  {
+    "target_function": "cashManager_setMintExchangeRate",
+    "type": "max",
+    "value": "uint256 epochToSet",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_overrideExchangeRate",
+    "type": "max",
+    "value": "uint256 correctExchangeRate",
+    "access": "cashManager.lastSetMintExchangeRate()"
+  },
+  {
+    "target_function": "cashManager_overrideExchangeRate",
+    "type": "max",
+    "value": "uint256 epochToSet",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_overrideExchangeRate",
+    "type": "max",
+    "value": "uint256 _lastSetMintExchangeRate",
+    "access": "cashManager.lastSetMintExchangeRate()"
+  },
+  {
+    "target_function": "cashManager_setMintFee",
+    "type": "max",
+    "value": "uint256 _mintFee",
+    "access": "cashManager.BPS_DENOMINATOR()"
+  },
+  {
+    "target_function": "cashManager_setMinimumDepositAmount",
+    "type": "max",
+    "value": "uint256 _minimumDepositAmount",
+    "access": "cashManager.mintLimit()"
+  },
+  {
+    "target_function": "cashManager_setMintExchangeRateDeltaLimit",
+    "type": "max",
+    "value": "uint256 _exchangeRateDeltaLimit",
+    "access": "cashManager.BPS_DENOMINATOR()"
+  },
+  {
+    "target_function": "cashManager_setMintLimit",
+    "type": "max",
+    "value": "uint256 _mintLimit",
+    "access": "cashManager.mintLimit()"
+  },
+  {
+    "target_function": "cashManager_setRedeemLimit",
+    "type": "max",
+    "value": "uint256 _redeemLimit",
+    "access": "cashManager.redeemLimit()"
+  },
+  {
+    "target_function": "cashManager_setRedeemMinimum",
+    "type": "max",
+    "value": "uint256 newRedeemMinimum",
+    "access": "cashManager.redeemLimit()"
+  },
+  {
+    "target_function": "cashManager_setEpochDuration",
+    "type": "max",
+    "value": "uint256 _epochDuration",
+    "access": "cashManager.epochDuration()"
+  },
+  {
+    "target_function": "cashManager_setPendingMintBalance",
+    "type": "max",
+    "value": "uint256 epoch",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_setPendingMintBalance",
+    "type": "max",
+    "value": "uint256 newBalance",
+    "access": "cashManager.mintLimit()"
+  },
+  {
+    "target_function": "cashManager_setPendingRedemptionBalance",
+    "type": "max",
+    "value": "uint256 epoch",
+    "access": "cashManager.currentEpoch()"
+  },
+  {
+    "target_function": "cashManager_setPendingRedemptionBalance",
+    "type": "max",
+    "value": "uint256 balance",
+    "access": "cashManager.redeemLimit()"
+  },
+  {
+    "target_function": "cashManager_grantRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashManager.MANAGER_ADMIN()"
+  },
+  {
+    "target_function": "cashManager_revokeRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashManager.SETTER_ADMIN()"
+  },
+  {
+    "target_function": "cashManager_renounceRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashManager.PAUSER_ADMIN()"
+  },
+  {
+    "target_function": "cashManager_setKYCRequirementGroup",
+    "type": "exact",
+    "value": "uint256 _kycRequirementGroup",
+    "access": "cashManager.kycRequirementGroup()"
+  },
+  {
+    "target_function": "addKYCAddresses",
+    "type": "exact",
+    "value": "uint256 kycRequirementGroup",
+    "access": "kYCRegistry.kycGroupRoles(KYC_GROUP)"
+  },
+  {
+    "target_function": "removeKYCAddresses",
+    "type": "exact",
+    "value": "uint256 kycRequirementGroup",
+    "access": "kYCRegistry.kycGroupRoles(KYC_GROUP)"
+  },
+  {
+    "target_function": "addKYCAddressViaSignature",
+    "type": "exact",
+    "value": "uint256 kycRequirementGroup",
+    "access": "KYC_GROUP"
+  },
+  {
+    "target_function": "addKYCAddressViaSignature",
+    "type": "max",
+    "value": "uint256 deadline",
+    "access": "block.timestamp + 30 days"
+  },
+  {
+    "target_function": "assignRoletoKYCGroup",
+    "type": "exact",
+    "value": "uint256 kycRequirementGroup",
+    "access": "KYC_GROUP"
+  },
+  {
+    "target_function": "assignRoletoKYCGroup",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "kYCRegistry.REGISTRY_ADMIN()"
+  },
+  {
+    "target_function": "kycState",
+    "type": "exact",
+    "value": "uint256 kycRequirementGroup",
+    "access": "KYC_GROUP"
+  },
+  {
+    "target_function": "setPrice",
+    "type": "exact",
+    "value": "address fToken",
+    "access": "address(cTokenDelegate)"
+  },
+  {
+    "target_function": "setPrice",
+    "type": "max",
+    "value": "uint256 price",
+    "access": "ondoPriceOracleV2.fTokenToUnderlyingPrice(address(cTokenDelegate))"
+  },
+  {
+    "target_function": "setPriceCap",
+    "type": "exact",
+    "value": "address fToken",
+    "access": "address(cTokenDelegate)"
+  },
+  {
+    "target_function": "setPriceCap",
+    "type": "max",
+    "value": "uint256 value",
+    "access": "ondoPriceOracleV2.fTokenToUnderlyingPrice(address(cTokenDelegate))"
+  },
+  {
+    "target_function": "getUnderlyingPrice",
+    "type": "exact",
+    "value": "address fToken",
+    "access": "address(cTokenDelegate)"
+  },
+  {
+    "target_function": "setFTokenToCToken",
+    "type": "exact",
+    "value": "address fToken",
+    "access": "address(cTokenDelegate)"
+  },
+  {
+    "target_function": "setFTokenToChainlinkOracle",
+    "type": "exact",
+    "value": "address fToken",
+    "access": "address(cTokenDelegate)"
+  },
+  {
+    "target_function": "setMaxChainlinkOracleTimeDelay",
+    "type": "max",
+    "value": "uint256 _maxChainlinkOracleTimeDelay",
+    "access": "ondoPriceOracleV2.maxChainlinkOracleTimeDelay()"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_approve",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashKYCSenderReceiver.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_burn",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashKYCSenderReceiver.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_burnFrom",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashKYCSenderReceiver.allowance(account, _getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_decreaseAllowance",
+    "type": "max",
+    "value": "uint256 subtractedValue",
+    "access": "cashKYCSenderReceiver.allowance(_getActor(), spender)"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_increaseAllowance",
+    "type": "max",
+    "value": "uint256 addedValue",
+    "access": "cashKYCSenderReceiver.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_mint",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashManager.mintLimit()"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_transfer",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashKYCSenderReceiver.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_transferFrom",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cashKYCSenderReceiver.allowance(from, _getActor())"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_setKYCRequirementGroup",
+    "type": "exact",
+    "value": "uint256 group",
+    "access": "KYC_GROUP"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_grantRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashKYCSenderReceiver.MINTER_ROLE()"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_revokeRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashKYCSenderReceiver.MINTER_ROLE()"
+  },
+  {
+    "target_function": "cashKYCSenderReceiver_renounceRole",
+    "type": "exact",
+    "value": "bytes32 role",
+    "access": "cashKYCSenderReceiver.PAUSER_ROLE()"
+  },
+  {
+    "target_function": "cCashDelegate_approve",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cCashDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_mint",
+    "type": "max",
+    "value": "uint256 mintAmount",
+    "access": "IERC20(collateralToken).balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_borrow",
+    "type": "max",
+    "value": "uint256 borrowAmount",
+    "access": "cCashDelegate.getCash()"
+  },
+  {
+    "target_function": "cCashDelegate_redeem",
+    "type": "max",
+    "value": "uint256 redeemTokens",
+    "access": "cCashDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_redeemUnderlying",
+    "type": "max",
+    "value": "uint256 redeemAmount",
+    "access": "cCashDelegate.balanceOfUnderlying(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_repayBorrow",
+    "type": "max",
+    "value": "uint256 repayAmount",
+    "access": "cCashDelegate.borrowBalanceCurrent(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_repayBorrowBehalf",
+    "type": "max",
+    "value": "uint256 repayAmount",
+    "access": "cCashDelegate.borrowBalanceCurrent(borrower)"
+  },
+  {
+    "target_function": "cCashDelegate_seize",
+    "type": "max",
+    "value": "uint256 seizeTokens",
+    "access": "cCashDelegate.balanceOf(borrower)"
+  },
+  {
+    "target_function": "cCashDelegate_transfer",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cCashDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cCashDelegate_transferFrom",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cCashDelegate.allowance(src, _getActor())"
+  },
+  {
+    "target_function": "cCashDelegate__setReserveFactor",
+    "type": "max",
+    "value": "uint256 newReserveFactorMantissa",
+    "access": "cCashDelegate.reserveFactorMaxMantissa()"
+  },
+  {
+    "target_function": "cCashDelegate__reduceReserves",
+    "type": "max",
+    "value": "uint256 reduceAmount",
+    "access": "cCashDelegate.totalReserves()"
+  },
+  {
+    "target_function": "cCashDelegate_setKYCRequirementGroup",
+    "type": "exact",
+    "value": "uint256 _kycRequirementGroup",
+    "access": "KYC_GROUP"
+  },
+  {
+    "target_function": "cTokenDelegate_approve",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cTokenDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_mint",
+    "type": "max",
+    "value": "uint256 mintAmount",
+    "access": "IERC20(underlyingToken).balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_borrow",
+    "type": "max",
+    "value": "uint256 borrowAmount",
+    "access": "cTokenDelegate.getCash()"
+  },
+  {
+    "target_function": "cTokenDelegate_redeem",
+    "type": "max",
+    "value": "uint256 redeemTokens",
+    "access": "cTokenDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_redeemUnderlying",
+    "type": "max",
+    "value": "uint256 redeemAmount",
+    "access": "cTokenDelegate.balanceOfUnderlying(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_repayBorrow",
+    "type": "max",
+    "value": "uint256 repayAmount",
+    "access": "cTokenDelegate.borrowBalanceCurrent(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_repayBorrowBehalf",
+    "type": "max",
+    "value": "uint256 repayAmount",
+    "access": "cTokenDelegate.borrowBalanceCurrent(borrower)"
+  },
+  {
+    "target_function": "cTokenDelegate_seize",
+    "type": "max",
+    "value": "uint256 seizeTokens",
+    "access": "cTokenDelegate.balanceOf(borrower)"
+  },
+  {
+    "target_function": "cTokenDelegate_transfer",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cTokenDelegate.balanceOf(_getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate_transferFrom",
+    "type": "max",
+    "value": "uint256 amount",
+    "access": "cTokenDelegate.allowance(src, _getActor())"
+  },
+  {
+    "target_function": "cTokenDelegate__setReserveFactor",
+    "type": "max",
+    "value": "uint256 newReserveFactorMantissa",
+    "access": "cTokenDelegate.reserveFactorMaxMantissa()"
+  },
+  {
+    "target_function": "cTokenDelegate__reduceReserves",
+    "type": "max",
+    "value": "uint256 reduceAmount",
+    "access": "cTokenDelegate.totalReserves()"
+  },
+  {
+    "target_function": "cTokenDelegate_setKYCRequirementGroup",
+    "type": "exact",
+    "value": "uint256 _kycRequirementGroup",
+    "access": "KYC_GROUP"
+  }
+]

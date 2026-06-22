@@ -2,7 +2,7 @@
 src = 'contracts'
 test = 'forge-tests'
 out = 'artifactsforge'
-cache = false
+cache = true
 optimizer = true
 optimizer_runs = 200
 gas_reports = ["CashManager", "CashFactory", "Cash", "CashKYCSenderFactory",
@@ -21,3 +21,8 @@ fs_permissions = [{ access = "read", path = "./artifactsforge"}]
 libs = ["node_modules", "lib"]
 
 # See more config options https://github.com/gakonst/foundry/tree/master/config
+
+[lint]
+lint_on_build = false
+
+ignored_warnings_from = ["contracts/__recon"]

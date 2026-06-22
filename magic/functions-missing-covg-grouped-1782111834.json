@@ -1,0 +1,784 @@
+{
+  "timestamp": "1782111834",
+  "lcov_file": "echidna/covered.1782111834.lcov",
+  "missing_coverage": [
+    {
+      "group_name": "GROUP A: Lending Market Not Wired",
+      "group_description": "All cToken delegate functions (CTokenCash, CTokenModified, CCash, CErc20) are unreachable because the delegates are deployed bare in Setup.sol with admin==address(0), no Comptroller, no InterestRateModel, no CErc20DelegatorKYC proxy, and no market listing or funding. Every state-changing lending call reverts immediately (nonReentrant modifier body is never reached beyond the guard check). Fix: deploy and wire a full Compound market in Setup.sol — Comptroller, JumpRateModelV2/InterestRateModel, CErc20DelegatorKYC delegator pointing at the delegate impl, call _setImplementation, comptroller._supportMarket, set price in OndoPriceOracleV2, fund the market, and have actors enterMarkets. Priority: HIGH — unlocks ~18 of 22 uncovered functions and ~30 of 41 uncovered sections.",
+      "priority": "HIGH",
+      "root_cause": "Bare cToken delegates: admin==address(0), no Comptroller, no InterestRateModel, no CErc20DelegatorKYC proxy, no market wiring",
+      "fix_summary": "In Setup.sol: deploy Comptroller + JumpRateModelV2 + CErc20DelegatorKYC delegator; call _setImplementation on the delegates; comptroller._supportMarket; set oracle price; mint/transfer tokens to fund market; have actors call enterMarkets. Then add fuzz handlers for accrueInterest, transfer/transferFrom, borrowBalanceCurrent/Stored, exchangeRateCurrent/Stored, totalBorrowsCurrent, seize, _setReserveFactor, _reduceReserves, _delegateCompLikeTo, setKYCRegistry, _acceptAdmin.",
+      "functions": [
+        {
+          "function": "accrueInterest",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 394, "end": 472},
+          "uncovered_sections": [
+            {
+              "line_range": "401",
+              "last_covered_line": 400,
+              "code": [
+                "400: [LAST COVERED]     if (accrualBlockNumberPrior == currentBlockNumber) {",
+                "401:       return NO_ERROR;"
+              ]
+            },
+            {
+              "line_range": "406-471",
+              "last_covered_line": 405,
+              "code": [
+                "405: [LAST COVERED]     uint cashPrior = getCashPrior();",
+                "406:     uint borrowsPrior = totalBorrows;",
+                "407:     uint reservesPrior = totalReserves;",
+                "408:     uint borrowIndexPrior = borrowIndex;",
+                "411:     uint borrowRateMantissa = interestRateModel.getBorrowRate(",
+                "416:     require(",
+                "417:       borrowRateMantissa <= borrowRateMaxMantissa,",
+                "422:     uint blockDelta = currentBlockNumber - accrualBlockNumberPrior;",
+                "433:     Exp memory simpleInterestFactor = mul_(...)",
+                "437:     uint interestAccumulated = mul_ScalarTruncate(...)",
+                "441:     uint totalBorrowsNew = interestAccumulated + borrowsPrior;",
+                "442:     uint totalReservesNew = mul_ScalarTruncateAddUInt(...)",
+                "447:     uint borrowIndexNew = mul_ScalarTruncateAddUInt(...)",
+                "458:     accrualBlockNumber = currentBlockNumber;",
+                "459:     borrowIndex = borrowIndexNew;",
+                "460:     totalBorrows = totalBorrowsNew;",
+                "461:     totalReserves = totalReservesNew;",
+                "464:     emit AccrueInterest(...)",
+                "471:     return NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Two uncovered sections. Section 1 (line 401): The early-return branch `accrualBlockNumberPrior == currentBlockNumber` is never true because accrueInterest is never called at all — the function body starting at line 400 is covered (the if-check ran) but line 401 (the return inside it) is not, meaning the condition is never satisfied on the same block. Section 2 (lines 406-471): The main accrue logic is unreachable because `accrueInterest()` reverts before reaching line 406. The root cause is that `interestRateModel` is address(0) on the bare delegate (no IRM deployed/set), so the call to `interestRateModel.getBorrowRate(...)` at line 411 reverts with a zero-address call. Additionally, `_notEntered` is never reset to true (nonReentrant body never completes), so subsequent calls also revert on the re-entrancy guard. Fix: wire an InterestRateModel in Setup so the IRM call succeeds, then add a fuzz handler `cTokenCash_accrueInterest()` that calls accrueInterest() on the properly wired token."
+        },
+        {
+          "function": "accrueInterest",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 394, "end": 472},
+          "uncovered_sections": [
+            {
+              "line_range": "401",
+              "last_covered_line": 400,
+              "code": [
+                "400: [LAST COVERED]     if (accrualBlockNumberPrior == currentBlockNumber) {",
+                "401:       return NO_ERROR;"
+              ]
+            },
+            {
+              "line_range": "406-471",
+              "last_covered_line": 405,
+              "code": [
+                "405: [LAST COVERED]     uint cashPrior = getCashPrior();",
+                "406:     uint borrowsPrior = totalBorrows;",
+                "411:     uint borrowRateMantissa = interestRateModel.getBorrowRate(...)",
+                "416:     require(borrowRateMantissa <= borrowRateMaxMantissa, ...)",
+                "458:     accrualBlockNumber = currentBlockNumber;",
+                "471:     return NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Identical pattern to CTokenCash.accrueInterest. The bare CTokenModified delegate also has interestRateModel==address(0), so calling getBorrowRate reverts. The same market-wiring fix in Setup applies. The early-return branch at line 401 additionally requires the function to be called twice in the same block, which also never happens. Fix: wire IRM; add handler for CTokenModified.accrueInterest."
+        },
+        {
+          "function": "transfer",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 152, "end": 157},
+          "uncovered_sections": [
+            {
+              "line_range": "156",
+              "last_covered_line": 155,
+              "code": [
+                "155: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+                "156:     return transferTokens(msg.sender, msg.sender, dst, amount) == NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "The last_covered_line is 155 (the function signature / nonReentrant guard entry). Line 156, which calls transferTokens, is never reached. The nonReentrant modifier check at line 1435 passes (require(_notEntered)), but the body of nonReentrant (lines 1436-1438: set _notEntered=false, execute, reset) is also uncovered (see nonReentrant entry). This means the reentrancy guard itself is reverting or the function is never called via the fuzzer's target interface. Root cause: the CTokenCash delegate is not exposed as a fuzz target in TargetFunctions, and/or the Comptroller.transferAllowed check inside transferTokens reverts because no Comptroller is set. Fix: wire market + add transfer handler clamping dst to known actors."
+        },
+        {
+          "function": "transfer",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 152, "end": 157},
+          "uncovered_sections": [
+            {
+              "line_range": "156",
+              "last_covered_line": 155,
+              "code": [
+                "155: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+                "156:     return transferTokens(msg.sender, msg.sender, dst, amount) == NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Same pattern as CTokenCash.transfer. transferTokens internally calls comptroller.transferAllowed, which reverts when comptroller==address(0). Fix: wire Comptroller; add handler."
+        },
+        {
+          "function": "transferFrom",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 166, "end": 172},
+          "uncovered_sections": [
+            {
+              "line_range": "171",
+              "last_covered_line": 170,
+              "code": [
+                "170: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+                "171:     return transferTokens(msg.sender, src, dst, amount) == NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Same root cause as transfer — no Comptroller wired, transferTokens reverts. Fix: wire market; add transferFrom handler with clamped src/dst to known actors and approve step."
+        },
+        {
+          "function": "transferFrom",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 166, "end": 172},
+          "uncovered_sections": [
+            {
+              "line_range": "171",
+              "last_covered_line": 170,
+              "code": [
+                "170: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+                "171:     return transferTokens(msg.sender, src, dst, amount) == NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Same as CTokenCash.transferFrom. Fix: wire market; add handler."
+        },
+        {
+          "function": "borrowBalanceCurrent",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 291, "end": 296},
+          "uncovered_sections": [
+            {
+              "line_range": "294-295",
+              "last_covered_line": 293,
+              "code": [
+                "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "294:     accrueInterest();",
+                "295:     return borrowBalanceStored(account);"
+              ]
+            }
+          ],
+          "analysis": "The nonReentrant guard at line 293 is the last covered line — the function is called but the body never executes because accrueInterest() at line 294 reverts (no IRM). Fix: wire IRM + Comptroller; add handler. Once accrueInterest succeeds, borrowBalanceCurrent and borrowBalanceStored will both become reachable."
+        },
+        {
+          "function": "borrowBalanceCurrent",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 291, "end": 296},
+          "uncovered_sections": [
+            {
+              "line_range": "294-295",
+              "last_covered_line": 293,
+              "code": [
+                "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "294:     accrueInterest();",
+                "295:     return borrowBalanceStored(account);"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash.borrowBalanceCurrent. Fix: wire IRM; add handler."
+        },
+        {
+          "function": "borrowBalanceStored",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 303, "end": 307},
+          "uncovered_sections": [
+            {
+              "line_range": "306",
+              "last_covered_line": 293,
+              "code": [
+                "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "306:     return borrowBalanceStoredInternal(account);"
+              ]
+            }
+          ],
+          "analysis": "The last_covered_line references line 293 (borrowBalanceCurrent's signature), suggesting borrowBalanceStored is only reached via borrowBalanceCurrent. Since borrowBalanceCurrent never completes, borrowBalanceStored's internal line 306 is also never reached. Fix: same as borrowBalanceCurrent — wire IRM so accrueInterest succeeds."
+        },
+        {
+          "function": "borrowBalanceStored",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 303, "end": 307},
+          "uncovered_sections": [
+            {
+              "line_range": "306",
+              "last_covered_line": 293,
+              "code": [
+                "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "306:     return borrowBalanceStoredInternal(account);"
+              ]
+            }
+          ],
+          "analysis": "Same as CTokenCash.borrowBalanceStored. Fix: wire IRM."
+        },
+        {
+          "function": "exchangeRateCurrent",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 338, "end": 341},
+          "uncovered_sections": [
+            {
+              "line_range": "339-340",
+              "last_covered_line": 338,
+              "code": [
+                "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+                "339:     accrueInterest();",
+                "340:     return exchangeRateStored();"
+              ]
+            }
+          ],
+          "analysis": "The function is called (line 338 covered) but the body never executes. accrueInterest() at line 339 reverts because interestRateModel==address(0). Fix: wire IRM; add handler for exchangeRateCurrent."
+        },
+        {
+          "function": "exchangeRateCurrent",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 338, "end": 341},
+          "uncovered_sections": [
+            {
+              "line_range": "339-340",
+              "last_covered_line": 338,
+              "code": [
+                "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+                "339:     accrueInterest();",
+                "340:     return exchangeRateStored();"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash.exchangeRateCurrent. Fix: wire IRM; add handler."
+        },
+        {
+          "function": "exchangeRateStored",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 348, "end": 350},
+          "uncovered_sections": [
+            {
+              "line_range": "349",
+              "last_covered_line": 338,
+              "code": [
+                "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+                "349:     return exchangeRateStoredInternal();"
+              ]
+            }
+          ],
+          "analysis": "exchangeRateStored's body (line 349) is only reachable via exchangeRateCurrent (or a direct call). Since exchangeRateCurrent never completes (accrueInterest reverts), this line is never hit. Fix: wire IRM so exchangeRateCurrent completes; or add a direct handler for exchangeRateStored (it is a view-like function that does not call accrueInterest directly)."
+        },
+        {
+          "function": "exchangeRateStored",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 348, "end": 350},
+          "uncovered_sections": [
+            {
+              "line_range": "349",
+              "last_covered_line": 338,
+              "code": [
+                "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+                "349:     return exchangeRateStoredInternal();"
+              ]
+            }
+          ],
+          "analysis": "Same as CTokenCash.exchangeRateStored. Fix: wire IRM; or add a direct handler for exchangeRateStored."
+        },
+        {
+          "function": "totalBorrowsCurrent",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 281, "end": 284},
+          "uncovered_sections": [
+            {
+              "line_range": "282-283",
+              "last_covered_line": 281,
+              "code": [
+                "281: [LAST COVERED]   function totalBorrowsCurrent() external override nonReentrant returns (uint) {",
+                "282:     accrueInterest();",
+                "283:     return totalBorrows;"
+              ]
+            }
+          ],
+          "analysis": "Function is called (line 281 covered) but body never executes because accrueInterest() at line 282 reverts (no IRM). Fix: wire IRM; add handler for totalBorrowsCurrent."
+        },
+        {
+          "function": "totalBorrowsCurrent",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 281, "end": 284},
+          "uncovered_sections": [
+            {
+              "line_range": "282-283",
+              "last_covered_line": 281,
+              "code": [
+                "281: [LAST COVERED]   function totalBorrowsCurrent() external override nonReentrant returns (uint) {",
+                "282:     accrueInterest();",
+                "283:     return totalBorrows;"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash.totalBorrowsCurrent. Fix: wire IRM; add handler."
+        },
+        {
+          "function": "seize",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 971, "end": 979},
+          "uncovered_sections": [
+            {
+              "line_range": "976",
+              "last_covered_line": 975,
+              "code": [
+                "975: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "976:     seizeInternal(msg.sender, liquidator, borrower, seizeTokens);"
+              ]
+            }
+          ],
+          "analysis": "seize() is covered at the function entry (line 975) but seizeInternal (line 976) is never called. seizeInternal calls comptroller.seizeAllowed which reverts when comptroller==address(0). Fix: wire full Compound market so Comptroller is set and a liquidation scenario can be constructed; then add seize handler. This is one of the more complex cases because it requires an active borrow + undercollateralization to trigger legitimately."
+        },
+        {
+          "function": "seize",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 971, "end": 979},
+          "uncovered_sections": [
+            {
+              "line_range": "976",
+              "last_covered_line": 975,
+              "code": [
+                "975: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "976:     seizeInternal(msg.sender, liquidator, borrower, seizeTokens);"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash.seize. Fix: wire Comptroller; add seize handler after a borrow/liquidation state is reachable."
+        },
+        {
+          "function": "_setReserveFactor",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 1138, "end": 1144},
+          "uncovered_sections": [
+            {
+              "line_range": "1141-1143",
+              "last_covered_line": 1140,
+              "code": [
+                "1140: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "1141:     accrueInterest();",
+                "1143:     return _setReserveFactorFresh(newReserveFactorMantissa);"
+              ]
+            }
+          ],
+          "analysis": "The nonReentrant guard at line 1140 is the last covered line. Body never runs because accrueInterest() reverts (no IRM). Additionally, _setReserveFactorFresh checks msg.sender==admin, which is address(0), so even if accrueInterest succeeded, the admin check would fail unless called from admin. Fix: wire IRM; ensure admin is set to a known actor; add admin handler for _setReserveFactor."
+        },
+        {
+          "function": "_setReserveFactor",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 1141, "end": 1147},
+          "uncovered_sections": [
+            {
+              "line_range": "1144-1146",
+              "last_covered_line": 1143,
+              "code": [
+                "1143: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "1144:     accrueInterest();",
+                "1146:     return _setReserveFactorFresh(newReserveFactorMantissa);"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash._setReserveFactor. Fix: wire IRM + admin; add admin handler."
+        },
+        {
+          "function": "_reduceReserves",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 1239, "end": 1245},
+          "uncovered_sections": [
+            {
+              "line_range": "1242-1244",
+              "last_covered_line": 1241,
+              "code": [
+                "1241: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "1242:     accrueInterest();",
+                "1244:     return _reduceReservesFresh(reduceAmount);"
+              ]
+            }
+          ],
+          "analysis": "Body never runs — accrueInterest() reverts (no IRM). _reduceReservesFresh also checks msg.sender==admin (address(0)). Fix: wire IRM + admin; add admin handler for _reduceReserves."
+        },
+        {
+          "function": "_reduceReserves",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 1242, "end": 1248},
+          "uncovered_sections": [
+            {
+              "line_range": "1245-1247",
+              "last_covered_line": 1244,
+              "code": [
+                "1244: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+                "1245:     accrueInterest();",
+                "1247:     return _reduceReservesFresh(reduceAmount);"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash._reduceReserves. Fix: wire IRM + admin; add handler."
+        },
+        {
+          "function": "_delegateCompLikeTo",
+          "contract": "CCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CCash.sol",
+          "function_range": {"start": 268, "end": 274},
+          "uncovered_sections": [
+            {
+              "line_range": "273",
+              "last_covered_line": 270,
+              "code": [
+                "270: [LAST COVERED]       msg.sender == admin,",
+                "273:     CompLike(underlying).delegate(compLikeDelegatee);"
+              ]
+            }
+          ],
+          "analysis": "The require check at line 270 (msg.sender==admin) is covered (meaning the require was evaluated) but line 273 (the actual delegate call) is never reached. Root cause: admin==address(0) on the bare delegate, so no caller ever satisfies msg.sender==admin. Fix: once the CErc20DelegatorKYC delegator is wired in Setup and admin is set to a known actor, add an admin-restricted handler that calls _delegateCompLikeTo with a clamped compLikeDelegatee address."
+        },
+        {
+          "function": "_delegateCompLikeTo",
+          "contract": "CErc20",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CErc20.sol",
+          "function_range": {"start": 268, "end": 274},
+          "uncovered_sections": [
+            {
+              "line_range": "273",
+              "last_covered_line": 270,
+              "code": [
+                "270: [LAST COVERED]       msg.sender == admin,",
+                "273:     CompLike(underlying).delegate(compLikeDelegatee);"
+              ]
+            }
+          ],
+          "analysis": "Same as CCash._delegateCompLikeTo. admin==address(0) blocks line 273. Fix: wire delegator with proper admin; add admin handler."
+        },
+        {
+          "function": "_acceptAdmin",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 1085, "end": 1105},
+          "uncovered_sections": [
+            {
+              "line_range": "1092-1104",
+              "last_covered_line": 1088,
+              "code": [
+                "1088: [LAST COVERED]       revert AcceptAdminPendingAdminCheck();",
+                "1092:     address oldAdmin = admin;",
+                "1096:     admin = pendingAdmin;",
+                "1099:     pendingAdmin = payable(address(0));",
+                "1101:     emit NewAdmin(oldAdmin, admin);",
+                "1104:     return NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "The last_covered_line is 1088, which is the revert inside the `require(msg.sender==pendingAdmin)` check — this revert always fires because pendingAdmin is address(0) and no caller is address(0). The success path (lines 1092-1104) is unreachable. Fix: wire the delegator so that a two-step admin transfer is possible (call _setPendingAdmin first, then acceptAdmin from pendingAdmin). Add a clamped handler sequence: first setPendingAdmin(actor), then acceptAdmin() called as that actor."
+        },
+        {
+          "function": "_acceptAdmin",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 1088, "end": 1108},
+          "uncovered_sections": [
+            {
+              "line_range": "1095-1107",
+              "last_covered_line": 1091,
+              "code": [
+                "1091: [LAST COVERED]       revert AcceptAdminPendingAdminCheck();",
+                "1095:     address oldAdmin = admin;",
+                "1099:     admin = pendingAdmin;",
+                "1102:     pendingAdmin = payable(address(0));",
+                "1104:     emit NewAdmin(oldAdmin, admin);",
+                "1107:     return NO_ERROR;"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash._acceptAdmin. pendingAdmin==address(0) so the revert always fires. Fix: wire delegator with proper admin; implement setPendingAdmin + acceptAdmin handler sequence."
+        },
+        {
+          "function": "setKYCRegistry",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 1378, "end": 1381},
+          "uncovered_sections": [
+            {
+              "line_range": "1380",
+              "last_covered_line": 1379,
+              "code": [
+                "1379: [LAST COVERED]     require(msg.sender == admin, \"Only admin can set KYC registry\");",
+                "1380:     _setKYCRegistry(_kycRegistry);"
+              ]
+            }
+          ],
+          "analysis": "The admin check at line 1379 is evaluated (covered) but always fails because admin==address(0). Line 1380 is unreachable. Fix: wire the delegator so admin is a known actor; add an admin-only handler for setKYCRegistry with a clamped _kycRegistry address."
+        },
+        {
+          "function": "setKYCRegistry",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 1381, "end": 1384},
+          "uncovered_sections": [
+            {
+              "line_range": "1383",
+              "last_covered_line": 1382,
+              "code": [
+                "1382: [LAST COVERED]     require(msg.sender == admin, \"Only admin can set KYC registry\");",
+                "1383:     _setKYCRegistry(_kycRegistry);"
+              ]
+            }
+          ],
+          "analysis": "Identical to CTokenCash.setKYCRegistry. admin==address(0) always blocks line 1383. Fix: wire delegator; add admin-only handler."
+        },
+        {
+          "function": "nonReentrant",
+          "contract": "CTokenCash",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+          "function_range": {"start": 1434, "end": 1439},
+          "uncovered_sections": [
+            {
+              "line_range": "1436-1438",
+              "last_covered_line": 1435,
+              "code": [
+                "1435: [LAST COVERED]     require(_notEntered, \"re-entered\");",
+                "1436:     _notEntered = false;",
+                "1438:     _notEntered = true;"
+              ]
+            }
+          ],
+          "analysis": "The nonReentrant guard check at line 1435 (require(_notEntered)) passes (it is covered), but lines 1436-1438 (the state toggle around the function body) are never executed. This is a consequence of the functions that use nonReentrant all reverting inside their bodies before returning — the modifier's post-function reset logic at line 1438 is therefore never reached. This is a derived gap: fixing the underlying functions (wire IRM/Comptroller) will automatically fix this. No separate fix needed."
+        },
+        {
+          "function": "nonReentrant",
+          "contract": "CTokenModified",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+          "function_range": {"start": 1437, "end": 1442},
+          "uncovered_sections": [
+            {
+              "line_range": "1439-1441",
+              "last_covered_line": 1438,
+              "code": [
+                "1438: [LAST COVERED]     require(_notEntered, \"re-entered\");",
+                "1439:     _notEntered = false;",
+                "1441:     _notEntered = true;"
+              ]
+            }
+          ],
+          "analysis": "Same derived gap as CTokenCash.nonReentrant. The body of nonReentrant is never completed because wrapped functions always revert. Fixing the underlying market wiring will resolve this automatically."
+        }
+      ]
+    },
+    {
+      "group_name": "GROUP B: Oracle Alternate Paths Not Wired",
+      "group_description": "OndoPriceOracleV2 supports three oracle types (MANUAL, COMPOUND, CHAINLINK). The fuzz setup only exercises the MANUAL type path. The COMPOUND branch (fTokenToCToken mapping) and the CHAINLINK branch (fTokenToChainlinkOracle mapping) are never triggered because no fToken has been mapped to OracleType.COMPOUND or OracleType.CHAINLINK in Setup. Additionally, setFTokenToChainlinkOracle and setFTokenToCToken emit events after their internal call but the emit lines are unreached, suggesting the functions revert before the emit or the emit line is the only uncovered line. Priority: MEDIUM — unlocks 4 uncovered sections across 4 functions.",
+      "priority": "MEDIUM",
+      "root_cause": "fToken oracle type mappings never set to COMPOUND or CHAINLINK in Setup; MockAggregatorV3 never attached; no cToken oracle never configured",
+      "fix_summary": "In Setup.sol: (1) for COMPOUND path — call setFTokenToCToken(fToken, cTokenAddress) and setOracleType(fToken, OracleType.COMPOUND) so getUnderlyingPrice routes to the COMPOUND branch; (2) for CHAINLINK path — deploy a MockAggregatorV3, call setFTokenToChainlinkOracle(fToken, mockAggregator, scaleFactor) and setOracleType(fToken, OracleType.CHAINLINK). Add handlers for setFTokenToCToken and setFTokenToChainlinkOracle that emit the events (the emit lines are uncovered because the functions revert on the emit line — investigate whether a missing return value or event causes the gap). Also add a handler for getChainlinkOraclePrice.",
+      "functions": [
+        {
+          "function": "getUnderlyingPrice",
+          "contract": "OndoPriceOracleV2",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/OndoPriceOracleV2.sol",
+          "function_range": {"start": 92, "end": 119},
+          "uncovered_sections": [
+            {
+              "line_range": "102-105",
+              "last_covered_line": 101,
+              "code": [
+                "101: [LAST COVERED]       price = fTokenToUnderlyingPrice[fToken];",
+                "102:     } else if (oracleType == OracleType.COMPOUND) {",
+                "104:       address cTokenAddress = fTokenToCToken[fToken];",
+                "105:       price = cTokenOracle.getUnderlyingPrice(cTokenAddress);"
+              ]
+            },
+            {
+              "line_range": "108-110",
+              "last_covered_line": 106,
+              "code": [
+                "106: [LAST COVERED]     } else if (oracleType == OracleType.CHAINLINK) {",
+                "108:       price = getChainlinkOraclePrice(fToken);",
+                "110:       revert(\"Oracle type not supported\");"
+              ]
+            }
+          ],
+          "analysis": "Section 1 (lines 102-105): The last_covered_line is 101, which is the MANUAL branch body (price = fTokenToUnderlyingPrice[fToken]). The COMPOUND branch starting at line 102 is never entered because no fToken has OracleType.COMPOUND set. Fix: in Setup, call setFTokenToCToken for at least one fToken and set its oracle type to COMPOUND so this branch is exercised.\n\nSection 2 (lines 108-110): The last_covered_line is 106 (the CHAINLINK else-if check). The CHAINLINK branch body at line 108 and the final revert at line 110 are never reached. The CHAINLINK branch is skipped because no fToken has OracleType.CHAINLINK set. The revert at line 110 (unsupported oracle type) is a dead fallback that would only trigger for an unknown OracleType enum value. Fix: set at least one fToken to OracleType.CHAINLINK with a MockAggregatorV3 attached to reach line 108. Line 110 may remain uncoverable unless a custom OracleType value can be injected."
+        },
+        {
+          "function": "getChainlinkOraclePrice",
+          "contract": "OndoPriceOracleV2",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/OndoPriceOracleV2.sol",
+          "function_range": {"start": 277, "end": 301},
+          "uncovered_sections": [
+            {
+              "line_range": "280-300",
+              "last_covered_line": 256,
+              "code": [
+                "256: [LAST COVERED]       fTokenToOracleType[fToken] == OracleType.CHAINLINK,",
+                "280:     require(fTokenToOracleType[fToken] == OracleType.CHAINLINK, ...)",
+                "284:     ChainlinkOracleInfo memory chainlinkInfo = fTokenToChainlinkOracle[fToken];",
+                "291:     ) = chainlinkInfo.oracle.latestRoundData();",
+                "292:     require((answeredInRound >= roundId) && (updatedAt >= block.timestamp - maxChainlinkOracleTimeDelay), ...)",
+                "297:     require(answer >= 0, \"Price cannot be negative\");",
+                "300:     return uint256(answer) * chainlinkInfo.scaleFactor;"
+              ]
+            }
+          ],
+          "analysis": "The last_covered_line is 256, which is inside setFTokenToChainlinkOracle's internal call (the CHAINLINK oracle type check). The entire body of getChainlinkOraclePrice (lines 280-300) is unreachable because it is only called from getUnderlyingPrice when oracleType==CHAINLINK, which is never the case in the current setup. Additionally, even if called directly, the require at line 280 would revert since no fToken has OracleType.CHAINLINK. Fix: configure at least one fToken with OracleType.CHAINLINK and attach a MockAggregatorV3 that returns valid roundData. Then getChainlinkOraclePrice becomes callable and all inner lines become reachable."
+        },
+        {
+          "function": "setFTokenToCToken",
+          "contract": "OndoPriceOracleV2",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/OndoPriceOracleV2.sol",
+          "function_range": {"start": 194, "end": 201},
+          "uncovered_sections": [
+            {
+              "line_range": "200",
+              "last_covered_line": 199,
+              "code": [
+                "199: [LAST COVERED]     _setFTokenToCToken(fToken, cToken);",
+                "200:     emit FTokenToCTokenSet(fToken, oldCToken, cToken);"
+              ]
+            }
+          ],
+          "analysis": "The last_covered_line is 199, which is the internal _setFTokenToCToken call. Line 200 (the emit) is never reached. This is unusual — if line 199 succeeds, line 200 should also execute. One possibility: _setFTokenToCToken reverts internally (e.g., if cToken address fails a validation), causing line 200 to be skipped. Another possibility is that the fuzzer always passes invalid cToken addresses that trigger the revert path inside _setFTokenToCToken. Fix: add a handler for setFTokenToCToken that clamps the cToken argument to a valid deployed cToken address from Setup so the internal call succeeds and the emit fires."
+        },
+        {
+          "function": "setFTokenToChainlinkOracle",
+          "contract": "OndoPriceOracleV2",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/OndoPriceOracleV2.sol",
+          "function_range": {"start": 233, "end": 242},
+          "uncovered_sections": [
+            {
+              "line_range": "241",
+              "last_covered_line": 240,
+              "code": [
+                "240: [LAST COVERED]     _setFTokenToChainlinkOracle(fToken, newChainlinkOracle);",
+                "241:     emit ChainlinkOracleSet(fToken, oldChainlinkOracle, newChainlinkOracle);"
+              ]
+            }
+          ],
+          "analysis": "Same pattern as setFTokenToCToken — the internal call at line 240 is covered but the emit at line 241 is not. _setFTokenToChainlinkOracle may revert on invalid oracle addresses (e.g., zero address or non-contract). Fix: deploy a MockAggregatorV3 in Setup; add a handler for setFTokenToChainlinkOracle that clamps newChainlinkOracle to the deployed mock so the internal call succeeds and the emit fires."
+        }
+      ]
+    },
+    {
+      "group_name": "GROUP C: Trivial Admin/View Branches (No Market Dependency)",
+      "group_description": "Small functions in Ownable and CashKYCSenderReceiver that are fully reachable without market wiring but are not called by any fuzz handler. Ownable.owner() and Ownable.transferOwnership() are pure admin/view functions; CashKYCSenderReceiver.setKYCRegistry() requires onlyKYCConfiguratorAdmin. These are low-complexity gaps that can be fixed with simple shortcut handlers or by calling them in Setup. Priority: LOW — unlocks 3 functions, 4 uncovered sections, but has no security significance.",
+      "priority": "LOW",
+      "root_cause": "Functions exist on contracts reachable in Setup but no fuzz handler calls them; Ownable functions are owned by a known address but never invoked",
+      "fix_summary": "Add shortcut handlers: (1) a handler for Ownable.transferOwnership(to) clamped to a known actor; (2) a handler for Ownable.owner() (view, just needs to be called); (3) a handler for CashKYCSenderReceiver.setKYCRegistry(registry) called with msg.sender==kycConfiguratorAdmin, clamping registry to a known address. Alternatively, call these in Setup() to pre-cover them.",
+      "functions": [
+        {
+          "function": "owner",
+          "contract": "Ownable",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+          "function_range": {"start": 46, "end": 48},
+          "uncovered_sections": [
+            {
+              "line_range": "47",
+              "last_covered_line": null,
+              "code": [
+                "47:     return ownerAddr;"
+              ]
+            }
+          ],
+          "analysis": "owner() is a simple view function with no preconditions. last_covered_line is null, meaning the function was never called at all by the fuzzer. The single line (return ownerAddr) is trivially coverable by any call to owner(). Fix: add a shortcut handler `oracle_owner()` that calls ondoPriceOracleV2.owner() (or whatever Ownable-inheriting contract is in scope) — alternatively call it once in Setup or in the constructor of TargetFunctions."
+        },
+        {
+          "function": "transferOwnership",
+          "contract": "Ownable",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+          "function_range": {"start": 22, "end": 28},
+          "uncovered_sections": [
+            {
+              "line_range": "23-27",
+              "last_covered_line": null,
+              "code": [
+                "23:     require(to != msg.sender, \"Cannot transfer to self\");",
+                "25:     pendingOwnerAddr = to;",
+                "27:     emit OwnershipTransferRequested(ownerAddr, to);"
+              ]
+            }
+          ],
+          "analysis": "transferOwnership() has last_covered_line null — never called by any handler. The function requires msg.sender==ownerAddr (onlyOwner modifier) and to!=msg.sender. Fix: add a handler `oracle_transferOwnership(address to)` that clamps to to a known actor != msg.sender and calls from the owner address. Caller must be the Ownable contract's owner. The onlyOwner modifier (currently also uncovered per its own entry) would then also become covered."
+        },
+        {
+          "function": "onlyOwner",
+          "contract": "Ownable",
+          "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+          "function_range": {"start": 53, "end": 56},
+          "uncovered_sections": [
+            {
+              "line_range": "54-55",
+              "last_covered_line": null,
+              "code": [
+                "54:     require(msg.sender == ownerAddr, \"Only callable by owner\");",
+                "55:     _;"
+              ]
+            }
+          ],
+          "analysis": "The onlyOwner modifier body is never executed because no handler calls an onlyOwner-protected function (like transferOwnership) from the owner's address. last_covered_line null confirms no call ever passed this modifier. Fix: same as transferOwnership — once a handler calls transferOwnership() as the contract owner, onlyOwner becomes covered automatically as a derived effect."
+        },
+        {
+          "function": "setKYCRegistry",
+          "contract": "CashKYCSenderReceiver",
+          "source_file": "/home/user/2023-01-ondo/contracts/cash/token/CashKYCSenderReceiver.sol",
+          "function_range": {"start": 40, "end": 44},
+          "uncovered_sections": [
+            {
+              "line_range": "43",
+              "last_covered_line": 40,
+              "code": [
+                "40: [LAST COVERED]   function setKYCRegistry(",
+                "43:     _setKYCRegistry(registry);"
+              ]
+            }
+          ],
+          "analysis": "The function signature at line 40 is covered (function is called) but line 43 (_setKYCRegistry) is not reached. The function has an onlyRole(KYC_CONFIGURATOR_ROLE) modifier (or similar access control). The last_covered_line is 40 (the function declaration itself), which suggests the access control modifier check is failing — the caller never has the KYC configurator role. Fix: add a handler that calls setKYCRegistry from an address that holds the KYC_CONFIGURATOR_ROLE (clamp msg.sender to the deployer or a role-granted actor in Setup). Alternatively, grant the role to a fuzz actor in Setup so the call succeeds."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "functions_analyzed": 265,
+    "functions_with_missing_coverage": 22,
+    "uncovered_sections": 41,
+    "full_coverage": false,
+    "grouping_summary": {
+      "GROUP_A_lending_market_not_wired": {
+        "priority": "HIGH",
+        "function_count": 18,
+        "section_count": 33,
+        "contracts_affected": ["CTokenCash", "CTokenModified", "CCash", "CErc20"],
+        "root_cause": "Bare cToken delegates: admin==address(0), no Comptroller, no InterestRateModel, no CErc20DelegatorKYC proxy",
+        "fix": "Deploy and wire a full Compound market in Setup.sol (Comptroller + JumpRateModelV2 + CErc20DelegatorKYC delegator pointing at delegates, _setImplementation, _supportMarket, oracle price, fund market, enterMarkets)"
+      },
+      "GROUP_B_oracle_alternate_paths": {
+        "priority": "MEDIUM",
+        "function_count": 4,
+        "section_count": 4,
+        "contracts_affected": ["OndoPriceOracleV2"],
+        "root_cause": "COMPOUND and CHAINLINK oracle types never configured in Setup; MockAggregatorV3 never deployed",
+        "fix": "Set at least one fToken to OracleType.COMPOUND (with cToken mapping) and one to OracleType.CHAINLINK (with MockAggregatorV3); clamp oracle handlers to valid addresses so emit lines are reached"
+      },
+      "GROUP_C_trivial_admin_view": {
+        "priority": "LOW",
+        "function_count": 4,
+        "section_count": 4,
+        "contracts_affected": ["Ownable", "CashKYCSenderReceiver"],
+        "root_cause": "No fuzz handler calls these functions; access-control roles not granted to fuzz actors",
+        "fix": "Add shortcut handlers calling owner(), transferOwnership(clamped_actor), and setKYCRegistry(clamped_registry) from role-authorized callers"
+      }
+    }
+  }
+}

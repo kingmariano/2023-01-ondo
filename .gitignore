@@ -51,3 +51,14 @@ lib/
 artifactsforge
 deployments/
 typechain-types/
+crytic-export
+echidna
+medusa
+.recon
+
+# recon-magic coverage build artifacts
+out/
+context_output/
+magic/*.err
+echidna-output.log
+echidna-exit-code.txt

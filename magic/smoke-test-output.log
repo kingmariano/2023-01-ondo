@@ -1,0 +1,376 @@
+[2026-06-22 06:04:45.23] Compiling `.`... WARNING: Slither was explicitly disabled. Echidna uses Slither (https://github.com/crytic/slither) to perform source analysis, which makes fuzzing more effective. You should enable it.
+Done! (67.51711273s)
+Analyzing contract: /home/user/2023-01-ondo/forge-tests/recon/CryticTester.sol:CryticTester
+Loaded 0 transaction sequences from echidna/reproducers
+Loaded 65 transaction sequences from echidna/coverage
+[2026-06-22 06:05:56.93] [Worker 0] New coverage: 40631 instr, 11 contracts, 1 seqs in corpus
+[2026-06-22 06:05:56.93] [Worker 1] New coverage: 40631 instr, 11 contracts, 2 seqs in corpus
+[2026-06-22 06:05:56.95] [Worker 1] Sequence replayed from corpus file 5252987233204903409.txt (1/17)
+[2026-06-22 06:05:56.95] [Worker 0] Sequence replayed from corpus file 839749635072268471.txt (1/17)
+[2026-06-22 06:05:57.10] [Worker 2] New coverage: 41087 instr, 11 contracts, 3 seqs in corpus
+[2026-06-22 06:05:57.11] [Worker 2] Sequence replayed from corpus file 9015795026902791708.txt (1/17)
+[2026-06-22 06:05:57.15] [Worker 3] New coverage: 41515 instr, 11 contracts, 4 seqs in corpus
+[2026-06-22 06:05:57.16] [Worker 3] Sequence replayed from corpus file 6232778830145070274.txt (1/14)
+[2026-06-22 06:05:57.64] [Worker 1] New coverage: 42062 instr, 11 contracts, 5 seqs in corpus
+[2026-06-22 06:05:57.65] [Worker 1] Sequence replayed from corpus file 5158206319617946831.txt (2/17)
+[2026-06-22 06:05:57.67] [Worker 0] New coverage: 42143 instr, 11 contracts, 6 seqs in corpus
+[2026-06-22 06:05:57.67] [Worker 0] Sequence replayed from corpus file 2409364312284081839.txt (2/17)
+[2026-06-22 06:05:57.69] [Worker 2] New coverage: 42143 instr, 11 contracts, 7 seqs in corpus
+[2026-06-22 06:05:57.69] [Worker 2] Sequence replayed from corpus file 3994116831647565128.txt (2/17)
+[2026-06-22 06:05:57.72] [Worker 3] New coverage: 42297 instr, 11 contracts, 8 seqs in corpus
+[2026-06-22 06:05:57.72] [Worker 3] Sequence replayed from corpus file 2755255147006984729.txt (2/14)
+[2026-06-22 06:05:58.22] [Worker 1] New coverage: 42393 instr, 11 contracts, 9 seqs in corpus
+[2026-06-22 06:05:58.23] [Worker 1] Sequence replayed from corpus file 6393375157670782740.txt (3/17)
+[2026-06-22 06:05:58.26] [Worker 0] New coverage: 42393 instr, 11 contracts, 10 seqs in corpus
+[2026-06-22 06:05:58.27] [Worker 3] New coverage: 42393 instr, 11 contracts, 11 seqs in corpus
+[2026-06-22 06:05:58.28] [Worker 0] Sequence replayed from corpus file 2424451815141371541.txt (3/17)
+[2026-06-22 06:05:58.28] [Worker 3] Sequence replayed from corpus file 2001732338460532800.txt (3/14)
+[2026-06-22 06:05:58.32] [Worker 2] New coverage: 42393 instr, 11 contracts, 12 seqs in corpus
+[2026-06-22 06:05:58.33] [Worker 2] Sequence replayed from corpus file 4020447793056761495.txt (3/17)
+[2026-06-22 06:05:58.79] [Worker 1] New coverage: 42463 instr, 11 contracts, 13 seqs in corpus
+[2026-06-22 06:05:58.80] [Worker 1] Sequence replayed from corpus file 2504730226572981007.txt (4/17)
+[2026-06-22 06:05:58.80] [Worker 0] New coverage: 42463 instr, 11 contracts, 14 seqs in corpus
+[2026-06-22 06:05:58.81] [Worker 0] Sequence replayed from corpus file 6696821758205302123.txt (4/17)
+[2026-06-22 06:05:58.84] [Worker 3] New coverage: 42463 instr, 11 contracts, 15 seqs in corpus
+[2026-06-22 06:05:58.85] [Worker 3] Sequence replayed from corpus file 1597350938219979933.txt (4/14)
+[2026-06-22 06:05:58.93] [Worker 2] New coverage: 42487 instr, 11 contracts, 16 seqs in corpus
+[2026-06-22 06:05:58.94] [Worker 2] Sequence replayed from corpus file 1738071049023159993.txt (4/17)
+[2026-06-22 06:05:59.31] [Worker 1] Sequence replayed from corpus file 8686938781862750475.txt (5/17)
+[2026-06-22 06:05:59.33] [status] tests: 0/201, fuzzing: 0/10000, values: [], cov: 42685, corpus: 16, gas/s: 0
+[2026-06-22 06:05:59.40] [Worker 0] New coverage: 42685 instr, 11 contracts, 17 seqs in corpus
+[2026-06-22 06:05:59.41] [Worker 3] New coverage: 42685 instr, 11 contracts, 18 seqs in corpus
+[2026-06-22 06:05:59.41] [Worker 0] Sequence replayed from corpus file 5879565478678606856.txt (5/17)
+[2026-06-22 06:05:59.42] [Worker 3] Sequence replayed from corpus file 7982744991779084769.txt (5/14)
+[2026-06-22 06:05:59.56] [Worker 2] New coverage: 42688 instr, 11 contracts, 19 seqs in corpus
+[2026-06-22 06:05:59.57] [Worker 2] Sequence replayed from corpus file 4139477658479006784.txt (5/17)
+[2026-06-22 06:05:59.86] [Worker 1] New coverage: 42768 instr, 11 contracts, 20 seqs in corpus
+[2026-06-22 06:05:59.87] [Worker 1] Sequence replayed from corpus file 8830468573256394207.txt (6/17)
+[2026-06-22 06:05:59.99] [Worker 0] New coverage: 42768 instr, 11 contracts, 21 seqs in corpus
+[2026-06-22 06:05:59.99] [Worker 0] Sequence replayed from corpus file 6350750630202724107.txt (6/17)
+[2026-06-22 06:06:00.01] [Worker 3] New coverage: 42768 instr, 11 contracts, 22 seqs in corpus
+[2026-06-22 06:06:00.02] [Worker 3] Sequence replayed from corpus file 6703477685619700804.txt (6/14)
+[2026-06-22 06:06:00.19] [Worker 2] Sequence replayed from corpus file 8749119331535323644.txt (6/17)
+[2026-06-22 06:06:00.39] [Worker 1] New coverage: 42772 instr, 11 contracts, 23 seqs in corpus
+[2026-06-22 06:06:00.40] [Worker 1] Sequence replayed from corpus file 6733723445480355240.txt (7/17)
+[2026-06-22 06:06:00.55] [Worker 0] Sequence replayed from corpus file 700332597758828833.txt (7/17)
+[2026-06-22 06:06:00.56] [Worker 3] New coverage: 42775 instr, 11 contracts, 24 seqs in corpus
+[2026-06-22 06:06:00.57] [Worker 3] Sequence replayed from corpus file 204863025504923754.txt (7/14)
+[2026-06-22 06:06:00.80] [Worker 2] New coverage: 42833 instr, 11 contracts, 25 seqs in corpus
+[2026-06-22 06:06:00.81] [Worker 2] Sequence replayed from corpus file 4104794068458999209.txt (7/17)
+[2026-06-22 06:06:00.93] [Worker 1] New coverage: 42848 instr, 11 contracts, 26 seqs in corpus
+[2026-06-22 06:06:00.94] [Worker 1] Sequence replayed from corpus file 8090317548114321848.txt (8/17)
+[2026-06-22 06:06:01.09] [Worker 0] Sequence replayed from corpus file 1916062531490852057.txt (8/17)
+[2026-06-22 06:06:01.12] [Worker 3] New coverage: 42848 instr, 11 contracts, 27 seqs in corpus
+[2026-06-22 06:06:01.13] [Worker 3] Sequence replayed from corpus file 9044954807754213689.txt (8/14)
+[2026-06-22 06:06:01.40] [Worker 2] Sequence replayed from corpus file 6183355215107217119.txt (8/17)
+[2026-06-22 06:06:01.48] [Worker 1] New coverage: 43332 instr, 11 contracts, 28 seqs in corpus
+[2026-06-22 06:06:01.49] [Worker 1] Sequence replayed from corpus file 5569189141326219709.txt (9/17)
+[2026-06-22 06:06:01.64] [Worker 0] New coverage: 43332 instr, 11 contracts, 29 seqs in corpus
+[2026-06-22 06:06:01.65] [Worker 0] Sequence replayed from corpus file 6997138322762053761.txt (9/17)
+[2026-06-22 06:06:01.72] [Worker 3] New coverage: 43332 instr, 11 contracts, 30 seqs in corpus
+[2026-06-22 06:06:01.73] [Worker 3] Sequence replayed from corpus file 8782609659368861547.txt (9/14)
+[2026-06-22 06:06:01.87] [Worker 2] Sequence replayed from corpus file 519453686025337764.txt (9/17)
+[2026-06-22 06:06:02.05] [Worker 1] New coverage: 43335 instr, 11 contracts, 31 seqs in corpus
+[2026-06-22 06:06:02.05] [Worker 1] Sequence replayed from corpus file 1076147527641137467.txt (10/17)
+[2026-06-22 06:06:02.18] [Worker 0] Sequence replayed from corpus file 7369051593779725719.txt (10/17)
+[2026-06-22 06:06:02.23] [Worker 3] Sequence replayed from corpus file 7247553505317297682.txt (10/14)
+[2026-06-22 06:06:02.34] [status] tests: 0/201, fuzzing: 0/10000, values: [], cov: 43335, corpus: 31, gas/s: 0
+[2026-06-22 06:06:02.48] [Worker 2] Sequence replayed from corpus file 9059178823375106290.txt (10/17)
+[2026-06-22 06:06:02.57] [Worker 1] Sequence replayed from corpus file 8882244953177124668.txt (11/17)
+[2026-06-22 06:06:02.69] [Worker 0] New coverage: 44364 instr, 11 contracts, 32 seqs in corpus
+[2026-06-22 06:06:02.70] [Worker 0] Sequence replayed from corpus file 4010756074481244943.txt (11/17)
+[2026-06-22 06:06:02.77] [Worker 3] New coverage: 44364 instr, 11 contracts, 33 seqs in corpus
+[2026-06-22 06:06:02.77] [Worker 3] Sequence replayed from corpus file 928552394832838261.txt (11/14)
+[2026-06-22 06:06:03.04] [Worker 2] New coverage: 44370 instr, 11 contracts, 34 seqs in corpus
+[2026-06-22 06:06:03.04] [Worker 2] Sequence replayed from corpus file 7279054988013237311.txt (11/17)
+[2026-06-22 06:06:03.12] [Worker 1] New coverage: 44373 instr, 11 contracts, 35 seqs in corpus
+[2026-06-22 06:06:03.13] [Worker 1] Sequence replayed from corpus file 1312054941087715382.txt (12/17)
+[2026-06-22 06:06:03.30] [Worker 0] Sequence replayed from corpus file 9207527573179358033.txt (12/17)
+[2026-06-22 06:06:03.38] [Worker 3] New coverage: 44373 instr, 11 contracts, 36 seqs in corpus
+[2026-06-22 06:06:03.39] [Worker 3] Sequence replayed from corpus file 7392071482449916047.txt (12/14)
+[2026-06-22 06:06:03.63] [Worker 2] New coverage: 44376 instr, 11 contracts, 37 seqs in corpus
+[2026-06-22 06:06:03.63] [Worker 2] Sequence replayed from corpus file 6989212197304676803.txt (12/17)
+[2026-06-22 06:06:03.73] [Worker 1] New coverage: 44379 instr, 11 contracts, 38 seqs in corpus
+[2026-06-22 06:06:03.75] [Worker 1] Sequence replayed from corpus file 1016798930229718389.txt (13/17)
+[2026-06-22 06:06:03.91] [Worker 0] New coverage: 44387 instr, 11 contracts, 39 seqs in corpus
+[2026-06-22 06:06:03.92] [Worker 0] Sequence replayed from corpus file 7124503497540450860.txt (13/17)
+[2026-06-22 06:06:03.94] [Worker 3] New coverage: 44387 instr, 11 contracts, 40 seqs in corpus
+[2026-06-22 06:06:03.94] [Worker 3] Sequence replayed from corpus file 5556184520518610657.txt (13/14)
+[2026-06-22 06:06:04.17] [Worker 2] New coverage: 44390 instr, 11 contracts, 41 seqs in corpus
+[2026-06-22 06:06:04.18] [Worker 2] Sequence replayed from corpus file 5043813805223434490.txt (13/17)
+[2026-06-22 06:06:04.44] [Worker 2] New coverage: 44417 instr, 11 contracts, 42 seqs in corpus
+[2026-06-22 06:06:04.44] [Worker 2] Sequence replayed from corpus file 2327164719974058177.txt (14/17)
+[2026-06-22 06:06:04.51] [Worker 3] New coverage: 44417 instr, 11 contracts, 43 seqs in corpus
+[2026-06-22 06:06:04.52] [Worker 3] Sequence replayed from corpus file 5801559536605228697.txt (14/14)
+[2026-06-22 06:06:04.65] [Worker 0] New coverage: 44417 instr, 11 contracts, 44 seqs in corpus
+[2026-06-22 06:06:04.66] [Worker 0] Sequence replayed from corpus file 6898404345487820064.txt (14/17)
+[2026-06-22 06:06:04.67] [Worker 1] Sequence replayed from corpus file 1311500346604436878.txt (14/17)
+[2026-06-22 06:06:05.03] [Worker 2] Sequence replayed from corpus file 2346574221523910421.txt (15/17)
+[2026-06-22 06:06:05.20] [Worker 3] New coverage: 44488 instr, 11 contracts, 45 seqs in corpus
+[2026-06-22 06:06:05.22]  Saved reproducer to echidna/coverage/7716669736839226851.txt
+[2026-06-22 06:06:05.24] [Worker 0] Sequence replayed from corpus file 148315957190822389.txt (15/17)
+[2026-06-22 06:06:05.32] [Worker 1] Sequence replayed from corpus file 8812914227908408225.txt (15/17)
+[2026-06-22 06:06:05.34] [status] tests: 0/201, fuzzing: 1502/10000, values: [], cov: 45558, corpus: 45, gas/s: 7716190625
+[2026-06-22 06:06:05.58] [Worker 2] Sequence replayed from corpus file 2874149923086228774.txt (16/17)
+[2026-06-22 06:06:05.60] [Worker 3] New coverage: 47866 instr, 11 contracts, 46 seqs in corpus
+[2026-06-22 06:06:05.61]  Saved reproducer to echidna/coverage/2900641661151467554.txt
+[2026-06-22 06:06:05.90] [Worker 0] Sequence replayed from corpus file 154441697696306251.txt (16/17)
+[2026-06-22 06:06:05.93] [Worker 1] Sequence replayed from corpus file 2588019708860411634.txt (16/17)
+[2026-06-22 06:06:06.10] [Worker 3] New coverage: 49009 instr, 11 contracts, 47 seqs in corpus
+[2026-06-22 06:06:06.12]  Saved reproducer to echidna/coverage/5111428274582923607.txt
+[2026-06-22 06:06:06.18] [Worker 2] Sequence replayed from corpus file 8497442218245024401.txt (17/17)
+[2026-06-22 06:06:06.49] [Worker 0] Sequence replayed from corpus file 6887147042499825417.txt (17/17)
+[2026-06-22 06:06:06.54] [Worker 1] New coverage: 49415 instr, 11 contracts, 48 seqs in corpus
+[2026-06-22 06:06:06.55] [Worker 1] Sequence replayed from corpus file 8642916956726735401.txt (17/17)
+[2026-06-22 06:06:06.61] [Worker 2] New coverage: 49760 instr, 11 contracts, 49 seqs in corpus
+[2026-06-22 06:06:06.61]  Saved reproducer to echidna/coverage/6121660342979432245.txt
+[2026-06-22 06:06:06.68] [Worker 3] New coverage: 51577 instr, 11 contracts, 50 seqs in corpus
+[2026-06-22 06:06:06.70]  Saved reproducer to echidna/coverage/3912072563201337151.txt
+[2026-06-22 06:06:06.94] [Worker 0] New coverage: 52218 instr, 11 contracts, 51 seqs in corpus
+[2026-06-22 06:06:06.95]  Saved reproducer to echidna/coverage/6485308919030396032.txt
+[2026-06-22 06:06:06.98] [Worker 1] New coverage: 52218 instr, 11 contracts, 52 seqs in corpus
+[2026-06-22 06:06:07.00]  Saved reproducer to echidna/coverage/5619119446825049376.txt
+[2026-06-22 06:06:07.11] [Worker 2] New coverage: 52569 instr, 11 contracts, 53 seqs in corpus
+[2026-06-22 06:06:07.14]  Saved reproducer to echidna/coverage/3511974189271388275.txt
+[2026-06-22 06:06:07.18] [Worker 3] New coverage: 52649 instr, 11 contracts, 54 seqs in corpus
+[2026-06-22 06:06:07.19]  Saved reproducer to echidna/coverage/181050261248600810.txt
+[2026-06-22 06:06:07.38] [Worker 1] New coverage: 52714 instr, 11 contracts, 55 seqs in corpus
+[2026-06-22 06:06:07.39] [Worker 0] New coverage: 52714 instr, 11 contracts, 56 seqs in corpus
+[2026-06-22 06:06:07.40]  Saved reproducer to echidna/coverage/3501234767699233043.txt
+[2026-06-22 06:06:07.41]  Saved reproducer to echidna/coverage/6591199559035788325.txt
+[2026-06-22 06:06:07.58] [Worker 2] New coverage: 52796 instr, 11 contracts, 57 seqs in corpus
+[2026-06-22 06:06:07.58]  Saved reproducer to echidna/coverage/1530699553749962374.txt
+[2026-06-22 06:06:07.64] [Worker 3] New coverage: 52796 instr, 11 contracts, 58 seqs in corpus
+[2026-06-22 06:06:07.65]  Saved reproducer to echidna/coverage/1833047615140451765.txt
+[2026-06-22 06:06:07.98] [Worker 2] New coverage: 53160 instr, 11 contracts, 59 seqs in corpus
+[2026-06-22 06:06:07.98] [Worker 0] New coverage: 53160 instr, 11 contracts, 60 seqs in corpus
+[2026-06-22 06:06:08.01]  Saved reproducer to echidna/coverage/7927688811663217443.txt
+[2026-06-22 06:06:08.02]  Saved reproducer to echidna/coverage/4477141186943555918.txt
+[2026-06-22 06:06:08.21] [Worker 2] New coverage: 53164 instr, 11 contracts, 61 seqs in corpus
+[2026-06-22 06:06:08.21]  Saved reproducer to echidna/coverage/5363850451833194709.txt
+[2026-06-22 06:06:08.34] [status] tests: 0/201, fuzzing: 8245/10000, values: [], cov: 53164, corpus: 61, gas/s: 32462225535
+[2026-06-22 06:06:09.38] [Worker 2] New coverage: 53209 instr, 11 contracts, 62 seqs in corpus
+[2026-06-22 06:06:09.38]  Saved reproducer to echidna/coverage/1949397460816501146.txt
+[2026-06-22 06:06:09.41] [Worker 0] New coverage: 53209 instr, 11 contracts, 63 seqs in corpus
+[2026-06-22 06:06:09.43]  Saved reproducer to echidna/coverage/8186569822412176931.txt
+[2026-06-22 06:06:10.37] [Worker 0] Test limit reached. Stopping.
+[2026-06-22 06:06:10.47] [Worker 3] New coverage: 53224 instr, 11 contracts, 64 seqs in corpus
+[2026-06-22 06:06:10.48]  Saved reproducer to echidna/coverage/7493247459174993682.txt
+[2026-06-22 06:06:10.48] [Worker 3] Test limit reached. Stopping.
+[2026-06-22 06:06:10.60] [Worker 1] Test limit reached. Stopping.
+[2026-06-22 06:06:10.83] [Worker 2] New coverage: 53231 instr, 11 contracts, 65 seqs in corpus
+[2026-06-22 06:06:10.83]  Saved reproducer to echidna/coverage/1265321927880273958.txt
+[2026-06-22 06:06:10.84] [Worker 2] Test limit reached. Stopping.
+[2026-06-22 06:06:10.84] [status] tests: 0/201, fuzzing: 10198/10000, values: [], cov: 53231, corpus: 65, gas/s: 11238144732
+cCashDelegate_borrow(uint256): passing
+property_sol_mintRequestsZeroAfterClaim(): passing
+cashManager_setRedeemMinimum(uint256): passing
+cashManager_setRedeemLimit(uint256): passing
+cTokenDelegate_setKYCRegistry(address): passing
+property_eco_lowRateOverrideAlert(): passing
+cCashDelegate_setKYCRequirementGroup(uint256): passing
+property_sol_redeemAmountWithinLimit(): passing
+cTokenDelegate_repayBorrowBehalf(address,uint256): passing
+cashManager_renounceRole(bytes32,address): passing
+property_round_redemptionSumWithinDist(): passing
+property_round_feeRoundedDown(): passing
+cCashDelegate_seize(address,address,uint256): passing
+kYCRegistry_addKYCAddresses(uint256,address[]): passing
+ghost_mintRequestSum(uint256,address): passing
+property_doom_doubleServiceReverts(): passing
+cashManager_setKYCRegistry(address): passing
+cTokenDelegate_approve(address,uint256): passing
+property_doom_epochDurationNotZero(): passing
+property_t13_decimalsMultiplierCorrect(): passing
+property_t11_overrideRateMonotonic(): passing
+property_t11_totalBurnedNonNegative(): passing
+property_t14_mintRequestSumMatchesOnChain(): passing
+property_ff_burnAmtNonIncreasingAfterComplete(): passing
+property_profit_claimMintZeroesMintRequests(): passing
+property_canary_setRateReached(): passing
+ghost_totalCashRefunded(): passing
+property_t14_feeRoundingCorrect(): passing
+cashManager_setAssetSender(address): passing
+property_delta_autopauseOnDeltaViolation(): passing
+asset_approve(address,uint128): passing
+cCashDelegate_balanceOfUnderlying(address): passing
+cashKYCSenderReceiver_decreaseAllowance(address,uint256): passing
+cashKYCSenderReceiver_increaseAllowance(address,uint256): passing
+cTokenDelegate_redeem(uint256): passing
+cTokenDelegate_transfer(address,uint256): passing
+cCashDelegate_accrueInterest(): passing
+cCashDelegate_repayBorrow(uint256): passing
+property_sol_totalBurnedNonNegative(): passing
+property_delta_requestMintDepositAccounting(): passing
+property_t15_setterAdminRoleAdmin(): passing
+property_round_totalBurnedDecreaseAfterComplete(): passing
+property_canary_overrideRateReached(): passing
+ghost_totalCashBurned(): passing
+cTokenDelegate_exchangeRateCurrent(): passing
+ghost_epochFirstRate(uint256): passing
+shortcut_mintCashThenRequestRedemption(uint256): passing
+cTokenDelegate_accrueInterest(): passing
+cTokenDelegate_setKYCRequirementGroup(uint256): passing
+cCashDelegate_transferFrom(address,address,uint256): passing
+cTokenDelegate_transferFrom(address,address,uint256): passing
+property_delta_setRateUpdatesLastRate(): passing
+cashKYCSenderReceiver_approve(address,uint256): passing
+cCashDelegate_repayBorrowBehalf(address,uint256): passing
+cTokenDelegate_repayBorrow(uint256): passing
+cashManager_setMinimumDepositAmount(uint256): passing
+property_rate_priceCap(): passing
+cTokenDelegate_borrowBalanceCurrent(address): passing
+property_mono_epochNonDecreasing(): passing
+cCashDelegate__addReserves(uint256): passing
+cashManager_setKYCRequirementGroup(uint256): passing
+ghost_lowRateOverrideValue(): passing
+cashKYCSenderReceiver_renounceRole(bytes32,address): passing
+property_canary_requestRedemptionReached(): passing
+cCashDelegate__acceptAdmin(): passing
+ghost_lastEpoch(): passing
+property_profit_burnGeRefund(): passing
+property_doom_assetSenderNotZero(): passing
+cashManager_transitionEpoch(): passing
+property_delta_requestRedemptionBurnAccounting(): passing
+ondoPriceOracleV2_setPriceCap(address,uint256): passing
+cashKYCSenderReceiver_mint(address,uint256): passing
+cashKYCSenderReceiver_transfer(address,uint256): passing
+switch_asset(uint256): passing
+property_t11_epochOnlyAdvances(): passing
+cashManager_multiexcall((address,bytes,uint256)[]): passing
+ondoPriceOracleV2_setFTokenToCToken(address,address): passing
+ghost_requestMintReached(): passing
+kYCRegistry_assignRoletoKYCGroup(uint256,bytes32): passing
+cashKYCSenderReceiver_unpause(): passing
+cashKYCSenderReceiver_initialize(string,string): passing
+cCashDelegate_redeem(uint256): passing
+property_neg_nonAdminCannotSetMintExchangeRate(): passing
+shortcut_fullMintCycle(uint256): passing
+cashManager_setEpochDuration(uint256): passing
+cTokenDelegate__becomeImplementation(bytes): passing
+asset_mint(address,uint128): passing
+ghost_overrideRateZeroForCurrentEpoch(): passing
+ghost_claimMintReached(): passing
+property_eco_mintFeeAlert(): passing
+switchActor(uint256): passing
+shortcut_warpAndTransitionEpoch(): passing
+cTokenDelegate_mint(uint256): passing
+cTokenDelegate_balanceOfUnderlying(address): passing
+cashKYCSenderReceiver_burn(uint256): passing
+cashManager_requestMint(uint256): passing
+property_fee_minimumDepositAboveFloor(): passing
+cashManager_setPendingMintBalance(address,uint256,uint256,uint256): passing
+cashManager_requestRedemption(uint256): passing
+cCashDelegate_exchangeRateCurrent(): passing
+cashManager_pause(): passing
+ghost_overrideZeroEpoch(): passing
+cTokenDelegate_seize(address,address,uint256): passing
+property_t12_exchangeRateImmutableOnceSet(): passing
+cashManager_setPendingRedemptionBalance(address,uint256,uint256): passing
+ghost_transitionEpochReached(): passing
+cTokenDelegate__resignImplementation(): passing
+property_t11_epochStartTimestampValid(): passing
+cashKYCSenderReceiver_revokeRole(bytes32,address): passing
+property_t11_autopauseNoRateUpdate(): passing
+shortcut_priceCapPath(uint256): passing
+property_t13_manualPriceNoRevert(): passing
+cCashDelegate__becomeImplementation(bytes): passing
+property_neg_nonAdminCannotPause(): passing
+cTokenDelegate__reduceReserves(uint256): passing
+ghost_setRateReached(): passing
+ghost_requestRedemptionReached(): passing
+property_neg_nonAdminCannotSetMintFee(): passing
+cashKYCSenderReceiver_setKYCRequirementGroup(uint256): passing
+ghost_lastAssetSender(): passing
+property_neg_nonAdminCannotAddKYCAddresses(): passing
+property_round_cashOwedRoundedDown(): passing
+property_t15_pauserAdminRoleAdmin(): passing
+ondoPriceOracleV2_setOracle(address): passing
+cashManager_setMintExchangeRate(uint256,uint256): passing
+property_round_exchangeRateNonZeroOnceSet(): passing
+property_t13_supplyNoOverflow(): passing
+cashManager_completeRedemptions(address[],address[],uint256,uint256,uint256): passing
+property_delta_requestRedemptionSupplyDrop(): passing
+cashKYCSenderReceiver_pause(): passing
+cCashDelegate__delegateCompLikeTo(address): passing
+ondoPriceOracleV2_renounceOwnership(): passing
+cashManager_claimMint(address,uint256): passing
+cCashDelegate__setReserveFactor(uint256): passing
+property_rate_priceCapCCash(): passing
+ondoPriceOracleV2_setPrice(address,uint256): passing
+ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay(uint256): passing
+cashManager_setMintLimit(uint256): passing
+property_canary_transitionEpochReached(): passing
+property_rate_deltaLimitEnforced(): passing
+ghost_totalCollateralDeposited(): passing
+cTokenDelegate_totalBorrowsCurrent(): passing
+cashManager_unpause(): passing
+cCashDelegate_totalBorrowsCurrent(): passing
+kYCRegistry_removeKYCAddresses(uint256,address[]): passing
+kYCRegistry_renounceRole(bytes32,address): passing
+property_canary_completeRedemptionsReached(): passing
+cTokenDelegate__delegateCompLikeTo(address): passing
+cashManager_grantRole(bytes32,address): passing
+property_t14_cashOwedAtLeastOne(): passing
+ondoPriceOracleV2_setFTokenToChainlinkOracle(address,address): passing
+cashKYCSenderReceiver_setKYCRegistry(address): passing
+cCashDelegate_approve(address,uint256): passing
+cashManager_overrideExchangeRate(uint256,uint256,uint256): passing
+ghost_overrideRateReached(): passing
+property_mono_totalBurnedNonDecreasing(): passing
+cCashDelegate_mint(uint256): passing
+ghost_epochDurationZeroSet(): passing
+property_fee_mintFeeBelowMax(): passing
+ghost_lowRateOverrideDetected(): passing
+ghost_totalCashMinted(): passing
+property_t12_redeemAmountCannotBeZero(): passing
+cCashDelegate__resignImplementation(): passing
+kYCRegistry_addKYCAddressViaSignature(uint256,address,uint256,uint8,bytes32,bytes32): passing
+cTokenDelegate__acceptAdmin(): passing
+shortcut_kycViaSignature(address,uint256): passing
+kYCRegistry_grantRole(bytes32,address): passing
+cTokenDelegate__addReserves(uint256): passing
+property_round_exchangeRateFloor(): passing
+property_neg_nonAdminCannotOverrideRate(): passing
+cCashDelegate_setKYCRegistry(address): passing
+cashManager_setAssetRecipient(address): passing
+cashKYCSenderReceiver_transferFrom(address,address,uint256): passing
+cTokenDelegate__setReserveFactor(uint256): passing
+property_t13_getBurnedQuantityConsistent(): passing
+ghost_completeRedemptionsReached(): passing
+cashKYCSenderReceiver_grantRole(bytes32,address): passing
+cashKYCSenderReceiver_burnFrom(address,uint256): passing
+property_profit_mintRequestSumConsistent(): passing
+cashManager_setMintExchangeRateDeltaLimit(uint256): passing
+kYCRegistry_revokeRole(bytes32,address): passing
+property_canary_claimMintReached(): passing
+cTokenDelegate_redeemUnderlying(uint256): passing
+cCashDelegate_borrowBalanceCurrent(address): passing
+cashKYCSenderReceiver_initialize(string,string,address,uint256): passing
+cCashDelegate_redeemUnderlying(uint256): passing
+property_delta_claimMintCashBalance(): passing
+cTokenDelegate_borrow(uint256): passing
+cashManager_setMintFee(uint256): passing
+currentOperation(): passing
+shortcut_chainlinkOraclePath(int256): passing
+cashManager_setFeeRecipient(address): passing
+property_sol_mintAmountWithinLimit(): passing
+property_sol_epochResetAmounts(): passing
+shortcut_pauseAndMultiexcall(): passing
+ondoPriceOracleV2_transferOwnership(address): passing
+property_canary_requestMintReached(): passing
+cCashDelegate__reduceReserves(uint256): passing
+cashManager_revokeRole(bytes32,address): passing
+cCashDelegate_transfer(address,uint256): passing
+AssertionFailed(..): passing
+
+Unique instructions: 53231
+Unique codehashes: 11
+Corpus size: 65
+Seed: 3908035831316211114
+Total calls: 10198
+
+[2026-06-22 06:06:10.84] Saving test reproducers... Done! (0.000002759s)
+[2026-06-22 06:06:10.84] Saving corpus... Done! (0.005755809s)
+[2026-06-22 06:06:10.85] Saving foundry reproducers... Done! (0.000016494s)
+[2026-06-22 06:06:10.85] Saving coverage... Done! (7.824169559s)

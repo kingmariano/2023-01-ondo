@@ -9,3 +9,5 @@ hardhat-deploy/=node_modules/hardhat-deploy/
 hardhat/=node_modules/hardhat/
 lib/=lib/
 truffle/=node_modules/truffle/
+@chimera/=lib/chimera/src/
+@recon/=lib/setup-helpers/src/

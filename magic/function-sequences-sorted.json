@@ -1,0 +1,461 @@
+{
+  "data": {
+    "1": {
+      "function_name": "cashManager_grantRole",
+      "prerequisite_functions": []
+    },
+    "2": {
+      "function_name": "cashManager_pause",
+      "prerequisite_functions": []
+    },
+    "3": {
+      "function_name": "cashManager_renounceRole",
+      "prerequisite_functions": []
+    },
+    "4": {
+      "function_name": "cashManager_requestMint",
+      "prerequisite_functions": []
+    },
+    "5": {
+      "function_name": "cashManager_revokeRole",
+      "prerequisite_functions": []
+    },
+    "6": {
+      "function_name": "cashManager_setAssetRecipient",
+      "prerequisite_functions": []
+    },
+    "7": {
+      "function_name": "cashManager_setAssetSender",
+      "prerequisite_functions": []
+    },
+    "8": {
+      "function_name": "cashManager_setEpochDuration",
+      "prerequisite_functions": []
+    },
+    "9": {
+      "function_name": "cashManager_setFeeRecipient",
+      "prerequisite_functions": []
+    },
+    "10": {
+      "function_name": "cashManager_setKYCRegistry",
+      "prerequisite_functions": []
+    },
+    "11": {
+      "function_name": "cashManager_setKYCRequirementGroup",
+      "prerequisite_functions": []
+    },
+    "12": {
+      "function_name": "cashManager_setMinimumDepositAmount",
+      "prerequisite_functions": []
+    },
+    "13": {
+      "function_name": "cashManager_setMintExchangeRateDeltaLimit",
+      "prerequisite_functions": []
+    },
+    "14": {
+      "function_name": "cashManager_setMintFee",
+      "prerequisite_functions": []
+    },
+    "15": {
+      "function_name": "cashManager_setMintLimit",
+      "prerequisite_functions": []
+    },
+    "16": {
+      "function_name": "cashManager_setRedeemLimit",
+      "prerequisite_functions": []
+    },
+    "17": {
+      "function_name": "cashManager_setRedeemMinimum",
+      "prerequisite_functions": []
+    },
+    "18": {
+      "function_name": "cashManager_transitionEpoch",
+      "prerequisite_functions": []
+    },
+    "19": {
+      "function_name": "cashManager_unpause",
+      "prerequisite_functions": []
+    },
+    "20": {
+      "function_name": "kYCRegistry_assignRoletoKYCGroup",
+      "prerequisite_functions": []
+    },
+    "21": {
+      "function_name": "kYCRegistry_grantRole",
+      "prerequisite_functions": []
+    },
+    "22": {
+      "function_name": "kYCRegistry_renounceRole",
+      "prerequisite_functions": []
+    },
+    "23": {
+      "function_name": "kYCRegistry_revokeRole",
+      "prerequisite_functions": []
+    },
+    "24": {
+      "function_name": "ondoPriceOracleV2_renounceOwnership",
+      "prerequisite_functions": []
+    },
+    "25": {
+      "function_name": "ondoPriceOracleV2_setFTokenToCToken",
+      "prerequisite_functions": []
+    },
+    "26": {
+      "function_name": "ondoPriceOracleV2_setFTokenToChainlinkOracle",
+      "prerequisite_functions": []
+    },
+    "27": {
+      "function_name": "ondoPriceOracleV2_setMaxChainlinkOracleTimeDelay",
+      "prerequisite_functions": []
+    },
+    "28": {
+      "function_name": "ondoPriceOracleV2_setOracle",
+      "prerequisite_functions": []
+    },
+    "29": {
+      "function_name": "ondoPriceOracleV2_setPrice",
+      "prerequisite_functions": []
+    },
+    "30": {
+      "function_name": "ondoPriceOracleV2_setPriceCap",
+      "prerequisite_functions": []
+    },
+    "31": {
+      "function_name": "ondoPriceOracleV2_transferOwnership",
+      "prerequisite_functions": []
+    },
+    "32": {
+      "function_name": "cashKYCSenderReceiver_approve",
+      "prerequisite_functions": []
+    },
+    "33": {
+      "function_name": "cashKYCSenderReceiver_grantRole",
+      "prerequisite_functions": []
+    },
+    "34": {
+      "function_name": "cashKYCSenderReceiver_increaseAllowance",
+      "prerequisite_functions": []
+    },
+    "35": {
+      "function_name": "cashKYCSenderReceiver_initialize",
+      "prerequisite_functions": []
+    },
+    "36": {
+      "function_name": "cashKYCSenderReceiver_mint",
+      "prerequisite_functions": []
+    },
+    "37": {
+      "function_name": "cashKYCSenderReceiver_pause",
+      "prerequisite_functions": []
+    },
+    "38": {
+      "function_name": "cashKYCSenderReceiver_renounceRole",
+      "prerequisite_functions": []
+    },
+    "39": {
+      "function_name": "cashKYCSenderReceiver_revokeRole",
+      "prerequisite_functions": []
+    },
+    "40": {
+      "function_name": "cashKYCSenderReceiver_setKYCRegistry",
+      "prerequisite_functions": []
+    },
+    "41": {
+      "function_name": "cashKYCSenderReceiver_setKYCRequirementGroup",
+      "prerequisite_functions": []
+    },
+    "42": {
+      "function_name": "cCashDelegate_accrueInterest",
+      "prerequisite_functions": []
+    },
+    "43": {
+      "function_name": "cCashDelegate_approve",
+      "prerequisite_functions": []
+    },
+    "44": {
+      "function_name": "cCashDelegate_exchangeRateCurrent",
+      "prerequisite_functions": []
+    },
+    "45": {
+      "function_name": "cCashDelegate_mint",
+      "prerequisite_functions": []
+    },
+    "46": {
+      "function_name": "cCashDelegate_setKYCRegistry",
+      "prerequisite_functions": []
+    },
+    "47": {
+      "function_name": "cCashDelegate_setKYCRequirementGroup",
+      "prerequisite_functions": []
+    },
+    "48": {
+      "function_name": "cCashDelegate_totalBorrowsCurrent",
+      "prerequisite_functions": []
+    },
+    "49": {
+      "function_name": "cTokenDelegate_accrueInterest",
+      "prerequisite_functions": []
+    },
+    "50": {
+      "function_name": "cTokenDelegate_approve",
+      "prerequisite_functions": []
+    },
+    "51": {
+      "function_name": "cTokenDelegate_exchangeRateCurrent",
+      "prerequisite_functions": []
+    },
+    "52": {
+      "function_name": "cTokenDelegate_mint",
+      "prerequisite_functions": []
+    },
+    "53": {
+      "function_name": "cTokenDelegate_setKYCRegistry",
+      "prerequisite_functions": []
+    },
+    "54": {
+      "function_name": "cTokenDelegate_setKYCRequirementGroup",
+      "prerequisite_functions": []
+    },
+    "55": {
+      "function_name": "cTokenDelegate_totalBorrowsCurrent",
+      "prerequisite_functions": []
+    },
+    "56": {
+      "function_name": "cashManager_overrideExchangeRate",
+      "prerequisite_functions": [
+        "cashManager_transitionEpoch"
+      ]
+    },
+    "57": {
+      "function_name": "cashManager_setMintExchangeRate",
+      "prerequisite_functions": [
+        "cashManager_transitionEpoch"
+      ]
+    },
+    "58": {
+      "function_name": "cashManager_setPendingMintBalance",
+      "prerequisite_functions": [
+        "cashManager_requestMint"
+      ]
+    },
+    "59": {
+      "function_name": "cashManager_setPendingRedemptionBalance",
+      "prerequisite_functions": [
+        "cashManager_requestRedemption"
+      ]
+    },
+    "60": {
+      "function_name": "kYCRegistry_addKYCAddressViaSignature",
+      "prerequisite_functions": [
+        "kYCRegistry_assignRoletoKYCGroup"
+      ]
+    },
+    "61": {
+      "function_name": "kYCRegistry_addKYCAddresses",
+      "prerequisite_functions": [
+        "kYCRegistry_assignRoletoKYCGroup"
+      ]
+    },
+    "62": {
+      "function_name": "cashKYCSenderReceiver_burn",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_mint"
+      ]
+    },
+    "63": {
+      "function_name": "cashKYCSenderReceiver_transfer",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_mint"
+      ]
+    },
+    "64": {
+      "function_name": "cashKYCSenderReceiver_unpause",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_pause"
+      ]
+    },
+    "65": {
+      "function_name": "cCashDelegate_balanceOfUnderlying",
+      "prerequisite_functions": [
+        "cCashDelegate_mint"
+      ]
+    },
+    "66": {
+      "function_name": "cCashDelegate_borrow",
+      "prerequisite_functions": [
+        "cCashDelegate_mint"
+      ]
+    },
+    "67": {
+      "function_name": "cCashDelegate_borrowBalanceCurrent",
+      "prerequisite_functions": [
+        "cCashDelegate_borrow"
+      ]
+    },
+    "68": {
+      "function_name": "cCashDelegate_redeem",
+      "prerequisite_functions": [
+        "cCashDelegate_mint"
+      ]
+    },
+    "69": {
+      "function_name": "cCashDelegate_redeemUnderlying",
+      "prerequisite_functions": [
+        "cCashDelegate_mint"
+      ]
+    },
+    "70": {
+      "function_name": "cCashDelegate_repayBorrow",
+      "prerequisite_functions": [
+        "cCashDelegate_borrow"
+      ]
+    },
+    "71": {
+      "function_name": "cCashDelegate_repayBorrowBehalf",
+      "prerequisite_functions": [
+        "cCashDelegate_borrow"
+      ]
+    },
+    "72": {
+      "function_name": "cCashDelegate_transfer",
+      "prerequisite_functions": [
+        "cCashDelegate_mint"
+      ]
+    },
+    "73": {
+      "function_name": "cTokenDelegate_balanceOfUnderlying",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint"
+      ]
+    },
+    "74": {
+      "function_name": "cTokenDelegate_borrow",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint"
+      ]
+    },
+    "75": {
+      "function_name": "cTokenDelegate_borrowBalanceCurrent",
+      "prerequisite_functions": [
+        "cTokenDelegate_borrow"
+      ]
+    },
+    "76": {
+      "function_name": "cTokenDelegate_redeem",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint"
+      ]
+    },
+    "77": {
+      "function_name": "cTokenDelegate_redeemUnderlying",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint"
+      ]
+    },
+    "78": {
+      "function_name": "cTokenDelegate_repayBorrow",
+      "prerequisite_functions": [
+        "cTokenDelegate_borrow"
+      ]
+    },
+    "79": {
+      "function_name": "cTokenDelegate_repayBorrowBehalf",
+      "prerequisite_functions": [
+        "cTokenDelegate_borrow"
+      ]
+    },
+    "80": {
+      "function_name": "cTokenDelegate_transfer",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint"
+      ]
+    },
+    "81": {
+      "function_name": "cashManager_completeRedemptions",
+      "prerequisite_functions": [
+        "cashManager_requestRedemption",
+        "cashManager_transitionEpoch"
+      ]
+    },
+    "82": {
+      "function_name": "kYCRegistry_removeKYCAddresses",
+      "prerequisite_functions": [
+        "kYCRegistry_assignRoletoKYCGroup",
+        "kYCRegistry_addKYCAddresses"
+      ]
+    },
+    "83": {
+      "function_name": "cashKYCSenderReceiver_burnFrom",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_mint",
+        "cashKYCSenderReceiver_approve"
+      ]
+    },
+    "84": {
+      "function_name": "cashKYCSenderReceiver_decreaseAllowance",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_approve",
+        "cashKYCSenderReceiver_increaseAllowance"
+      ]
+    },
+    "85": {
+      "function_name": "cashKYCSenderReceiver_transferFrom",
+      "prerequisite_functions": [
+        "cashKYCSenderReceiver_mint",
+        "cashKYCSenderReceiver_approve"
+      ]
+    },
+    "86": {
+      "function_name": "cCashDelegate_transferFrom",
+      "prerequisite_functions": [
+        "cCashDelegate_mint",
+        "cCashDelegate_approve"
+      ]
+    },
+    "87": {
+      "function_name": "cTokenDelegate_transferFrom",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint",
+        "cTokenDelegate_approve"
+      ]
+    },
+    "88": {
+      "function_name": "cashManager_claimMint",
+      "prerequisite_functions": [
+        "cashManager_requestMint",
+        "cashManager_transitionEpoch",
+        "cashManager_setMintExchangeRate"
+      ]
+    },
+    "89": {
+      "function_name": "cCashDelegate_seize",
+      "prerequisite_functions": [
+        "cCashDelegate_mint",
+        "cCashDelegate_borrow",
+        "ondoPriceOracleV2_setPrice"
+      ]
+    },
+    "90": {
+      "function_name": "cTokenDelegate_seize",
+      "prerequisite_functions": [
+        "cTokenDelegate_mint",
+        "cTokenDelegate_borrow",
+        "ondoPriceOracleV2_setPrice"
+      ]
+    },
+    "91": {
+      "function_name": "cashManager_requestRedemption",
+      "prerequisite_functions": [
+        "cashManager_requestMint",
+        "cashManager_transitionEpoch",
+        "cashManager_setMintExchangeRate",
+        "cashManager_claimMint",
+        "cashKYCSenderReceiver_approve"
+      ]
+    }
+  },
+  "summary": {
+    "total_functions": 91,
+    "file_path": "magic/function-sequences.json"
+  }
+}

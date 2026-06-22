@@ -1,0 +1,797 @@
+{
+  "timestamp": "20260622113041",
+  "lcov_file": "echidna/covered.1782111834.lcov",
+  "missing_coverage": [
+    {
+      "function": "getUnderlyingPrice",
+      "contract": "OndoPriceOracleV2",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/OndoPriceOracleV2.sol",
+      "function_range": {
+        "start": 92,
+        "end": 119
+      },
+      "uncovered_code": {
+        "line_range": "110",
+        "last_covered_line": 108,
+        "code": [
+          "108: [LAST COVERED]       price = getChainlinkOraclePrice(fToken);",
+          "110:       revert(\"Oracle type not supported\");"
+        ]
+      },
+      "complexity": 5
+    },
+    {
+      "function": "_acceptAdmin",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 1085,
+        "end": 1105
+      },
+      "uncovered_code": {
+        "line_range": "1092-1104",
+        "last_covered_line": 1088,
+        "code": [
+          "1088: [LAST COVERED]       revert AcceptAdminPendingAdminCheck();",
+          "1092:     address oldAdmin = admin;",
+          "1093:     address oldPendingAdmin = pendingAdmin;",
+          "1096:     admin = pendingAdmin;",
+          "1099:     pendingAdmin = payable(address(0));",
+          "1101:     emit NewAdmin(oldAdmin, admin);",
+          "1102:     emit NewPendingAdmin(oldPendingAdmin, pendingAdmin);",
+          "1104:     return NO_ERROR;"
+        ]
+      },
+      "complexity": 2
+    },
+    {
+      "function": "_acceptAdmin",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 1088,
+        "end": 1108
+      },
+      "uncovered_code": {
+        "line_range": "1095-1107",
+        "last_covered_line": 1091,
+        "code": [
+          "1091: [LAST COVERED]       revert AcceptAdminPendingAdminCheck();",
+          "1095:     address oldAdmin = admin;",
+          "1096:     address oldPendingAdmin = pendingAdmin;",
+          "1099:     admin = pendingAdmin;",
+          "1102:     pendingAdmin = payable(address(0));",
+          "1104:     emit NewAdmin(oldAdmin, admin);",
+          "1105:     emit NewPendingAdmin(oldPendingAdmin, pendingAdmin);",
+          "1107:     return NO_ERROR;"
+        ]
+      },
+      "complexity": 2
+    },
+    {
+      "function": "paused",
+      "contract": "Pausable",
+      "source_file": "/home/user/2023-01-ondo/contracts/cash/external/openzeppelin/contracts/security/Pausable.sol",
+      "function_range": {
+        "start": 40,
+        "end": 42
+      },
+      "uncovered_code": {
+        "line_range": "41",
+        "last_covered_line": null,
+        "code": [
+          "41:     return _paused;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "burnFrom",
+      "contract": "ERC20BurnableUpgradeable",
+      "source_file": "/home/user/2023-01-ondo/contracts/cash/external/openzeppelin/contracts-upgradeable/token/ERC20/ERC20BurnableUpgradeable.sol",
+      "function_range": {
+        "start": 44,
+        "end": 47
+      },
+      "uncovered_code": {
+        "line_range": "46",
+        "last_covered_line": 45,
+        "code": [
+          "45: [LAST COVERED]     _spendAllowance(account, _msgSender(), amount);",
+          "46:     _burn(account, amount);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "owner",
+      "contract": "Ownable",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+      "function_range": {
+        "start": 46,
+        "end": 48
+      },
+      "uncovered_code": {
+        "line_range": "47",
+        "last_covered_line": null,
+        "code": [
+          "47:     return ownerAddr;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "transferOwnership",
+      "contract": "Ownable",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+      "function_range": {
+        "start": 22,
+        "end": 28
+      },
+      "uncovered_code": {
+        "line_range": "23-27",
+        "last_covered_line": null,
+        "code": [
+          "23:     require(to != msg.sender, \"Cannot transfer to self\");",
+          "25:     pendingOwnerAddr = to;",
+          "27:     emit OwnershipTransferRequested(ownerAddr, to);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_delegateCompLikeTo",
+      "contract": "CCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CCash.sol",
+      "function_range": {
+        "start": 268,
+        "end": 274
+      },
+      "uncovered_code": {
+        "line_range": "273",
+        "last_covered_line": 270,
+        "code": [
+          "270: [LAST COVERED]       msg.sender == admin,",
+          "273:     CompLike(underlying).delegate(compLikeDelegatee);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_reduceReserves",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 1239,
+        "end": 1245
+      },
+      "uncovered_code": {
+        "line_range": "1242-1244",
+        "last_covered_line": 1241,
+        "code": [
+          "1241: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "1242:     accrueInterest();",
+          "1244:     return _reduceReservesFresh(reduceAmount);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_setReserveFactor",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 1138,
+        "end": 1144
+      },
+      "uncovered_code": {
+        "line_range": "1141-1143",
+        "last_covered_line": 1140,
+        "code": [
+          "1140: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "1141:     accrueInterest();",
+          "1143:     return _setReserveFactorFresh(newReserveFactorMantissa);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "accrueInterest",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 394,
+        "end": 472
+      },
+      "uncovered_code": {
+        "line_range": "401",
+        "last_covered_line": 400,
+        "code": [
+          "400: [LAST COVERED]     if (accrualBlockNumberPrior == currentBlockNumber) {",
+          "401:       return NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "accrueInterest",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 394,
+        "end": 472
+      },
+      "uncovered_code": {
+        "line_range": "406-471",
+        "last_covered_line": 405,
+        "code": [
+          "405: [LAST COVERED]     uint cashPrior = getCashPrior();",
+          "406:     uint borrowsPrior = totalBorrows;",
+          "407:     uint reservesPrior = totalReserves;",
+          "408:     uint borrowIndexPrior = borrowIndex;",
+          "411:     uint borrowRateMantissa = interestRateModel.getBorrowRate(",
+          "416:     require(",
+          "417:       borrowRateMantissa <= borrowRateMaxMantissa,",
+          "422:     uint blockDelta = currentBlockNumber - accrualBlockNumberPrior;",
+          "433:     Exp memory simpleInterestFactor = mul_(",
+          "434:       Exp({mantissa: borrowRateMantissa}),",
+          "435:       blockDelta",
+          "437:     uint interestAccumulated = mul_ScalarTruncate(",
+          "438:       simpleInterestFactor,",
+          "439:       borrowsPrior",
+          "441:     uint totalBorrowsNew = interestAccumulated + borrowsPrior;",
+          "442:     uint totalReservesNew = mul_ScalarTruncateAddUInt(",
+          "443:       Exp({mantissa: reserveFactorMantissa}),",
+          "444:       interestAccumulated,",
+          "445:       reservesPrior",
+          "447:     uint borrowIndexNew = mul_ScalarTruncateAddUInt(",
+          "448:       simpleInterestFactor,",
+          "449:       borrowIndexPrior,",
+          "450:       borrowIndexPrior",
+          "458:     accrualBlockNumber = currentBlockNumber;",
+          "459:     borrowIndex = borrowIndexNew;",
+          "460:     totalBorrows = totalBorrowsNew;",
+          "461:     totalReserves = totalReservesNew;",
+          "464:     emit AccrueInterest(",
+          "471:     return NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "borrowBalanceCurrent",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 291,
+        "end": 296
+      },
+      "uncovered_code": {
+        "line_range": "294-295",
+        "last_covered_line": 293,
+        "code": [
+          "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "294:     accrueInterest();",
+          "295:     return borrowBalanceStored(account);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "borrowBalanceStored",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 303,
+        "end": 307
+      },
+      "uncovered_code": {
+        "line_range": "306",
+        "last_covered_line": 293,
+        "code": [
+          "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "306:     return borrowBalanceStoredInternal(account);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "exchangeRateCurrent",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 338,
+        "end": 341
+      },
+      "uncovered_code": {
+        "line_range": "339-340",
+        "last_covered_line": 338,
+        "code": [
+          "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+          "339:     accrueInterest();",
+          "340:     return exchangeRateStored();"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "exchangeRateStored",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 348,
+        "end": 350
+      },
+      "uncovered_code": {
+        "line_range": "349",
+        "last_covered_line": 338,
+        "code": [
+          "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+          "349:     return exchangeRateStoredInternal();"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "seize",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 971,
+        "end": 979
+      },
+      "uncovered_code": {
+        "line_range": "976",
+        "last_covered_line": 975,
+        "code": [
+          "975: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "976:     seizeInternal(msg.sender, liquidator, borrower, seizeTokens);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "setKYCRegistry",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 1378,
+        "end": 1381
+      },
+      "uncovered_code": {
+        "line_range": "1380",
+        "last_covered_line": 1379,
+        "code": [
+          "1379: [LAST COVERED]     require(msg.sender == admin, \"Only admin can set KYC registry\");",
+          "1380:     _setKYCRegistry(_kycRegistry);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "totalBorrowsCurrent",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 281,
+        "end": 284
+      },
+      "uncovered_code": {
+        "line_range": "282-283",
+        "last_covered_line": 281,
+        "code": [
+          "281: [LAST COVERED]   function totalBorrowsCurrent() external override nonReentrant returns (uint) {",
+          "282:     accrueInterest();",
+          "283:     return totalBorrows;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "transfer",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 152,
+        "end": 157
+      },
+      "uncovered_code": {
+        "line_range": "156",
+        "last_covered_line": 155,
+        "code": [
+          "155: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+          "156:     return transferTokens(msg.sender, msg.sender, dst, amount) == NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "transferFrom",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 166,
+        "end": 172
+      },
+      "uncovered_code": {
+        "line_range": "171",
+        "last_covered_line": 170,
+        "code": [
+          "170: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+          "171:     return transferTokens(msg.sender, src, dst, amount) == NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_delegateCompLikeTo",
+      "contract": "CErc20",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CErc20.sol",
+      "function_range": {
+        "start": 268,
+        "end": 274
+      },
+      "uncovered_code": {
+        "line_range": "273",
+        "last_covered_line": 270,
+        "code": [
+          "270: [LAST COVERED]       msg.sender == admin,",
+          "273:     CompLike(underlying).delegate(compLikeDelegatee);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_reduceReserves",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 1242,
+        "end": 1248
+      },
+      "uncovered_code": {
+        "line_range": "1245-1247",
+        "last_covered_line": 1244,
+        "code": [
+          "1244: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "1245:     accrueInterest();",
+          "1247:     return _reduceReservesFresh(reduceAmount);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "_setReserveFactor",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 1141,
+        "end": 1147
+      },
+      "uncovered_code": {
+        "line_range": "1144-1146",
+        "last_covered_line": 1143,
+        "code": [
+          "1143: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "1144:     accrueInterest();",
+          "1146:     return _setReserveFactorFresh(newReserveFactorMantissa);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "accrueInterest",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 394,
+        "end": 472
+      },
+      "uncovered_code": {
+        "line_range": "401",
+        "last_covered_line": 400,
+        "code": [
+          "400: [LAST COVERED]     if (accrualBlockNumberPrior == currentBlockNumber) {",
+          "401:       return NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "accrueInterest",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 394,
+        "end": 472
+      },
+      "uncovered_code": {
+        "line_range": "406-471",
+        "last_covered_line": 405,
+        "code": [
+          "405: [LAST COVERED]     uint cashPrior = getCashPrior();",
+          "406:     uint borrowsPrior = totalBorrows;",
+          "407:     uint reservesPrior = totalReserves;",
+          "408:     uint borrowIndexPrior = borrowIndex;",
+          "411:     uint borrowRateMantissa = interestRateModel.getBorrowRate(",
+          "416:     require(",
+          "417:       borrowRateMantissa <= borrowRateMaxMantissa,",
+          "422:     uint blockDelta = currentBlockNumber - accrualBlockNumberPrior;",
+          "433:     Exp memory simpleInterestFactor = mul_(",
+          "434:       Exp({mantissa: borrowRateMantissa}),",
+          "435:       blockDelta",
+          "437:     uint interestAccumulated = mul_ScalarTruncate(",
+          "438:       simpleInterestFactor,",
+          "439:       borrowsPrior",
+          "441:     uint totalBorrowsNew = interestAccumulated + borrowsPrior;",
+          "442:     uint totalReservesNew = mul_ScalarTruncateAddUInt(",
+          "443:       Exp({mantissa: reserveFactorMantissa}),",
+          "444:       interestAccumulated,",
+          "445:       reservesPrior",
+          "447:     uint borrowIndexNew = mul_ScalarTruncateAddUInt(",
+          "448:       simpleInterestFactor,",
+          "449:       borrowIndexPrior,",
+          "450:       borrowIndexPrior",
+          "458:     accrualBlockNumber = currentBlockNumber;",
+          "459:     borrowIndex = borrowIndexNew;",
+          "460:     totalBorrows = totalBorrowsNew;",
+          "461:     totalReserves = totalReservesNew;",
+          "464:     emit AccrueInterest(",
+          "471:     return NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "borrowBalanceCurrent",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 291,
+        "end": 296
+      },
+      "uncovered_code": {
+        "line_range": "294-295",
+        "last_covered_line": 293,
+        "code": [
+          "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "294:     accrueInterest();",
+          "295:     return borrowBalanceStored(account);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "borrowBalanceStored",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 303,
+        "end": 307
+      },
+      "uncovered_code": {
+        "line_range": "306",
+        "last_covered_line": 293,
+        "code": [
+          "293: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "306:     return borrowBalanceStoredInternal(account);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "exchangeRateCurrent",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 338,
+        "end": 341
+      },
+      "uncovered_code": {
+        "line_range": "339-340",
+        "last_covered_line": 338,
+        "code": [
+          "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+          "339:     accrueInterest();",
+          "340:     return exchangeRateStored();"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "exchangeRateStored",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 348,
+        "end": 350
+      },
+      "uncovered_code": {
+        "line_range": "349",
+        "last_covered_line": 338,
+        "code": [
+          "338: [LAST COVERED]   function exchangeRateCurrent() public override nonReentrant returns (uint) {",
+          "349:     return exchangeRateStoredInternal();"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "seize",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 971,
+        "end": 979
+      },
+      "uncovered_code": {
+        "line_range": "976",
+        "last_covered_line": 975,
+        "code": [
+          "975: [LAST COVERED]   ) external override nonReentrant returns (uint) {",
+          "976:     seizeInternal(msg.sender, liquidator, borrower, seizeTokens);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "setKYCRegistry",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 1381,
+        "end": 1384
+      },
+      "uncovered_code": {
+        "line_range": "1383",
+        "last_covered_line": 1382,
+        "code": [
+          "1382: [LAST COVERED]     require(msg.sender == admin, \"Only admin can set KYC registry\");",
+          "1383:     _setKYCRegistry(_kycRegistry);"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "totalBorrowsCurrent",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 281,
+        "end": 284
+      },
+      "uncovered_code": {
+        "line_range": "282-283",
+        "last_covered_line": 281,
+        "code": [
+          "281: [LAST COVERED]   function totalBorrowsCurrent() external override nonReentrant returns (uint) {",
+          "282:     accrueInterest();",
+          "283:     return totalBorrows;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "transfer",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 152,
+        "end": 157
+      },
+      "uncovered_code": {
+        "line_range": "156",
+        "last_covered_line": 155,
+        "code": [
+          "155: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+          "156:     return transferTokens(msg.sender, msg.sender, dst, amount) == NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "transferFrom",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 166,
+        "end": 172
+      },
+      "uncovered_code": {
+        "line_range": "171",
+        "last_covered_line": 170,
+        "code": [
+          "170: [LAST COVERED]   ) external override nonReentrant returns (bool) {",
+          "171:     return transferTokens(msg.sender, src, dst, amount) == NO_ERROR;"
+        ]
+      },
+      "complexity": 1
+    },
+    {
+      "function": "nonReentrant",
+      "contract": "ReentrancyGuard",
+      "source_file": "/home/user/2023-01-ondo/contracts/cash/external/openzeppelin/contracts/security/ReentrancyGuard.sol",
+      "function_range": {
+        "start": 50,
+        "end": 62
+      },
+      "uncovered_code": {
+        "line_range": "51-61",
+        "last_covered_line": null,
+        "code": [
+          "51:     // On the first call to nonReentrant, _notEntered will be true",
+          "52:     require(_status != _ENTERED, \"ReentrancyGuard: reentrant call\");",
+          "55:     _status = _ENTERED;",
+          "57:     _;",
+          "59:     // By storing the original value once again, a refund is triggered (see",
+          "60:     // https://eips.ethereum.org/EIPS/eip-2200)",
+          "61:     _status = _NOT_ENTERED;"
+        ]
+      },
+      "complexity": null
+    },
+    {
+      "function": "onlyOwner",
+      "contract": "Ownable",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/compound/Ownable.sol",
+      "function_range": {
+        "start": 53,
+        "end": 56
+      },
+      "uncovered_code": {
+        "line_range": "54-55",
+        "last_covered_line": null,
+        "code": [
+          "54:     require(msg.sender == ownerAddr, \"Only callable by owner\");",
+          "55:     _;"
+        ]
+      },
+      "complexity": null
+    },
+    {
+      "function": "nonReentrant",
+      "contract": "CTokenCash",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cCash/CTokenCash.sol",
+      "function_range": {
+        "start": 1434,
+        "end": 1439
+      },
+      "uncovered_code": {
+        "line_range": "1436-1438",
+        "last_covered_line": 1435,
+        "code": [
+          "1435: [LAST COVERED]     require(_notEntered, \"re-entered\");",
+          "1436:     _notEntered = false;",
+          "1438:     _notEntered = true; // get a gas-refund post-Istanbul"
+        ]
+      },
+      "complexity": null
+    },
+    {
+      "function": "nonReentrant",
+      "contract": "CTokenModified",
+      "source_file": "/home/user/2023-01-ondo/contracts/lending/tokens/cToken/CTokenModified.sol",
+      "function_range": {
+        "start": 1437,
+        "end": 1442
+      },
+      "uncovered_code": {
+        "line_range": "1439-1441",
+        "last_covered_line": 1438,
+        "code": [
+          "1438: [LAST COVERED]     require(_notEntered, \"re-entered\");",
+          "1439:     _notEntered = false;",
+          "1441:     _notEntered = true; // get a gas-refund post-Istanbul"
+        ]
+      },
+      "complexity": null
+    }
+  ],
+  "summary": {
+    "functions_analyzed": 265,
+    "functions_missing_coverage": 39,
+    "functions_removed_now_covered": 38,
+    "new_uncovered_functions": 39,
+    "functions_retained_still_uncovered": 0
+  }
+}

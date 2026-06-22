@@ -1,0 +1,72 @@
+Warning: Found unknown `lib` config for profile `default` defined in foundry.toml.
+Compiling 209 files with Solc 0.8.16
+Compiling 26 files with Solc 0.5.17
+Compiling 7 files with Solc 0.6.12
+Solc 0.6.12 finished in 821.39ms
+Solc 0.5.17 finished in 1.68s
+Solc 0.8.16 finished in 51.60s
+Compiler run successful with warnings:
+Warning (6321): Unnamed return variable can remain unassigned when the function is called when "Test_Comptroller_Admin" is the most derived contract. Add an explicit return with value to all non-reverting code paths or name the variable.
+   --> forge-tests/lending/DeployBasicLendingMarket.t.sol:205:53:
+    |
+205 |   function getWhale(address fToken) public returns (address) {
+    |                                                     ^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> forge-tests/lending/Comptroller/pauseGuardian.t.sol:53:5:
+   |
+53 |     uint256 bobBal = fCASH.balanceOf(bob);
+   |     ^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> forge-tests/lending/fToken/fToken.base.noCollateral.t.sol:240:24:
+    |
+240 |     (, uint liquidity, uint shortfall) = oComptroller.getAccountLiquidity(bob);
+    |                        ^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> forge-tests/lending/fToken/fToken.base.noCollateral.t.sol:271:8:
+    |
+271 |     (, uint liquidity, uint shortfall) = oComptroller.getAccountLiquidity(bob);
+    |        ^^^^^^^^^^^^^^
+
+Warning (2018): Function state mutability can be restricted to pure
+   --> forge-tests/lending/DeployBasicLendingMarket.t.sol:184:3:
+    |
+184 |   function getSupplyRateCheck(
+    |   ^ (Relevant source part starts here and spans across multiple lines).
+
+Warning (2018): Function state mutability can be restricted to view
+   --> forge-tests/lending/DeployBasicLendingMarket.t.sol:205:3:
+    |
+205 |   function getWhale(address fToken) public returns (address) {
+    |   ^ (Relevant source part starts here and spans across multiple lines).
+
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/CompoundLens.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/Comp.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernorBravoInterfaces.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernanceBravoDelegator.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+contracts/lending/compound/governance/GovernorBravoDelegate.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+forge-tests/lending/helpers/test/GovernorBravoHarness.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+Warning: Function state mutability can be restricted to pure
+contracts/lending/compound/Comptroller.sol:1794:3: Warning: Function state mutability can be restricted to pure
+  function getCompAddress() public view returns (address) {
+  ^ (Relevant source part starts here and spans across multiple lines).
