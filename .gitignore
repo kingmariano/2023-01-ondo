@@ -60,3 +60,5 @@ medusa
 out/
 context_output/
 magic/*.err
+echidna-output.log
+echidna-exit-code.txt
