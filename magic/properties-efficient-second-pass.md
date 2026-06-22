@@ -523,3 +523,35 @@ Decision: **KEEP** | Appeal: 5 (CRITICAL; MISSING VALIDATION; easy to trigger) |
 | MERGE | 14 | PROFIT-03→ROUND-03, PROFIT-06→T12-01, SOL-05→PROFIT-04, DELTA-07→T11-01, FEE-02→FEE-03, DOOM-07→KYC-05, ECO-01→DELTA-06, ECO-03→PROFIT-04, ECO-07→T14-02, ECO-08→ROUND-04, ECO-10→RATE-06, T12-05→KYC-06, T12-06→RATE-06, T14-05→ROUND-04 |
 
 Total after merge/drop: **88 distinct KEEP properties** (down from 125 raw entries; 7 dropped as unreachable in base setup; 14 collapsed into their canonical equivalents; 30 remaining entries are either ALERTs, soft assertions, or coverage-phase flagged but tracked).
+
+---
+
+## Phase 3A Deferred to Phase 3B (with reasons)
+
+| Property ID | Reason for Deferral |
+|-------------|---------------------|
+| PROFIT-01 | Multi-epoch ghost accumulator needs ProfitTracker struct with per-epoch per-handler increment; requires shortcut that fires across epoch boundaries |
+| PROFIT-02 | Needs per-call sum accumulator inside completeRedemptions reachable by fuzzer; completeRedemptions is reachable but sum tracking requires inline handler instrumentation |
+| PROFIT-05 | SOL-01 ghost (netCashBurned = burns - refunds) needs ProfitTracker incremented inside requestRedemption + completeRedemptions; Phase 3B |
+| SOL-01 | Same as PROFIT-05; ghost_totalCashMinted / ghost_totalCashBurned / ghost_totalCashRefunded accumulators deferred |
+| DELTA-01 | Exact mintRequests delta check: requires knowing `depositValueAfterFees` which depends on `mintFee` at call time; implementable but needs before/after on same-epoch snapshot, which complicates epoch-boundary cases; Phase 3B |
+| DELTA-04 | cashOwed exact delta: formula replication safe but requires knowing exact `collateralDeposited` pre-claimMint (stored in snapshot) — implementable but property requires matching epoch exactly; defer to Phase 3B |
+| DELTA-05 | Rate exact delta after setMintExchangeRate: works only on non-pausing path; before snapshot of lastSetMintExchangeRate captured, but detecting which path fired (auto-pause vs normal) requires reading paused() delta; Phase 3B |
+| DELTA-06 / T11-03 | Auto-pause on delta violation: reading paused() before/after setMintExchangeRate works, but must distinguish from admin-initiated pause(); Phase 3B with currentOperation guard |
+| T11-01 / T11-02 | transitionEpoch exact-delta: needs pre-warp timestamp snapshot which is not in Vars (timestamp is block.timestamp in Solidity, accessible but ephemeral); Phase 3B |
+| T11-04 | lastSetMintExchangeRate not updated on auto-pause: needs before/after of lastSetMintExchangeRate compared against paused() change; implementable in Phase 3B |
+| T11-05 | overrideExchangeRate two-path assertion: needs before snapshot of lastSetMintExchangeRate AND _lastSetMintExchangeRate param visibility; Phase 3B |
+| T12-01 | epochToExchangeRate immutability: needs per-epoch ghost tracking which epoch had rate set; Phase 3B ghost map |
+| T12-03 | totalBurned >= sum(burnAmt[u]): needs per-actor burn accumulator across all actors; Phase 3B |
+| T13-02 | totalSupply == sum(balanceOf): needs actor enumeration; Phase 3B |
+| KYC-01 | All holders KYC'd: needs actor enumeration; Phase 3B |
+| ROUND-01 | cashOwed rounding down: needs exact cashOwed formula cross-check; Phase 3B |
+| ROUND-02 | Fee rounding down: needs fee formula comparison with exact inputs; Phase 3B |
+| ROUND-03 / ROUND-04 | Sum due <= amountToDist: needs per-call accumulator inside completeRedemptions inline; Phase 3B |
+| RATE-03 | Delta limit arithmetic: needs before snapshot of lastSetMintExchangeRate + rate param visibility; Phase 3B |
+| T14-01 | cashOwed >= 1: needs exact _getMintAmountForEpoch formula replication; Phase 3B |
+| T14-03 | Exact fee rounding at minimum: needs mintFee==1 guard + exact formula; Phase 3B |
+| T14-04 | Sequential requestMint accumulation: needs ghost sum per (epoch, actor); Phase 3B |
+| FF-02 | Double-service protection: needs ghost set of serviced addresses; Phase 3B |
+| SOL-06 (exact) | addressToBurnAmt == 0 for specific redeemers after completeRedemptions: needs to know which addresses were in the redeemers array; Phase 3B inline |
+| ECO-02 | overrideExchangeRate rate < 1e3 alert with pending claims: needs ghost tracking of pending claims per epoch; Phase 3B |

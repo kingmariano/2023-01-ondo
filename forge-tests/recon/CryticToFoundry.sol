@@ -22,6 +22,110 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
         // TODO: add failing property tests here for debugging
     }
 
+    // ============================================================
+    //  Phase 3A — property smoke-tests (run through real scenarios
+    //  and assert the property_ functions return true)
+    // ============================================================
+
+    /// Helper: assert property is true; used by property smoke-tests
+    function _assertProperty(bool result, string memory name) internal pure {
+        require(result, name);
+    }
+
+    /// SMOKE: static properties that hold from construction
+    function test_properties_static() public {
+        _assertProperty(property_fee_mintFeeBelowMax(),          "FEE-01");
+        _assertProperty(property_fee_minimumDepositAboveFloor(), "FEE-06");
+        _assertProperty(property_t15_pauserAdminRoleAdmin(),     "T15-05");
+        _assertProperty(property_t15_setterAdminRoleAdmin(),     "T15-05b");
+        _assertProperty(property_t13_decimalsMultiplierCorrect(), "T13-04");
+        _assertProperty(property_t13_manualPriceNoRevert(),       "T13-05");
+        _assertProperty(property_sol_mintAmountWithinLimit(),    "SOL-02");
+        _assertProperty(property_sol_redeemAmountWithinLimit(),  "SOL-03");
+        _assertProperty(property_rate_priceCap(),                "RATE-06");
+        _assertProperty(property_rate_priceCapCCash(),           "RATE-06b");
+        _assertProperty(property_round_exchangeRateFloor(),      "ROUND-06");
+        _assertProperty(property_mono_epochNonDecreasing(),      "MONO-01");
+        _assertProperty(property_t11_totalBurnedNonNegative(),   "T11-07");
+    }
+
+    /// SMOKE: canary booleans start as true (handlers not yet reached)
+    function test_properties_canary_initial() public {
+        // Canaries start as "not yet reached" (true = property holds)
+        _assertProperty(property_canary_requestMintReached(),         "CANARY-01 initial");
+        _assertProperty(property_canary_claimMintReached(),           "CANARY-02 initial");
+        _assertProperty(property_canary_requestRedemptionReached(),   "CANARY-03 initial");
+        _assertProperty(property_canary_completeRedemptionsReached(), "CANARY-04 initial");
+        _assertProperty(property_canary_setRateReached(),             "CANARY-05 initial");
+        _assertProperty(property_canary_overrideRateReached(),        "CANARY-06 initial");
+        _assertProperty(property_canary_transitionEpochReached(),     "CANARY-07 initial");
+    }
+
+    /// SMOKE: run a full mint cycle and verify snapshot-based properties
+    function test_properties_after_mint_cycle() public {
+        // Full mint cycle: requestMint -> transition -> setRate -> claimMint
+        cashManager_requestMint(MINT_AMT);
+        // After requestMint: limits still within bounds
+        _assertProperty(property_sol_mintAmountWithinLimit(), "SOL-02 post-requestMint");
+        _assertProperty(property_fee_mintFeeBelowMax(),       "FEE-01 post-requestMint");
+
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        // After epoch transition: canary fired, limit amounts reset
+        _assertProperty(property_sol_epochResetAmounts(),     "SOL-04 post-transition");
+        _assertProperty(property_mono_epochNonDecreasing(),   "MONO-01 post-transition");
+
+        cashManager_setMintExchangeRate(1e6, 0);
+        _assertProperty(property_round_exchangeRateFloor(),   "ROUND-06 post-setRate");
+        _assertProperty(property_rate_priceCap(),             "RATE-06 post-setRate");
+
+        cashManager_claimMint(_getActor(), 0);
+        _assertProperty(property_profit_claimMintZeroesMintRequests(), "PROFIT-04 post-claim");
+        _assertProperty(property_t13_getBurnedQuantityConsistent(),    "T13-01 post-claim");
+    }
+
+    /// SMOKE: run requestRedemption and verify delta properties
+    function test_properties_after_redemption_request() public {
+        // Setup: get some CASH
+        cashManager_requestMint(MINT_AMT);
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_setMintExchangeRate(1e6, 0);
+        cashManager_claimMint(_getActor(), 0);
+        cashKYCSenderReceiver_approve(address(cashManager), type(uint256).max);
+
+        // requestRedemption
+        cashManager_requestRedemption(1e18);
+        _assertProperty(property_sol_redeemAmountWithinLimit(),            "SOL-03 post-redeem");
+        _assertProperty(property_delta_requestRedemptionSupplyDrop(),      "DELTA-03 post-redeem");
+        _assertProperty(property_delta_requestRedemptionBurnAccounting(),  "DELTA-02 post-redeem");
+        _assertProperty(property_t12_redeemAmountCannotBeZero(),           "T12-07 post-redeem");
+        _assertProperty(property_t13_getBurnedQuantityConsistent(),        "T13-01 post-redeem");
+    }
+
+    /// SMOKE: canary booleans flip to false after handlers are called
+    function test_properties_canary_flip() public {
+        // Exercise handlers to flip canaries
+        cashManager_requestMint(MINT_AMT);
+        // requestMint canary should now be flipped (ghost set to true => property returns false)
+        assertTrue(!property_canary_requestMintReached(), "CANARY-01 should flip");
+
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        assertTrue(!property_canary_transitionEpochReached(), "CANARY-07 should flip");
+
+        cashManager_setMintExchangeRate(1e6, 0);
+        assertTrue(!property_canary_setRateReached(), "CANARY-05 should flip");
+
+        cashManager_claimMint(_getActor(), 0);
+        assertTrue(!property_canary_claimMintReached(), "CANARY-02 should flip");
+
+        vm.warp(block.timestamp + 1 days + 1);
+        cashManager_transitionEpoch();
+        cashManager_overrideExchangeRate(1e6, 0, 1e6);
+        assertTrue(!property_canary_overrideRateReached(), "CANARY-06 should flip");
+    }
+
     /*//////////////////////////////////////////////////////////////
                     CASH MANAGER  (handler reachability)
     //////////////////////////////////////////////////////////////*/
