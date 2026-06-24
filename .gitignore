@@ -62,3 +62,5 @@ context_output/
 magic/*.err
 echidna-output.log
 echidna-exit-code.txt
+echidna-exploration/
+magic/exploration-run/
