@@ -20,6 +20,68 @@ abstract contract Properties is BeforeAfter, Asserts {
     uint256 internal constant RATE_TOL        = 1;    // 1-wei tolerance for rounding
 
     // ================================================================
+    //  POST-OPERATION INVARIANT HOOK
+    //  Runs at the end of every handler (via BeforeAfter.__after).
+    //  Each invariant is asserted with t(): in CryticTester this dispatches
+    //  to Echidna's assertion-failure path (falsified in assertion mode); in
+    //  CryticToFoundry it dispatches to a Foundry revert. This is what makes
+    //  the properties actually checked by the fuzzer — previously they merely
+    //  returned bool and were inert in assertion mode.
+    //
+    //  Only TRUE invariants and the bug-detecting DOOM/ECO properties are
+    //  wired here. The operation-gated "soft"/exact-accounting heuristics
+    //  (DELTA-*, PROFIT-02, ROUND exact, T12/T14 exact, fee-rounding, epoch
+    //  reset) are intentionally NOT wired: they are conservative approximations
+    //  that legitimately fail on valid paths (e.g. an epoch-crossing requestMint
+    //  leaves currentMintAmount != 0) and would bury real findings in noise.
+    //  The CANARY properties are also excluded (they are designed to "fail" to
+    //  confirm reachability and would be pure noise here).
+    // ================================================================
+    function _afterHook() internal override {
+        // --- DOOM: real missing-validation bugs (SHOULD be falsified) ---
+        t(property_doom_assetSenderNotZero(),   "DOOM-FF-06: setAssetSender(0) bricks completeRedemptions");
+        t(property_doom_epochDurationNotZero(), "DOOM-FF-07: setEpochDuration(0) div-by-zero in transitionEpoch");
+        t(property_eco_lowRateOverrideAlert(),  "ECO-02: overrideExchangeRate set rate < MIN_SAFE_RATE (no delta limit)");
+        t(property_doom_doubleServiceReverts(), "DOOM-FF-02: completeRedemptions increased actor burn amount");
+
+        // --- Solvency / limits (hard invariants) ---
+        t(property_sol_mintAmountWithinLimit(),   "SOL-02: currentMintAmount > mintLimit");
+        t(property_sol_redeemAmountWithinLimit(), "SOL-03: currentRedeemAmount > redeemLimit");
+
+        // --- Fee / parameter bounds (hard invariants) ---
+        t(property_fee_mintFeeBelowMax(),          "FEE-01: mintFee >= BPS_DENOMINATOR");
+        t(property_fee_minimumDepositAboveFloor(), "FEE-06: minimumDepositAmount < BPS_DENOMINATOR");
+
+        // --- Monotonicity / epoch (hard invariants) ---
+        t(property_mono_epochNonDecreasing(),       "MONO-01: currentEpoch < ghost high-water mark");
+        t(property_t11_epochOnlyAdvances(),         "T11-01: epoch decreased");
+        t(property_t11_epochStartTimestampValid(),  "T11-02: epoch start in the future");
+
+        // --- Exchange-rate floor (catches arbitrarily low rates) ---
+        t(property_round_exchangeRateFloor(), "ROUND-06: lastSetMintExchangeRate < MIN_SAFE_RATE");
+
+        // --- Oracle price caps (hard invariants) ---
+        t(property_rate_priceCap(),      "RATE-06: cToken price exceeds cap");
+        t(property_rate_priceCapCCash(), "RATE-06: cCash price exceeds cap");
+
+        // --- Role wiring (hard invariants) ---
+        t(property_t15_pauserAdminRoleAdmin(), "T15-05: PAUSER_ADMIN role-admin != MANAGER_ADMIN");
+        t(property_t15_setterAdminRoleAdmin(), "T15-05b: SETTER_ADMIN role-admin != MANAGER_ADMIN");
+
+        // --- Config invariants ---
+        t(property_t13_decimalsMultiplierCorrect(), "T13-04: decimalsMultiplier wrong");
+        t(property_t13_manualPriceNoRevert(),       "T13-05: MANUAL oracle price getter reverted");
+
+        // --- Conservation (hard invariant) ---
+        t(property_profit_burnGeRefund(), "PROFIT-05/SOL-01: refunded CASH exceeds burned CASH");
+
+        // --- Overflow canaries (trivially hold under 0.8 checked math) ---
+        t(property_sol_totalBurnedNonNegative(), "SOL: totalBurned overflow canary");
+        t(property_t11_totalBurnedNonNegative(), "T11-07: totalBurned overflow canary");
+        t(property_t13_supplyNoOverflow(),       "T13-02: totalSupply overflow canary");
+    }
+
+    // ================================================================
     //  CANARY GROUP — coverage sanity (should FAIL when handler fires)
     //  Implemented as ghost-boolean checks: property returns true until
     //  the handler is first reached, then the canary flips.
