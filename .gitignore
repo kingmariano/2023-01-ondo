@@ -64,3 +64,4 @@ echidna-output.log
 echidna-exit-code.txt
 echidna-exploration/
 magic/exploration-run/
+echidna-assertion-long/
