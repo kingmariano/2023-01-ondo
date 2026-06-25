@@ -139,6 +139,10 @@ abstract contract BeforeAfter is Setup {
     // -----------------------------------------------------------------------
 
     modifier updateGhosts {
+        // No specific operation tracked: clear the selector so operation-gated
+        // properties (which compare currentOperation to a specific selector)
+        // correctly skip instead of evaluating against a stale operation.
+        currentOperation = bytes4(0);
         __before();
         _;
         __after();
@@ -361,5 +365,14 @@ abstract contract BeforeAfter is Setup {
                 ghost_epochDurationZeroSet = true;
             }
         }
+
+        // Post-operation invariant checks. Overridden in Properties to assert
+        // every property via t() so violations surface in assertion-mode fuzzing
+        // (and as reverts in the Foundry CryticToFoundry harness).
+        _afterHook();
     }
+
+    /// @dev Hook executed at the end of every __after(). Default is a no-op;
+    ///      Properties overrides it to evaluate all invariants.
+    function _afterHook() internal virtual {}
 }

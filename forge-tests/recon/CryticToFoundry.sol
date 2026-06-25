@@ -125,10 +125,12 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function test_doom_assetSenderZero_detectsBug() public {
         // First verify it holds
         assertTrue(property_doom_assetSenderNotZero(), "Should pass initially");
-        // Now trigger the bug
-        cashManager_setAssetSender(address(0));
-        // The DOOM property should now detect the violation
-        assertFalse(property_doom_assetSenderNotZero(), "DOOM-FF-06: should detect assetSender==0 bug");
+        // Drive the bug DIRECTLY on the contract (msg.sender == address(this)
+        // holds SETTER_ADMIN), bypassing the hooked handler so the property can
+        // be inspected. Going through the handler would instead trip _afterHook's
+        // t() — which is exactly what Echidna falsifies in the campaign.
+        cashManager.setAssetSender(address(0));
+        assertFalse(property_doom_assetSenderNotZero(), "DOOM-FF-06: detects assetSender==0 bug");
     }
 
     /// DOOM TEST — property_doom_epochDurationNotZero detects missing zero-duration validation.
@@ -136,10 +138,10 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function test_doom_epochDurationZero_detectsBug() public {
         // First verify it holds
         assertTrue(property_doom_epochDurationNotZero(), "Should pass initially");
-        // Now trigger the bug: setEpochDuration(0)
-        cashManager_setEpochDuration(0);
-        // The DOOM property should now detect the violation
-        assertFalse(property_doom_epochDurationNotZero(), "DOOM-FF-07: should detect epochDuration==0 bug");
+        // Drive the bug DIRECTLY on the contract, bypassing the hooked handler
+        // (the handler path trips _afterHook's t(), which is the campaign falsification).
+        cashManager.setEpochDuration(0);
+        assertFalse(property_doom_epochDurationNotZero(), "DOOM-FF-07: detects epochDuration==0 bug");
     }
 
     /// DOOM TEST — ECO-02: overrideExchangeRate can set rate to 1 (< MIN_SAFE_RATE).
@@ -150,14 +152,15 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
         cashManager_transitionEpoch();
         cashManager_setMintExchangeRate(1e6, 0);
 
-        // Verify property holds initially
-        assertTrue(property_eco_lowRateOverrideAlert(), "ECO-02 should pass initially");
+        // Verify the floor property holds initially
+        assertTrue(property_round_exchangeRateFloor(), "ROUND-06 should pass initially");
 
-        // Override with a dangerously low rate (1, well below MIN_SAFE_RATE of 1e3)
-        cashManager_overrideExchangeRate(1, 0, 1);
-
-        // The DOOM property should now detect the violation
-        assertFalse(property_eco_lowRateOverrideAlert(), "ECO-02: should detect low rate override bug");
+        // Override DIRECTLY with a dangerously low rate (1, well below MIN_SAFE_RATE
+        // of 1e3), bypassing the hooked handler. lastSetMintExchangeRate becomes 1,
+        // so the live floor property detects it. (Through the handler this trips
+        // _afterHook's t() — the ECO-02/ROUND-06 falsification Echidna reports.)
+        cashManager.overrideExchangeRate(1, 0, 1);
+        assertFalse(property_round_exchangeRateFloor(), "ECO-02/ROUND-06: detects rate below floor");
     }
 
     /// DOOM TEST — overrideExchangeRate(0, epoch, 0) bricks claimMint for that epoch.
